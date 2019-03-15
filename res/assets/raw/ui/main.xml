@@ -1,0 +1,4 @@
+<window anim_hint="htranslate" tr_text="meter_title">
+    <album_cover x="c" y="m" w="300" h="300" image="123" bg_image="icon_06">
+    </album_cover>
+</window>
