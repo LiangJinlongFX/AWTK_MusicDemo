@@ -5,8 +5,14 @@ import glob
 env=DefaultEnvironment().Clone()
 BIN_DIR='../bin'
 
+#sharelib_files = glob.glob('api/*.c')
+#sharelib_files += glob.glob('api/*/*.c')
+
 src_files = glob.glob('*.c')
 src_files += glob.glob('custom_widgets/*.c')
 src_files += glob.glob('custom_widgets/*/*.c')
+src_files += glob.glob('api/*.c')
+src_files += glob.glob('api/*/*.c')
 
+#env.SharedLibrary(os.path.join(BIN_DIR, 'api'), sharelib_files)
 env.Program(os.path.join(BIN_DIR, 'demo'), src_files);

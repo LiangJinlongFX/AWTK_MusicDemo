@@ -464,3 +464,9 @@
     <normal text_color="gold" fg_image="progress_circle" />
   </style>
 </progress_circle>
+
+<window_manager>
+  <style name="default">
+    <normal bg_image="background_1"/>
+  </style>
+</window_manager>

@@ -20,9 +20,19 @@
  */
 #include "awtk.h"
 
+
+static ret_t on_playlist(void* ctx, event_t* e) {
+  dialog_open("dialog_playlist");
+}
+
 /**
  * 初始化
  */
 void application_init() {
-  widget_t* win = window_open("main");
+  window_manager();
+  widget_t* system_bar = window_open("system_bar");
+  widget_t* win_main = window_open("main");
+  /* 注册按钮事件 */
+  widget_t* button_list = widget_lookup(win_main, "music:list", TRUE);
+  widget_on(button_list, EVT_CLICK, on_playlist, win_main);
 }

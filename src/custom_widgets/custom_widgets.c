@@ -33,7 +33,7 @@ ret_t custom_widgets_init() {
   widget_factory_register(widget_factory(), WIDGET_TYPE_LINE_SERIES, line_series_create);
   widget_factory_register(widget_factory(), WIDGET_TYPE_BAR_SERIES, bar_series_create);
   widget_factory_register(widget_factory(), WIDGET_TYPE_PIE_SLICE, pie_slice_create);
-  widget_factory_register(widget_factory(), WIDGET_TYPE_ALBUM_COVER, album_cover_create);
+  //widget_factory_register(widget_factory(), WIDGET_TYPE_ALBUM_COVER, album_cover_create);
 
   return RET_OK;
 }

@@ -1,6 +1,6 @@
-@rem 这里的AWTK_DIR的值在SConstruct脚本的getAwtkRoot()函数会用到，修改时请注意
+@rem 锟斤拷锟斤拷锟紸WTK_DIR锟斤拷值锟斤拷SConstruct锟脚憋拷锟斤拷getAwtkRoot()锟斤拷锟斤拷锟斤拷锟矫碉拷锟斤拷锟睫革拷时锟斤拷注锟斤拷
 
-@set AWTK_DIR=../../awtk
+@set AWTK_DIR= ../../../awtk/awtk
 
 cd res
 call assets_gen.bat ../%AWTK_DIR%/bin

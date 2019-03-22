@@ -1,4 +1,45 @@
-<window anim_hint="htranslate" tr_text="meter_title">
-    <album_cover x="c" y="m" w="300" h="300" image="123" bg_image="icon_06">
-    </album_cover>
+<window anim_hint="htranslate" theme="music_player" sytle="default">
+  <!--播放控制按钮布局-->
+  <button_group x="0" y="b" w="200" h="72" children_layout="default(r=1,c=3,xm=2,s=10)">
+    <button name="music:previous" style="previous"/>
+    <button name="music:play" style="play"/>
+    <button name="music:next" style="next"/>
+  </button_group>
+  <!--进度条布局-->
+  <row x="200" y="b" w="500" h="72">
+    <label x="l" y="m" w="20%" h="100%" text="00:00"/>
+    <slider name="music_progress" x="100" y="m" w="300" h="20%" style="default" value="40"/>
+    <label x="r" y="m" w="20%" h="100%" text="03:21"/>
+  </row>
+  <!--模式控制按钮布局-->
+  <row x="r" y="b" w="100" h="72" children_layout="default(r=1,c=2,xm=5,s=20)">
+    <button name="music:mode" style="play_rank"/>
+    <button name="music:list" style="playlist"/>
+  </row>
+  <!--设置按钮布局-->
+  <column x="r" y="t" w="30" h="40%" children_layout="default(r=3,c=1,xm=5,s=10)">
+    <button name="music:setting" style="setting"/>
+    <button name="music:equalizer" style="equalizer"/>
+    <button name="music:advance" style="advance"/>
+  </column>
+  <!--歌名显示布局-->
+  <column x="r:30" y="t" w="60%" h="90">
+    <label x="l" y="t" w="100%" h="50" text="Favor" style="song_name"/>
+    <label x="l" y="50" w="100%" h="30" text="skrillex" style="song_info"/>
+    <image x="l" y="80" w="100%" h="10" image="line" draw_type="center"/>
+  </column>
+  <!--歌词显示布局-->
+  <column x="r:30" y="90" w="60%" h="50%" children_layout="default(r=10,c=1,xm=5,s=10)">
+    <label text="123" style="default"/>
+    <label text="123" style="default"/>
+    <label text="123" style="default"/>
+    <label text="123" style="default"/>
+    <label text="123" style="default"/>
+    <label text="123" style="default"/>
+    <label text="123" style="default"/>
+    <label text="123" style="default"/>
+    <label text="123" style="default"/>
+    <label text="123" style="default"/>
+    <label text="123" style="default"/>
+  </column>
 </window>

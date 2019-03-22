@@ -1,0 +1,24 @@
+<system_bar>
+  <style name="default">
+  </style>
+</system_bar>
+
+<label>
+  <style name="default">
+    <normal text_color="white" text_align_h="center" font_size="32"/>
+  </style>
+</label>
+
+<digit_clock>
+  <style name="default">
+    <normal text_color="white" text_align_h="center" font_size="32"/>
+  </style>
+</digit_clock>
+
+<button>
+  <style name="default" font_size="32">
+    <normal text_color="white"/>
+    <pressed text_color="#04fd21"/>
+    <over text_color="#04fd21"/>
+  </style>
+</button>

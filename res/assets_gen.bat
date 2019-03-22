@@ -1,28 +1,28 @@
 @rem ---------------------------------------------------------------------------------------------------
-@rem Ò»¡¢Ë«»÷Éú³ÉÖ÷Ìâ¡¢×Ö·û´®¡¢×ÖÌå¡¢Í¼Æ¬¡¢UIµÈ¶þ½øÖÆÎÄ¼þ(ÆäÖÐµ÷ÓÃassets_gen.py)                                   
-@rem ¶þ¡¢ÐÞ¸Ä AWTK_BIN_DIR=E:/zlgopen/awtk/bin Îª±¾µØawtk¶ÔÓ¦µÄbinÄ¿Â¼
-@rem Èý¡¢assets_gen.batËµÃ÷
-@rem	  1 Îª¿Õ(Ê¹ÓÃ800*480ÆÁÄ»)£º
-@rem		¼´assets_gen.bat
-@rem	  2 -480_272(Ê¹ÓÃ480*272ÆÁÄ»):
-@rem		¼´assets_gen.bat -480_272	
-@rem ËÄ¡¢%PY_VERSION% assets_gen.py %AWTK_BIN_DIR%  ./src/assets/raw ./src/assets/incËµÃ÷£º
-@rem    1 Îª¿Õ£º
-@rem      ¼´assets_gen.py AWTK_BIN_DIR ./src/assets/raw ./src/assets/inc£¬Éú³ÉÖ÷Ìâ¡¢×Ö·û´®¡¢×ÖÌå¡¢Í¼Æ¬¡¢UIµÈ¶þ½øÖÆÎÄ¼þ
+@rem Ò»ï¿½ï¿½Ë«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â¡¢ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å¡¢Í¼Æ¬ï¿½ï¿½UIï¿½È¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½(ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½assets_gen.py)                                   
+@rem ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½ AWTK_BIN_DIR=E:/zlgopen/awtk/bin Îªï¿½ï¿½ï¿½ï¿½awtkï¿½ï¿½Ó¦ï¿½ï¿½binÄ¿Â¼
+@rem ï¿½ï¿½ï¿½ï¿½assets_gen.batËµï¿½ï¿½
+@rem	  1 Îªï¿½ï¿½(Ê¹ï¿½ï¿½800*480ï¿½ï¿½Ä»)ï¿½ï¿½
+@rem		ï¿½ï¿½assets_gen.bat
+@rem	  2 -480_272(Ê¹ï¿½ï¿½480*272ï¿½ï¿½Ä»):
+@rem		ï¿½ï¿½assets_gen.bat -480_272	
+@rem ï¿½Ä¡ï¿½%PY_VERSION% assets_gen.py %AWTK_BIN_DIR%  ./src/assets/raw ./src/assets/incËµï¿½ï¿½ï¿½ï¿½
+@rem    1 Îªï¿½Õ£ï¿½
+@rem      ï¿½ï¿½assets_gen.py AWTK_BIN_DIR ./src/assets/raw ./src/assets/incï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â¡¢ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å¡¢Í¼Æ¬ï¿½ï¿½UIï¿½È¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
 @rem    2 -style 
-@rem      ¼´assets_gen.py AWTK_BIN_DIR ./src/assets/raw ./src/assets/inc -style£¬  Éú³ÉÖ÷Ìâ
+@rem      ï¿½ï¿½assets_gen.py AWTK_BIN_DIR ./src/assets/raw ./src/assets/inc -styleï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 @rem    3 -string
-@rem      ¼´assets_gen.py AWTK_BIN_DIR ./src/assets/raw ./src/assets/inc -string£¬ Éú³É×Ö·û´®
+@rem      ï¿½ï¿½assets_gen.py AWTK_BIN_DIR ./src/assets/raw ./src/assets/inc -stringï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
 @rem    4 -font
-@rem      ¼´assets_gen.py AWTK_BIN_DIR ./src/assets/raw ./src/assets/inc -font£¬   Éú³É×ÖÌå
+@rem      ï¿½ï¿½assets_gen.py AWTK_BIN_DIR ./src/assets/raw ./src/assets/inc -fontï¿½ï¿½   ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 @rem    5 -image
-@rem      ¼´assets_gen.py AWTK_BIN_DIR ./src/assets/raw ./src/assets/inc -image£¬  Éú³ÉÍ¼Æ¬
+@rem      ï¿½ï¿½assets_gen.py AWTK_BIN_DIR ./src/assets/raw ./src/assets/inc -imageï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 @rem    6 -ui
-@rem      ¼´assets_gen.py AWTK_BIN_DIR ./src/assets/raw ./src/assets/inc -ui£¬     Éú³ÉuiÎÄ¼þ
+@rem      ï¿½ï¿½assets_gen.py AWTK_BIN_DIR ./src/assets/raw ./src/assets/inc -uiï¿½ï¿½     ï¿½ï¿½ï¿½ï¿½uiï¿½Ä¼ï¿½
 	
 @rem ----------------------------------------------------------------------------------------------------
 
-@set AWTK_BIN_DIR=%1%
+@set AWTK_BIN_DIR=../../awtk/awtk/bin
 @set PY_VERSION=python
 @if exist %SystemRoot%\py.exe (
 	@set PY_VERSION=py -2

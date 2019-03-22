@@ -1,0 +1,135 @@
+<window>
+  <style name="default">
+    <normal/>
+  </style>
+</window>
+
+
+<button>
+  <style name="default" border_color="#a0a0a0"  text_color="black">
+    <normal     bg_color="#f0f0f0" />
+    <pressed    bg_color="#c0c0c0" x_offset="1" y_offset="1"/>
+    <over       bg_color="#e0e0e0" />
+    <disable    bg_color="gray" text_color="#d0d0d0" />
+  </style>
+  <!--上一曲按钮样式-->
+  <style name="previous">
+    <normal     icon="previous"/>
+    <pressed    icon="previous" x_offset="1" y_offset="1"/>
+    <over       icon="previous" />
+  </style>
+  <!--播放按钮样式-->
+  <style name="play">
+    <normal     icon="play"/>
+    <pressed    icon="play" x_offset="1" y_offset="1"/>
+    <over       icon="play"/>
+  </style>
+  <!--暂停按钮样式-->
+  <style name="pause">
+    <normal     icon="pause"/>
+    <pressed    icon="pause" x_offset="1" y_offset="1"/>
+    <over       icon="pause"/>
+  </style>
+  <!--下一曲按钮样式-->
+  <style name="next">
+    <normal     icon="next"/>
+    <pressed    icon="next" x_offset="1" y_offset="1"/>
+    <over       icon="next"/>
+  </style>
+  <!--顺序播放模式按钮样式-->
+  <style name="play_rank">
+    <normal     icon="rank"/>
+    <pressed    icon="rank" x_offset="1" y_offset="1"/>
+    <over       icon="rank"/>
+  </style>
+  <!--随机播放模式按钮样式-->
+  <style name="play_random">
+    <normal     icon="random"/>
+    <pressed    icon="random" x_offset="1" y_offset="1"/>
+    <over       icon="random"/>
+  </style>
+  <!--播放列表按钮样式-->
+  <style name="playlist">
+    <normal     icon="playlist"/>
+    <pressed    icon="playlist" x_offset="1" y_offset="1"/>
+    <over       icon="playlist"/>
+  </style>
+  <!--设置按钮样式-->
+  <style name="setting">
+    <normal     icon="setting"/>
+    <pressed    icon="setting" x_offset="1" y_offset="1"/>
+    <over       icon="setting"/>
+  </style>
+  <!--均衡器按钮样式-->
+  <style name="equalizer">
+    <normal     icon="equalizer"/>
+    <pressed    icon="equalizer" x_offset="1" y_offset="1"/>
+    <over       icon="equalizer"/>
+  </style>
+  <!--增益按钮样式-->
+  <style name="advance">
+    <normal     icon="advance"/>
+    <pressed    icon="advance" x_offset="1" y_offset="1"/>
+    <over       icon="advance"/>
+  </style>
+  <!--对话框关闭按钮样式-->
+  <style name="dialog_close">
+    <normal     icon="close"/>
+    <pressed    icon="close" x_offset="1" y_offset="1"/>
+    <over       icon="close"/>
+  </style>
+</button>
+
+<label>
+  <style name="default">
+    <normal text_color="white" text_align_h="center" font_size="16"/>
+  </style>
+  <style name="song_name">
+    <normal text_color="white" text_align_h="center" font_size="48"/>
+  </style>
+  <style name="song_info">
+    <normal text_color="white" text_align_h="center" font_size="24"/>
+  </style>
+</label>
+
+<progress_bar>
+  <!--音乐播放进度条样式-->
+  <style name="music_process">
+    <normal bg_color="white" fg_color="#00fffc"/>
+  </style>
+</progress_bar>
+
+<slider>
+  <style name="default" bg_color="white" fg_color="#00fffc">
+    <normal icon="slider"/>
+    <pressed icon="slider"/>
+    <over icon="slider"/>
+  </style>
+</slider>
+
+
+<dialog>
+  <!--弹出对话框默认形式-->
+  <style name="default">
+    <normal bg_color="#282f75" border_color="#21286a"/>
+  </style>
+</dialog>
+
+<dialog_title text_color="white" font_size="20" text_align_h="left">
+  <!--弹出对话框标题形式-->
+  <style name="default">
+    <normal bg_color="#4061bd"/>
+  </style>
+</dialog_title>
+
+<image>
+  <style name="border">
+    <normal border_color="#000000" bg_color="#e0e0e0" text_color="black"/>
+  </style>
+</image>
+
+<window_manager>
+  <style name="default">
+    <normal bg_image="background_1"/>
+  </style>
+</window_manager>
