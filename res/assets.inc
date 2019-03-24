@@ -8,6 +8,7 @@
 #include "assets/inc/styles/music_player.data"
 #include "assets/inc/styles/system_bar.data"
 #include "assets/inc/ui/dialog_playlist.data"
+#include "assets/inc/ui/diglog_equalizer.data"
 #include "assets/inc/ui/diglog_setting.data"
 #include "assets/inc/ui/main.data"
 #include "assets/inc/ui/system_bar.data"
@@ -115,6 +116,7 @@ ret_t assets_init(void) {
   assets_manager_add(rm, style_music_player);
   assets_manager_add(rm, style_system_bar);
   assets_manager_add(rm, ui_dialog_playlist);
+  assets_manager_add(rm, ui_diglog_equalizer);
   assets_manager_add(rm, ui_diglog_setting);
   assets_manager_add(rm, ui_main);
   assets_manager_add(rm, ui_system_bar);

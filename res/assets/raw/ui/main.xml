@@ -24,8 +24,8 @@
   </column>
   <!--歌名显示布局-->
   <column x="r:30" y="t" w="60%" h="90">
-    <label x="l" y="t" w="100%" h="50" text="Favor" style="song_name"/>
-    <label x="l" y="50" w="100%" h="30" text="skrillex" style="song_info"/>
+    <label x="l" y="t" w="100%" h="50" text="123" style="song_name"/>
+    <label x="l" y="50" w="100%" h="30" text="123" style="song_info"/>
     <image x="l" y="80" w="100%" h="10" image="line" draw_type="center"/>
   </column>
   <!--歌词显示布局-->
