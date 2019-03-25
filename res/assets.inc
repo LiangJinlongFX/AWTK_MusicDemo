@@ -8,8 +8,8 @@
 #include "assets/inc/styles/music_player.data"
 #include "assets/inc/styles/system_bar.data"
 #include "assets/inc/ui/dialog_playlist.data"
-#include "assets/inc/ui/diglog_equalizer.data"
-#include "assets/inc/ui/diglog_setting.data"
+#include "assets/inc/ui/diglog_advance.data"
+#include "assets/inc/ui/equalizer.data"
 #include "assets/inc/ui/main.data"
 #include "assets/inc/ui/system_bar.data"
 #ifdef WITH_STB_IMAGE
@@ -18,6 +18,8 @@
 #include "assets/inc/images/background_1.res"
 #include "assets/inc/images/close.res"
 #include "assets/inc/images/equalizer.res"
+#include "assets/inc/images/fg_bar.res"
+#include "assets/inc/images/fg_bar_v.res"
 #include "assets/inc/images/icon_03.res"
 #include "assets/inc/images/icon_06.res"
 #include "assets/inc/images/icon_08.res"
@@ -81,6 +83,8 @@ ret_t assets_init(void) {
   assets_manager_add(rm, image_background_1);
   assets_manager_add(rm, image_close);
   assets_manager_add(rm, image_equalizer);
+  assets_manager_add(rm, image_fg_bar);
+  assets_manager_add(rm, image_fg_bar_v);
   assets_manager_add(rm, image_icon_03);
   assets_manager_add(rm, image_icon_06);
   assets_manager_add(rm, image_icon_08);
@@ -116,8 +120,8 @@ ret_t assets_init(void) {
   assets_manager_add(rm, style_music_player);
   assets_manager_add(rm, style_system_bar);
   assets_manager_add(rm, ui_dialog_playlist);
-  assets_manager_add(rm, ui_diglog_equalizer);
-  assets_manager_add(rm, ui_diglog_setting);
+  assets_manager_add(rm, ui_diglog_advance);
+  assets_manager_add(rm, ui_equalizer);
   assets_manager_add(rm, ui_main);
   assets_manager_add(rm, ui_system_bar);
   assets_manager_add(rm, strings_en_US);

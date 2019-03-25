@@ -1,6 +1,0 @@
-<!--用于显示歌曲列表的对话框-->
-<dialog anim_hint="top_to_bottom" x="r" y="0" w="40%" h="408" theme="music_player">
-  <dialog_title x="0" y="0" w="100%" h="40" text="Advance" style="default">
-    <button x="r" y="m" w="40" h="100%" style="dialog_close"/>
-  </dialog_title>
-</dialog>

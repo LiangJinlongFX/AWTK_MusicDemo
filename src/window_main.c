@@ -23,6 +23,13 @@
 
 static ret_t on_playlist(void* ctx, event_t* e) {
   dialog_open("dialog_playlist");
+  return RET_OK;
+}
+
+static ret_t on_equalizer(void* ctx, event_t* e) {
+  dialog_open("equalizer");
+  
+  return RET_OK;
 }
 
 /**
@@ -34,5 +41,7 @@ void application_init() {
   widget_t* win_main = window_open("main");
   /* 注册按钮事件 */
   widget_t* button_list = widget_lookup(win_main, "music:list", TRUE);
+  widget_t* button_EQ = widget_lookup(win_main, "music:equalizer", TRUE);
   widget_on(button_list, EVT_CLICK, on_playlist, win_main);
+  widget_on(button_EQ, EVT_CLICK, on_equalizer, win_main);
 }

@@ -22,7 +22,7 @@
 	
 @rem ----------------------------------------------------------------------------------------------------
 
-@set AWTK_BIN_DIR=../../awtk/awtk/bin
+@set AWTK_BIN_DIR=../../awtk/bin
 @set PY_VERSION=python
 @if exist %SystemRoot%\py.exe (
 	@set PY_VERSION=py -2

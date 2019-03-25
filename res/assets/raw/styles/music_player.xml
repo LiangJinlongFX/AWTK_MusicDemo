@@ -100,7 +100,12 @@
 </progress_bar>
 
 <slider>
-  <style name="default" bg_color="white" fg_color="#00fffc">
+  <style name="process" bg_image="bg_bar" fg_image="fg_bar">
+    <normal icon="slider"/>
+    <pressed icon="slider"/>
+    <over icon="slider"/>
+  </style>
+  <style name="process_v" bg_image="bg_bar_v" fg_image="fg_bar_v">
     <normal icon="slider"/>
     <pressed icon="slider"/>
     <over icon="slider"/>
@@ -122,6 +127,20 @@
   </style>
 </dialog_title>
 
+<dialog_client>
+  <style name="default">
+    <normal bg_color="#313986"/>
+  </style>
+</dialog_client>
+
+<scroll_bar>
+  <style name="list">
+    <normal bg_color="#282f75" fg_color="#313986"/>
+    <over bg_color="#282f75" fg_color="#313986"/>
+    <pressed bg_color="#282f75" fg_color="#313986"/>
+  </style>
+</scroll_bar>
+
 <image>
   <style name="border">
     <normal border_color="#000000" bg_color="#e0e0e0" text_color="black"/>
@@ -129,7 +148,7 @@
 </image>
 
 <list_item>
-  <style name="default" text_color="white">
+  <style name="list">
     <normal bg_color="#313986"/>
     <pressed bg_color="#282f75"/>
     <over bg_color="#282f75"/>

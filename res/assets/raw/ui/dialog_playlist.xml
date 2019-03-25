@@ -1,45 +1,42 @@
 <!--用于显示歌曲列表的对话框-->
 <dialog anim_hint="bottom_to_top" x="r" y="0" w="40%" h="408" theme="music_player">
+  <!--title-->
   <dialog_title x="0" y="0" w="100%" h="40" text="Play List" style="default">
     <button x="r" y="m" w="40" h="100%" style="dialog_close"/>
   </dialog_title>
-  <dialog_client x="0" y="bottom" w="100%" h="-40">
+  <!--client-->
+  <dialog_client x="0" y="b" w="100%" h="-40">
     <list_view x="0"  y="0" w="100%" h="100%" item_height="30">
-      <!--scroll_view name="list_view" x="0"  y="0" w="100%" h="100%"-->
-        <list_item style="default" children_layout="default(r=1,c=0)">
-          <label text="123" style="default"/>
+      <scroll_view name="list_view" x="0"  y="0" w="100%" h="100%">
+        <list_item style="list" children_layout="default(r=1,c=0)">
+          <image draw_type="icon" w="30" image=""/>
+          <label w="-30" text="1"/>
         </list_item>
-        <list_item style="default" children_layout="default(r=1,c=0)">
-          <label text="123" style="default"/>
+        <list_item style="list" children_layout="default(r=1,c=0)">
+          <image draw_type="icon" w="30" image=""/>
+          <label w="-30" text="1"/>
         </list_item>
-        <list_item style="default" children_layout="default(r=1,c=0)">
-          <label text="123" style="default"/>
+        <list_item style="list" children_layout="default(r=1,c=0)">
+          <image draw_type="icon" w="30" image="icon_50"/>
+          <label w="-30" text="1"/>
         </list_item>
-        <list_item style="default" children_layout="default(r=1,c=0)">
-          <label text="123" style="default"/>
+        <list_item style="list" children_layout="default(r=1,c=0)">
+          <image draw_type="icon" w="30" image=""/>
+          <label w="-30" text="1"/>
         </list_item>
-        <list_item style="default" children_layout="default(r=1,c=0)">
-          <label text="123" style="default"/>
+        <list_item style="list" children_layout="default(r=1,c=0)">
+          <image draw_type="icon" w="30" image=""/>
+          <label w="-30" text="1"/>
         </list_item>
-        <list_item style="default" children_layout="default(r=1,c=0)">
-          <label text="123" style="default"/>
+        <list_item style="list" children_layout="default(r=1,c=0)">
+          <image draw_type="icon" w="30" image=""/>
+          <label w="-30" text="1"/>
         </list_item>
-        <list_item style="default" children_layout="default(r=1,c=0)">
-          <label text="123" style="default"/>
+        <list_item style="list" children_layout="default(r=1,c=0)">
+          <image draw_type="icon" w="30" image=""/>
+          <label w="-30" text="1"/>
         </list_item>
-        <list_item style="default" children_layout="default(r=1,c=0)">
-          <label text="123" style="default"/>
-        </list_item>
-        <list_item style="default" children_layout="default(r=1,c=0)">
-          <label text="123" style="default"/>
-        </list_item>
-        <list_item style="default" children_layout="default(r=1,c=0)">
-          <label text="123" style="default"/>
-        </list_item>
-        <list_item style="default" children_layout="default(r=1,c=0)">
-          <label text="123" style="default"/>
-        </list_item>
-      <!--/scroll_view-->
+      </scroll_view>
     </list_view>
   </dialog_client>
 </dialog>

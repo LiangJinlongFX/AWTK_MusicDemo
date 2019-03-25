@@ -187,11 +187,16 @@
 </progress_bar>
 
 <slider>
-  <style>
+  <style name="process" bg_image="bg_bar" fg_image="fg_bar">
+    <normal icon="slider"/>
+    <pressed icon="slider"/>
+    <over icon="slider"/>
+  </style>
+  <!--style>
     <normal bg_color="#a0a0a0" fg_color="blue" border_color="#ffd700"/>
     <pressed bg_color="#a0a0a0" fg_color="blue" border_color="#ffa700"/>
     <over bg_color="#a0a0a0" fg_color="blue" border_color="#ffe700"/>
-  </style>
+  </style-->
 
   <style name="img" bg_image="slider_bg" fg_image="slider_fg">
     <normal icon="slider_drag"/>
@@ -387,6 +392,11 @@
     <pressed    bg_color="#eaeaea" />
     <over       bg_color="#eaeaea" />
   </style>
+  <style name="list">
+    <normal bg_color="#313986"/>
+    <pressed bg_color="#282f75"/>
+    <over bg_color="#282f75"/>
+  </style>
   <style name="empty" >
     <normal  />
     <pressed />
@@ -465,8 +475,26 @@
   </style>
 </progress_circle>
 
+<!--用于music_player-->
 <window_manager>
   <style name="default">
     <normal bg_image="background_1"/>
   </style>
 </window_manager>
+
+
+<list_item>
+  <style name="list">
+    <normal bg_color="#313986"/>
+    <pressed bg_color="#282f75"/>
+    <over bg_color="#282f75"/>
+  </style>
+</list_item>
+
+<scroll_bar>
+  <style name="list">
+    <normal bg_color="#282f75" fg_color="#313986"/>
+    <over bg_color="#282f75" fg_color="#313986"/>
+    <pressed bg_color="#282f75" fg_color="#313986"/>
+  </style>
+</scroll_bar>
