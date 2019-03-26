@@ -498,3 +498,9 @@
     <pressed bg_color="#282f75" fg_color="#313986"/>
   </style>
 </scroll_bar>
+
+<knob>
+  <style name="default">
+    <normal fg_color="#00fffc" mask_color="#404aac"/>
+  </style>
+</konb>

@@ -80,6 +80,18 @@
   </style>
 </button>
 
+<radio_button>
+  <!--歌曲列表中选择歌曲使用-->
+  <style name="list_check" text_color="white" text_align_h="left" margin="10" bg_color="#313986" icon_at="left">
+    <normal  margin="40"/>
+    <pressed margin="40"/>
+    <over    margin="40"/>
+    <normal_of_checked bg_color="#282f75" icon="icon_50" />
+    <pressed_of_checked bg_color="#282f75" icon="icon_50" />
+    <over_of_checked bg_color="#282f75" icon="icon_50" />
+  </style>
+</radio_button>
+
 <label>
   <style name="default">
     <normal text_color="white" text_align_h="center" font_size="16"/>
@@ -120,7 +132,7 @@
   </style>
 </dialog>
 
-<dialog_title text_color="white" font_size="20" text_align_h="left">
+<dialog_title text_color="white" margin="10" font_size="20" text_align_h="left">
   <!--弹出对话框标题形式-->
   <style name="default">
     <normal bg_color="#4061bd"/>
@@ -154,6 +166,12 @@
     <over bg_color="#282f75"/>
   </style>
 </list_item>
+
+<view>
+    <style name="eq_view">
+        <normal  bg_color="#2a327b"/>
+    </style>
+</view>
 
 <window_manager>
   <style name="default">

@@ -1,42 +1,25 @@
 <!--用于显示歌曲列表的对话框-->
-<dialog anim_hint="bottom_to_top" x="r" y="0" w="40%" h="408" theme="music_player">
+<dialog anim_hint="bottom_to_top" x="r" y="52" w="40%" h="353" theme="music_player">
   <!--title-->
   <dialog_title x="0" y="0" w="100%" h="40" text="Play List" style="default">
-    <button x="r" y="m" w="40" h="100%" style="dialog_close"/>
+    <button name="dialog_close" x="r" y="m" w="40" h="100%" style="dialog_close"/>
   </dialog_title>
   <!--client-->
   <dialog_client x="0" y="b" w="100%" h="-40">
     <list_view x="0"  y="0" w="100%" h="100%" item_height="30">
       <scroll_view name="list_view" x="0"  y="0" w="100%" h="100%">
-        <list_item style="list" children_layout="default(r=1,c=0)">
-          <image draw_type="icon" w="30" image=""/>
-          <label w="-30" text="1"/>
-        </list_item>
-        <list_item style="list" children_layout="default(r=1,c=0)">
-          <image draw_type="icon" w="30" image=""/>
-          <label w="-30" text="1"/>
-        </list_item>
-        <list_item style="list" children_layout="default(r=1,c=0)">
-          <image draw_type="icon" w="30" image="icon_50"/>
-          <label w="-30" text="1"/>
-        </list_item>
-        <list_item style="list" children_layout="default(r=1,c=0)">
-          <image draw_type="icon" w="30" image=""/>
-          <label w="-30" text="1"/>
-        </list_item>
-        <list_item style="list" children_layout="default(r=1,c=0)">
-          <image draw_type="icon" w="30" image=""/>
-          <label w="-30" text="1"/>
-        </list_item>
-        <list_item style="list" children_layout="default(r=1,c=0)">
-          <image draw_type="icon" w="30" image=""/>
-          <label w="-30" text="1"/>
-        </list_item>
-        <list_item style="list" children_layout="default(r=1,c=0)">
-          <image draw_type="icon" w="30" image=""/>
-          <label w="-30" text="1"/>
-        </list_item>
+        <radio_button style="list_check" name="c0" text="1"/>
+        <radio_button style="list_check" name="c1" text="2"/>
+        <radio_button style="list_check" name="c2" text="3"/>
+        <radio_button style="list_check" name="c3" text="4"/>
+        <radio_button style="list_check" name="c4" text="5"/>
+        <radio_button style="list_check" name="c5" text="6"/>
+        <radio_button style="list_check" name="c6" text="7"/>
+        <radio_button style="list_check" name="c7" text="8"/>
+        <radio_button style="list_check" name="c8" text="9"/>
+        <radio_button style="list_check" name="c9" text="10"/>
       </scroll_view>
+      <scroll_bar_m name="bar" x="right" y="0" w="6" h="100%" value="0"/>
     </list_view>
   </dialog_client>
 </dialog>

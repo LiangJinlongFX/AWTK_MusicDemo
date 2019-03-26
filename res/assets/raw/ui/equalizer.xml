@@ -1,44 +1,59 @@
 <!--用于显示歌曲列表的对话框-->
-<dialog anim_hint="bottom_to_top" x="r" y="0" w="50%" h="405" theme="music_player">
+<dialog anim_hint="bottom_to_top" x="r" y="52" w="50%" h="353" theme="music_player">
   <!--title-->
   <dialog_title x="0" y="0" w="100%" h="40" text="EQ" style="default">
-    <button x="r" y="m" w="40" h="100%" style="dialog_close"/>
+    <button name="return" x="r" y="m" w="40" h="100%" style="dialog_close"/>
   </dialog_title>
   <!--client-->
   <dialog_client x="0" y="b" w="100%" h="-40">
-    <row x="10%" y="10" w="100%" h="60%" children_layout="default(r=1,c=8,xm=5,s=10)">
+    <!--均衡器增益指示-->
+    <view x="0" y="10" w="15%" h="48%">
+      <label x="l" y="t" w="100%" h="10%" text="+12dB"/>
+      <label x="l" y="m" w="100%" h="10%" text="0dB"/>
+      <label x="l" y="b" w="100%" h="10%" text="-12dB"/>
+    </view>
+    <!--均衡器控制块-->
+    <row x="15%" y="10" w="85%" h="60%" children_layout="default(r=1,c=8,xm=5,s=10)">
       <column children_layout="default(r=0,c=1)">
-        <slider name="music_progress" h="80%" style="process_v" value="40" vertical="true"/>
+        <slider name="slider::32" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
         <label text="32" h="20%"/>
       </column>
       <column children_layout="default(r=0,c=1)">
-        <slider name="music_progress" h="80%" style="process_v" value="40" vertical="true"/>
-        <label text="32" h="20%"/>
+        <slider name="slider::63" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
+        <label text="63" h="20%"/>
       </column>
       <column children_layout="default(r=0,c=1)">
-        <slider name="music_progress" h="80%" style="process_v" value="40" vertical="true"/>
-        <label text="32" h="20%"/>
+        <slider name="slider::125" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
+        <label text="125" h="20%"/>
       </column>
       <column children_layout="default(r=0,c=1)">
-        <slider name="music_progress" h="80%" style="process_v" value="40" vertical="true"/>
-        <label text="32" h="20%"/>
+        <slider name="slider::250" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
+        <label text="250" h="20%"/>
       </column>
       <column children_layout="default(r=0,c=1)">
-        <slider name="music_progress" h="80%" style="process_v" value="40" vertical="true"/>
-        <label text="32" h="20%"/>
+        <slider name="slider::500" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
+        <label text="500" h="20%"/>
       </column>
       <column children_layout="default(r=0,c=1)">
-        <slider name="music_progress" h="80%" style="process_v" value="40" vertical="true"/>
-        <label text="32" h="20%"/>
+        <slider name="slider::1k" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
+        <label text="1k" h="20%"/>
       </column>
       <column children_layout="default(r=0,c=1)">
-        <slider name="music_progress" h="80%" style="process_v" value="40" vertical="true"/>
-        <label text="32" h="20%"/>
+        <slider name="slider::2k" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
+        <label text="2k" h="20%"/>
       </column>
       <column children_layout="default(r=0,c=1)">
-        <slider name="music_progress" h="80%" style="process_v" value="40" vertical="true"/>
-        <label text="32" h="20%"/>
+        <slider name="slider::4k" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
+        <label text="4k" h="20%"/>
       </column>
     </row>
+    <!--增益曲线显示-->
+    <view x="l" y="b" w="100%" h="40%" style="eq_view">
+      <chart_view name="chartview" x="0" y="0" w="100%" h="100%">
+        <axis name="x" w="100%" h="100%" type="value" orientation="x" tick="{show:false}" split_line="{show:false}" label="{show:false}" line="{show:false}" data="[32,63,125,250,500,1k,2k,4k]"/>
+        <axis name="y" w="100%" h="100%" type="value" orientation="y" min="-12" max="12" tick="{show:false}" split_line="{show:false}" label="{show:false}" line="{show:false}" data="[12,8,4,0,-4,-8,-12]"/>
+        <line_series name="s1" w="100%" h="100%" capacity="8" line="{smooth:true, color:#00fffc}" area={"show:false, color:#69cf5c66}" symbol="{show:false, fill_color:#69cf5c, stroke_color:#ffc393}"/>
+      </chart_view>
+    </view>
   </dialog_client>
 </dialog>

@@ -1,7 +1,6 @@
 <window anim_hint="htranslate" theme="music_player" sytle="default">
   <!--唱盘控件布局-->
-  <album_cover x="5%" y="40" w="300" h="300" image="icon_08" fg_image="icon_03" bg_image="icon_06" is_play="true"
-    is_play="true" animation="rotation(from=0, to=360, yoyo_times=0, duration=100000)"/>
+  <album_cover x="5%" y="40" w="300" h="300" image="icon_08" fg_image="icon_03" bg_image="icon_06"/>
   <!--播放控制按钮布局-->
   <button_group x="0" y="b" w="200" h="72" children_layout="default(r=1,c=3,xm=2,s=10)">
     <button name="music:previous" style="previous"/>
