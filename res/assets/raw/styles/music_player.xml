@@ -48,6 +48,12 @@
     <pressed    icon="random" x_offset="1" y_offset="1"/>
     <over       icon="random"/>
   </style>
+  <!--单曲循环模式按钮样式-->
+  <style name="play_cycle">
+    <normal     icon="cycle"/>
+    <pressed    icon="cycle" x_offset="1" y_offset="1"/>
+    <over       icon="cycle"/>
+  </style>
   <!--播放列表按钮样式-->
   <style name="playlist">
     <normal     icon="playlist"/>
@@ -92,6 +98,18 @@
   </style>
 </radio_button>
 
+<check_button>
+  <!--用于显示歌曲播放控制按钮-->
+  <style name="default">
+    <normal  icon="play" />
+    <pressed icon="play" x_offset="1" y_offset="1"/>
+    <over    icon="play" x_offset="1" y_offset="1"/>
+    <normal_of_checked icon="pause"/>
+    <pressed_of_checked icon="pause" x_offset="1" y_offset="1"/>
+    <over_of_checked icon="pause" x_offset="1" y_offset="1"/>
+  </style>
+</check_button>
+
 <label>
   <style name="default">
     <normal text_color="white" text_align_h="center" font_size="16"/>
@@ -123,6 +141,21 @@
     <over icon="slider"/>
   </style>
 </slider>
+
+<slide_view>
+  <style name="default">
+    <normal/>
+  </style>
+</slide_view>
+
+<text_selector>
+  <style name="default" text_color="white" text_align_h="center" font_size="14">
+    <normal/>
+  </style>
+  <style name="light" text_color="#00fffc" text_align_h="center" font_size="14">
+    <normal/>
+  </style>
+</text_selector>
 
 
 <dialog>

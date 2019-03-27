@@ -16,7 +16,10 @@
 #include "assets/inc/images/123.res"
 #include "assets/inc/images/advance.res"
 #include "assets/inc/images/background_1.res"
+#include "assets/inc/images/bg_bar.res"
+#include "assets/inc/images/bg_bar_v.res"
 #include "assets/inc/images/close.res"
+#include "assets/inc/images/cycle.res"
 #include "assets/inc/images/equalizer.res"
 #include "assets/inc/images/fg_bar.res"
 #include "assets/inc/images/fg_bar_v.res"
@@ -81,7 +84,10 @@ ret_t assets_init(void) {
   assets_manager_add(rm, image_123);
   assets_manager_add(rm, image_advance);
   assets_manager_add(rm, image_background_1);
+  assets_manager_add(rm, image_bg_bar);
+  assets_manager_add(rm, image_bg_bar_v);
   assets_manager_add(rm, image_close);
+  assets_manager_add(rm, image_cycle);
   assets_manager_add(rm, image_equalizer);
   assets_manager_add(rm, image_fg_bar);
   assets_manager_add(rm, image_fg_bar_v);
