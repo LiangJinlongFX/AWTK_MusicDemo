@@ -8,10 +8,10 @@
   <!--client-->
   <dialog_client x="0" y="b" w="100%" h="-40">
       <grid x="0" y="0" w="100%" h="100%" children_layout="default(r=2,c=2,x=2,s=10)">
-        <knob  name="knob1" w="120" h="120" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" rotation="-90"/>
-        <knob  name="knob2" w="120" h="120" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" rotation="-90"/>
-        <knob  name="knob3" w="120" h="120" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" rotation="-90"/>
-        <knob  name="knob4" w="120" h="120" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" rotation="-90"/>
+        <knob  name="knob1" w="120" h="120" value="80" style="default" start_angle="135" angle_range="270" line_width="5" image="icon_12" rotation="-90"/>
+        <knob  name="knob2" w="120" h="120" value="80" style="default" start_angle="135" angle_range="270" line_width="5" image="icon_12" rotation="-90"/>
+        <knob  name="knob3" w="120" h="120" value="80" style="default" start_angle="135" angle_range="270" line_width="5" image="icon_12" rotation="-90"/>
+        <knob  name="knob4" w="120" h="120" value="80" style="default" start_angle="135" angle_range="270" line_width="5" image="icon_12" rotation="-90"/>
       </grid>
   </dialog_client>
 </dialog>

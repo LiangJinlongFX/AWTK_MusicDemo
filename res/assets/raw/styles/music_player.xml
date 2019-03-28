@@ -120,6 +120,9 @@
   <style name="song_info">
     <normal text_color="white" text_align_h="center" font_size="24"/>
   </style>
+  <style name="lyric_light">
+    <normal text_color="#00fffc" text_align_h="center" font_size="18"/>
+  </style>
 </label>
 
 <progress_bar>

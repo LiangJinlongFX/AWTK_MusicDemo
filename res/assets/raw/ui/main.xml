@@ -31,28 +31,14 @@
     <image x="l" y="80" w="100%" h="10" image="line" draw_type="center"/>
   </column>
   <!--歌词显示布局-->
-  <row x="r:30" y="90" w="60%" h="50%" children_layout="default(row=1,col=1)"> 
-    <text_selector name="lyric_list" style="default" options="0-231" visible_nr="5"/> 
-  </row>
-  <!--list_view x="r:30"  y="90" w="60%" h="50%" item_height="30">
+  <list_view x="r:30"  y="90" w="60%" h="50%" item_height="30">
     <scroll_view name="lyric_list" x="0"  y="0" w="100%" h="100%">
-      <label text="123"/>
-      <label text="123"/>
-      <label text="123"/>
-      <label text="123"/>
-      <label text="123"/>
-      <label text="123"/>
-      <label text="123"/>
-      <label text="123"/>
-      <label text="123"/>
-      <label text="123"/>
-      <label text="123"/>
-      <label text="123"/>
-      <label text="123"/>
-      <label text="123"/>
-      <label text="123"/>
-      <label text="123"/>
+      <label name="lrclist_0" text=""/>
+      <label name="lrclist_1" text="AWTK"/>
+      <label name="lrclist_2" text="MusicPlayer Demo" style="lyric_light"/>
+      <label name="lrclist_3" text=""/>
+      <label name="lrclist_4" text=""/>
     </scroll_view>
     <scroll_bar_m name="scroll_bar" x="right" y="0" w="6" h="100%" value="0"/>
-  </list_view-->
+  </list_view>
 </window>

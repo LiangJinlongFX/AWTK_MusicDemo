@@ -28,19 +28,21 @@ static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
     return RET_OK;
   }
 
+  /* 绘制唱盘 */
   vgcanvas_save(vg);
   album_cover_transform(widget,c);
   if (widget_load_image(widget, album_cover->image, &bitmap) == RET_OK) {
-    rect_t dst = rect_init(0, 0, widget->w, widget->h);
-    canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_CENTER, &dst);
+    rect_t dst = rect_init(widget->w*0.15, widget->w*0.15, widget->w*0.7, widget->h*0.7);
+    canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_SCALE_AUTO, &dst);
   }
 
   if (widget_load_image(widget, album_cover->bg_image, &bitmap) == RET_OK) {
     rect_t dst = rect_init(0, 0, widget->w, widget->h);
-    canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_CENTER, &dst);
+    canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_SCALE_AUTO, &dst);
   }
   vgcanvas_restore(vg);
 
+  /* 绘制唱头 */
   vgcanvas_save(vg);
   cartridge_transform(widget,c);
   if (widget_load_image(widget, album_cover->fg_image, &bitmap) == RET_OK) {
@@ -51,6 +53,7 @@ static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
 
   return RET_OK;
 }
+
 ret_t album_cover_transform(widget_t* widget, canvas_t* c)
 {
   float_t anchor_x = 0;
@@ -152,6 +155,7 @@ static ret_t album_cover_set_prop(widget_t* widget, const char* name, value_t* v
 static ret_t album_cover_on_destroy(widget_t* widget) {
   album_cover_t* album_cover = ALBUM_COVER(widget);
 
+  timer_remove(album_cover->timer_id);
   TKMEM_FREE(album_cover->image);
   TKMEM_FREE(album_cover->bg_image);
   TKMEM_FREE(album_cover->fg_image);
@@ -183,6 +187,24 @@ ret_t album_cover_set_bg_image(widget_t* widget, const char* name) {
   return RET_OK;
 }
 
+ret_t album_cover_start(widget_t* widget) {
+  return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
+
+  album_cover_t* album_cover = ALBUM_COVER(widget);
+  album_cover->is_play = TRUE;
+
+  return RET_OK;
+}
+
+ret_t album_cover_pause(widget_t* widget) {
+  return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
+
+  album_cover_t* album_cover = ALBUM_COVER(widget);
+  album_cover->is_play = FALSE;
+
+  return RET_OK;
+}
+
 /*
  * 设置控件图片
  */
@@ -193,6 +215,19 @@ ret_t album_cover_set_fg_image(widget_t* widget, const char* name) {
   album_cover->fg_image = tk_str_copy(album_cover->fg_image, name);
 
   return RET_OK;
+}
+
+static ret_t timer_album_cover(const timer_info_t* timer)
+{
+  widget_t* widget = WIDGET(timer->ctx);
+  album_cover_t* album_cover = ALBUM_COVER(widget);
+  if(album_cover->is_play == TRUE) {
+    album_cover->rotation += 0.05;
+    if(album_cover->rotation >360)
+      album_cover->rotation = 0;
+    widget_invalidate(widget, NULL);
+  }
+  return RET_REPEAT;
 }
 
 /*
@@ -226,6 +261,7 @@ widget_t* album_cover_create(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h) {
   return_value_if_fail(album_cover != NULL, NULL);
 
   widget_init(widget, parent, &s_album_cover_vtable, x, y, w, h);
+  album_cover->timer_id = timer_add(timer_album_cover, widget, 100);
   album_cover->is_play = FALSE;
   album_cover->rotation = 0;
 

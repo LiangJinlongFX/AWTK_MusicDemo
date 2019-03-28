@@ -8,16 +8,16 @@
   <dialog_client name="playlist_client" x="0" y="b" w="100%" h="-40">
     <list_view x="0"  y="0" w="100%" h="100%" item_height="30">
       <scroll_view name="list_view" x="0"  y="0" w="100%" h="100%">
-        <radio_button name="item_0" style="list_check" name="c0" text="1"/>
-        <radio_button name="item_1" style="list_check" name="c1" text="2"/>
-        <radio_button name="item_2" style="list_check" name="c2" text="3"/>
-        <radio_button name="r3" style="list_check" name="c3" text="4"/>
-        <radio_button name="r4" style="list_check" name="c4" text="5"/>
-        <radio_button name="r5" style="list_check" name="c5" text="6"/>
-        <radio_button name="r6" style="list_check" name="c6" text="7"/>
-        <radio_button name="r7" style="list_check" name="c7" text="8"/>
-        <radio_button name="r8" style="list_check" name="c8" text="9"/>
-        <radio_button name="r9" style="list_check" name="c9" text="10"/>
+        <radio_button name="item_0" style="list_check" text="1"/>
+        <radio_button name="item_1" style="list_check" text="2"/>
+        <radio_button name="item_2" style="list_check" text="3"/>
+        <radio_button name="item_3" style="list_check" text="4"/>
+        <radio_button name="item_4" style="list_check" text="5"/>
+        <radio_button name="item_5" style="list_check" text="6"/>
+        <radio_button name="item_6" style="list_check" text="7"/>
+        <radio_button name="item_7" style="list_check" text="8"/>
+        <radio_button name="item_8" style="list_check" text="9"/>
+        <radio_button name="item_9" style="list_check" text="10"/>
       </scroll_view>
       <scroll_bar_m name="bar" x="right" y="0" w="6" h="100%" value="0"/>
     </list_view>

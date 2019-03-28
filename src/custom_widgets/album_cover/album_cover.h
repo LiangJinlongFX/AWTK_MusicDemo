@@ -33,6 +33,8 @@ typedef struct _album_cover_t {
      * 是否设置激活状态
      */
     bool_t is_play;
+    /*private*/
+    int32_t timer_id;
 }album_cover_t;
 
 
@@ -41,6 +43,8 @@ widget_t* album_cover_cast(widget_t* widget);
 ret_t album_cover_set_image(widget_t* widget, const char* name);
 ret_t album_cover_set_bg_image(widget_t* widget, const char* name);
 ret_t album_cover_set_fg_image(widget_t* widget, const char* name);
+ret_t album_cover_start(widget_t* widget);
+ret_t album_cover_pause(widget_t* widget);
 ret_t album_cover_transform(widget_t* widget, canvas_t* c);
 ret_t cartridge_transform(widget_t* widget, canvas_t* c);
 
