@@ -38,6 +38,7 @@
 #include "assets/inc/images/pause.res"
 #include "assets/inc/images/play.res"
 #include "assets/inc/images/playlist.res"
+#include "assets/inc/images/play_cycle.res"
 #include "assets/inc/images/previous.res"
 #include "assets/inc/images/random.res"
 #include "assets/inc/images/rank.res"
@@ -106,6 +107,7 @@ ret_t assets_init(void) {
   assets_manager_add(rm, image_pause);
   assets_manager_add(rm, image_play);
   assets_manager_add(rm, image_playlist);
+  assets_manager_add(rm, image_play_cycle);
   assets_manager_add(rm, image_previous);
   assets_manager_add(rm, image_random);
   assets_manager_add(rm, image_rank);

@@ -2,35 +2,10 @@
 #define _API_H
 
 #include <awtk.h>
+#include "lrc.h"
 
 BEGIN_C_DECLS
 
-/*
- * 当前音乐播放状态存储结构体
- * play_mode 0:顺序播放 1：随机播放 2：单曲循环
- */
-typedef struct _current_info_t {
-    //当前歌单链表索引
-    int index;
-    //当前lrc链表索引
-    int lrc_index;
-    //当前歌曲播放模式
-    uint8_t play_mode;
-    //当前是否在播放
-    bool_t is_play;
-    //当前歌曲总时长
-    uint32_t total_time;
-    //当前播放时长
-    uint32_t play_time;
-    //当前播放的歌曲名称
-    char* song_name;
-    //当前播放歌曲歌手
-    char* singer_name;
-    //当前播放的歌曲专辑封面
-    char* album_cover;
-    //当前播放的歌曲歌词文件路径
-    char* song_lyric;
-} current_info_t;
 
 /*
  * 曲目信息存储结构体
@@ -51,6 +26,39 @@ typedef struct _music_info_t {
     //下一曲
     struct _music_info_t* next;  
 }music_info_t,*music_info_p;
+
+/*
+ * 当前音乐播放状态存储结构体
+ * play_mode 0:顺序播放 1：随机播放 2：单曲循环
+ */
+typedef struct _current_info_t {
+    //当前歌单链表索引
+    int index;
+    //当前检索到的歌单链表
+    music_info_t* play_list;
+    //歌单中的歌曲数
+    uint32_t music_num;
+    //当前lrc链表索引
+    int lrc_index;
+    //当前歌曲播放模式
+    uint8_t play_mode;
+    //当前是否在播放
+    bool_t is_play;
+    //当前歌曲总时长
+    uint32_t total_time;
+    //当前播放时长
+    uint32_t play_time;
+    //当前播放的歌曲名称
+    char* song_name;
+    //当前播放歌曲歌手名称
+    char* singer_name;
+    //当前播放的歌曲专辑封面名称
+    char* album_cover;
+    //当前播放的歌曲歌词链表
+    lyric_t* song_lyric;
+} current_info_t;
+
+
 
 /*将char类型字符串转换成wchar_t类型 */
 void chat_to_wchar(char* str1, wchar_t* str2);

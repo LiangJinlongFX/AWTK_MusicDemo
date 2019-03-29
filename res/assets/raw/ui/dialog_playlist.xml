@@ -1,5 +1,5 @@
-<!--用于显示歌曲列表的对话框-->
-<dialog anim_hint="bottom_to_top" x="r" y="52" w="40%" h="353" theme="music_player">
+<!--用于显示歌曲列表的对话框  anim_hint="bottom_to_top" -->
+<dialog x="r" y="52" w="40%" h="353" theme="music_player">
   <!--title-->
   <dialog_title x="0" y="0" w="100%" h="40" text="Play List" style="default">
     <button name="dialog_close" x="r" y="m" w="40" h="100%" style="dialog_close"/>
@@ -8,7 +8,7 @@
   <dialog_client name="playlist_client" x="0" y="b" w="100%" h="-40">
     <list_view x="0"  y="0" w="100%" h="100%" item_height="30">
       <scroll_view name="list_view" x="0"  y="0" w="100%" h="100%">
-        <radio_button name="item_0" style="list_check" text="1"/>
+        <!--radio_button name="item_0" style="list_check" text="1"/>
         <radio_button name="item_1" style="list_check" text="2"/>
         <radio_button name="item_2" style="list_check" text="3"/>
         <radio_button name="item_3" style="list_check" text="4"/>
@@ -17,7 +17,7 @@
         <radio_button name="item_6" style="list_check" text="7"/>
         <radio_button name="item_7" style="list_check" text="8"/>
         <radio_button name="item_8" style="list_check" text="9"/>
-        <radio_button name="item_9" style="list_check" text="10"/>
+        <radio_button name="item_9" style="list_check" text="10"/-->
       </scroll_view>
       <scroll_bar_m name="bar" x="right" y="0" w="6" h="100%" value="0"/>
     </list_view>

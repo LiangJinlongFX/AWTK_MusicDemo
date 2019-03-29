@@ -5,18 +5,25 @@
 
 BEGIN_C_DECLS
 
+/*
+ * 支持长宽不一致的控件大小
+ * step在xml中设置有问题
+ * 支持旋钮指针偏移
+ */
+
 typedef struct _knob_t {
     widget_t widget;
     float_t value;
     uint32_t max;
-    int32_t start_angle;
+    float_t start_angle;
     /**
      * @property {float_t} angle_range
      * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
      * 是否按下鼠标。
      */
     float_t angle_range;
-    float_t rotation;
+    float_t rotation;   //图片指针角度校准
+    uint16_t step;
     /**
      * @property {bool_t} pressed
      * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
@@ -29,6 +36,10 @@ typedef struct _knob_t {
      * 是否按下鼠标。
      */
     bool_t pressed;
+    /*
+     * 记录x轴移动位置
+     */
+    int32_t move_x;
     /**
      * @property {bool_t} direction
      * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
@@ -46,6 +57,7 @@ ret_t knob_set_line_width(widget_t* widget, uint32_t line_width);
 ret_t knob_set_start_angle(widget_t* widget, int32_t start_angle);
 ret_t knob_set_angle_range(widget_t* widget, float_t angle_range);
 ret_t knob_set_image(widget_t* widget, const char* name);
+ret_t knob_set_step(widget_t* widget, uint16_t step);
 
 #define KNOB_PROP_LINE_WIDTH "line_width"
 #define KNOB_PROP_START_ANGLE "start_angle"

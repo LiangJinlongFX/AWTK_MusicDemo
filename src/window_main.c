@@ -27,64 +27,59 @@
 #include "api/api.h"
 #include "api/lrc.h"
 
-current_info_t* current_info;
-widget_animator_t* cover_animator;
-static uint32_t music_preload_nr = 0;
-lyric_t* Global_lyric;
-music_info_t* Global_Musiclist;
+current_info_t* Global_Current_Info;
 widget_t* Main_Window;
-
 
 static void music_switch(bool_t is_next) {
   int i;
   widget_t* widget;
   wchar_t str[50];
 
-  if(current_info->play_mode == 2) {
-    i = current_info->index;
+  if(Global_Current_Info->play_mode == 2) {
+    i = Global_Current_Info->index;
   }
   else {
     if(is_next) {
-      i = current_info->index + 1;
+      i = Global_Current_Info->index + 1;
       if(i>9)
         i=0;
     } else {
-      i = current_info->index - 1;
+      i = Global_Current_Info->index - 1;
       if(i<0)
       i = 0;
     }
   }
-  current_info->index = i;
-  music_info_t* p = musiclist_find(Global_Musiclist,i);
+  Global_Current_Info->index = i;
+  music_info_t* p = musiclist_find(Global_Current_Info->play_list,i);
   //重新加载歌词文件
-  lyric_delete(Global_lyric);
-  Global_lyric = lyric_analysis("E:\\Code_Unit\\123.lrc");
+  lyric_delete(Global_Current_Info->song_lyric);
+  Global_Current_Info->song_lyric = lyric_analysis("E:\\Code_Unit\\123.lrc");
   if(p == NULL)
     return;
-  current_info->song_name = p->song_name;
-  current_info->singer_name = p->singer_name;
-  current_info->total_time = p->total_time;
-  current_info->play_time = 0;
-  current_info->lrc_index = 0;
+  Global_Current_Info->song_name = p->song_name;
+  Global_Current_Info->singer_name = p->singer_name;
+  Global_Current_Info->total_time = p->total_time;
+  Global_Current_Info->play_time = 0;
+  Global_Current_Info->lrc_index = 0;
   //显示歌曲名称
-  chat_to_wchar(current_info->song_name,str);
+  chat_to_wchar(Global_Current_Info->song_name,str);
   widget = widget_lookup(Main_Window, "song_name", TRUE);
   widget_set_text(widget,str);
   //显示歌手名称
-  chat_to_wchar(current_info->singer_name,str);
+  chat_to_wchar(Global_Current_Info->singer_name,str);
   widget = widget_lookup(Main_Window, "singer", TRUE);
   widget_set_text(widget,str);
   //调整进度条最大值为总播放时长
   widget = widget_lookup(Main_Window, "music_progress", TRUE);
-  slider_set_max(widget,current_info->total_time/1000);
-  widget_set_value(widget,current_info->play_time/1000);
+  slider_set_max(widget,Global_Current_Info->total_time/1000);
+  widget_set_value(widget,Global_Current_Info->play_time/1000);
   //调整进度条总时长显示
   widget = widget_lookup(Main_Window, "total_time", TRUE);
-  time_to_wchar(current_info->total_time,str);
+  time_to_wchar(Global_Current_Info->total_time,str);
   widget_set_text(widget,str);
   //复位已播放时长
   widget = widget_lookup(Main_Window, "play_time", TRUE);
-  time_to_wchar(current_info->play_time,str);
+  time_to_wchar(Global_Current_Info->play_time,str);
   widget_set_text(widget,str);
   //复位歌词显示栏
   widget = widget_lookup(Main_Window, "lrclist_0", TRUE);
@@ -100,7 +95,7 @@ static void music_switch(bool_t is_next) {
   //切换时自动播放
   widget = widget_lookup(Main_Window, "music:play", TRUE);
   widget_use_style(widget,"pause");
-  current_info->is_play = TRUE;
+  Global_Current_Info->is_play = TRUE;
   album_cover_t* album_cover = ALBUM_COVER(widget_lookup(Main_Window, "cover", TRUE));
   album_cover_start(album_cover);
 }
@@ -147,7 +142,7 @@ static void lyric_display(widget_t* win) {
   lyric_t* lrc_plist[5];
   widget_t* widget;
 
-  lrc_plist[2] = lyric_find(Global_lyric,current_info->play_time);
+  lrc_plist[2] = lyric_find(Global_Current_Info->song_lyric,Global_Current_Info->play_time);
   if(lrc_plist[2] != NULL) {
     chat_to_wchar(lrc_plist[2]->verse,lrcstr);
     widget = widget_lookup(win, "lrclist_2", TRUE);
@@ -200,13 +195,13 @@ static ret_t timer_preload(const timer_info_t* timer) {
   widget_t* label = widget_lookup(win, "play_time", TRUE);
   widget_t* lyric_list = widget_lookup(win, "lyric_list", TRUE);
 
-  if(current_info->is_play) {
-    current_info->play_time += 500;
-    if(current_info->play_time > current_info->total_time)
+  if(Global_Current_Info->is_play) {
+    Global_Current_Info->play_time += 500;
+    if(Global_Current_Info->play_time > Global_Current_Info->total_time)
       music_switch(TRUE);
-    time_to_wchar(current_info->play_time,str);
+    time_to_wchar(Global_Current_Info->play_time,str);
     widget_set_text(label,str);
-    widget_set_value(bar,current_info->play_time/1000);
+    widget_set_value(bar,Global_Current_Info->play_time/1000);
     lyric_display(win);
   }
 
@@ -222,8 +217,8 @@ static ret_t close_equalizer(void* ctx, event_t* e) {
 
 static ret_t on_musicprocess(void* ctx, event_t* e) {  
   widget_t* bar = widget_lookup(WIDGET(ctx), "music_progress", TRUE);
-  current_info->play_time = widget_get_value(bar);
-  current_info->play_time *= 1000;
+  Global_Current_Info->play_time = widget_get_value(bar);
+  Global_Current_Info->play_time *= 1000;
 
   return RET_OK;
 }
@@ -242,14 +237,39 @@ static ret_t close_playlist(void* ctx, event_t* e) {
     if(res)
       break;
   }
-  if(i != current_info->index) {
-    current_info->index = i-1;
+  if(i != Global_Current_Info->index) {
+    Global_Current_Info->index = i-1;
     music_switch(TRUE);
   }
 
   dialog_quit(dialog, 0);
 
   return RET_OK;
+}
+
+static ret_t load_playlist(widget_t* dialog)
+{
+  uint32_t i=0;
+  char str[100];
+  wchar_t wstr[100];
+  widget_t* music_item;
+  music_info_t* p;
+  widget_t* list_view = widget_lookup(dialog, "list_view", TRUE);
+  for(i=0;i<Global_Current_Info->music_num;i++) {
+    p = musiclist_find(Global_Current_Info->play_list,i);
+    if(p != NULL) {
+      music_item = check_button_create_radio(list_view, 100, 200, 80, 30);
+      widget_use_style(music_item,"list_check");
+      widget_set_value(music_item, FALSE);
+      sprintf(str,"item_%d",i);
+      widget_set_name(music_item,str);
+      sprintf(str,"%s-%s",p->song_name,p->singer_name);
+      chat_to_wchar(str,wstr);
+      widget_set_text(music_item,wstr);
+    }
+  }
+
+  return RET_OK;  
 }
 
 static ret_t on_playlist(void* ctx, event_t* e) {
@@ -261,18 +281,9 @@ static ret_t on_playlist(void* ctx, event_t* e) {
   wchar_t wstr[100];
   widget_child_on(dialog_list,"dialog_close",EVT_CLICK,close_playlist,dialog_list);
   //加载歌单
-  for(i=0;i<10;i++) {
-    sprintf(str,"item_%d",i);
-    music_item = widget_lookup(dialog_list, str, TRUE);
-    p = musiclist_find(Global_Musiclist,i);
-    if(p != NULL) {
-      sprintf(str,"%s-%s",p->song_name,p->singer_name);
-      chat_to_wchar(str,wstr);
-      widget_set_text(music_item,wstr);
-    }
-  }
+  load_playlist(dialog_list);
   //设置当前播放的歌曲为选中模式
-  sprintf(str,"item_%d",current_info->index);
+  sprintf(str,"item_%d",Global_Current_Info->index);
   music_item = widget_lookup(dialog_list, str, TRUE);
   check_button_set_value(music_item,TRUE);
   
@@ -295,14 +306,14 @@ static ret_t on_musicnext(void* ctx, event_t* e) {
 
 static ret_t on_modechanged(void* ctx, event_t* e) {
   widget_t* button = WIDGET(ctx);
-  if(current_info->play_mode == 0) {
-    current_info->play_mode = 1;
+  if(Global_Current_Info->play_mode == 0) {
+    Global_Current_Info->play_mode = 1;
     widget_use_style(button,"play_random");
-  } else if(current_info->play_mode == 1) {
-    current_info->play_mode = 2;
+  } else if(Global_Current_Info->play_mode == 1) {
+    Global_Current_Info->play_mode = 2;
     widget_use_style(button,"play_cycle");
   } else {
-    current_info->play_mode = 0;
+    Global_Current_Info->play_mode = 0;
     widget_use_style(button,"play_rank");
   }
 
@@ -318,16 +329,15 @@ static ret_t on_musicprevious(void* ctx, event_t* e) {
 static ret_t on_play(void* ctx, event_t* e) {
   widget_t* button = widget_lookup(WIDGET(ctx), "music:play", TRUE);
   album_cover_t* album_cover = ALBUM_COVER(widget_lookup(WIDGET(ctx), "cover", TRUE));
-  if(current_info->is_play) {
+  if(Global_Current_Info->is_play) {
     widget_use_style(button,"play");
-    current_info->is_play = FALSE;
+    Global_Current_Info->is_play = FALSE;
     album_cover_pause(album_cover);
     
   } else
   {
     widget_use_style(button,"pause");
-    widget_animator_start(cover_animator);
-    current_info->is_play = TRUE;
+    Global_Current_Info->is_play = TRUE;
     album_cover_start(album_cover);
   }
   
@@ -362,14 +372,15 @@ void application_init() {
   Main_Window = win_main;
   widget_t* widget;
   /* 分配内存 */
-  current_info = TKMEM_ZALLOC(current_info_t);
-  current_info->is_play = FALSE;
-  current_info->play_mode = 0;
-  current_info->index = -1;
+  Global_Current_Info = TKMEM_ZALLOC(current_info_t);
+  Global_Current_Info->play_list = musiclist_default();
+  Global_Current_Info->music_num = musiclist_count(Global_Current_Info->play_list);
+  Global_Current_Info->is_play = FALSE;
+  Global_Current_Info->play_mode = 0;
+  Global_Current_Info->index = -1;
   /* 初始化状态 */
   album_cover_t* album_cover = ALBUM_COVER(widget_lookup(win_main, "cover", TRUE));
   timer_add(timer_preload, win_main, 500);
-  Global_Musiclist = musiclist_default();
   music_switch(TRUE);
   /* 注册按钮事件 */
   widget_t* button_list = widget_lookup(win_main, "music:list", TRUE);

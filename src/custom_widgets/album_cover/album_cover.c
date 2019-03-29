@@ -261,7 +261,7 @@ widget_t* album_cover_create(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h) {
   return_value_if_fail(album_cover != NULL, NULL);
 
   widget_init(widget, parent, &s_album_cover_vtable, x, y, w, h);
-  album_cover->timer_id = timer_add(timer_album_cover, widget, 100);
+  album_cover->timer_id = timer_add(timer_album_cover, widget, 40);
   album_cover->is_play = FALSE;
   album_cover->rotation = 0;
 

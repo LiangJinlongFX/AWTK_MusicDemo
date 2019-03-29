@@ -110,7 +110,7 @@ lyric_t* lyric_find(lyric_t* head, long time) {
 
 	for(p=head;p!=NULL;p=p->next) {
 		if(p->timeLine >= time) {
-			if(p->timeLine < time+500)
+			if(p->timeLine < time+1000)
 				return p;
 			else
 				return NULL;

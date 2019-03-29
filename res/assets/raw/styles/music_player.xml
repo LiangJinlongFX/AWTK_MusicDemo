@@ -123,6 +123,9 @@
   <style name="lyric_light">
     <normal text_color="#00fffc" text_align_h="center" font_size="18"/>
   </style>
+  <style name="advance_label">
+    <normal text_color="#4b84e0" text_align_h="center" font_size="12"/>
+  </style>
 </label>
 
 <progress_bar>
