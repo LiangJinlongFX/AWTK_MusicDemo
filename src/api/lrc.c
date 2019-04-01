@@ -109,11 +109,9 @@ lyric_t* lyric_find(lyric_t* head, long time) {
 	lyric_t* p;
 
 	for(p=head;p!=NULL;p=p->next) {
-		if(p->timeLine >= time) {
-			if(p->timeLine < time+1000)
-				return p;
-			else
-				return NULL;
+		if((p->timeLine >= time)&&(p->timeLine < time+500)) {
+			printf("timeLine=%d time=%d\n",p->timeLine,time);
+			return p;
 		}
 	}
 	return NULL;

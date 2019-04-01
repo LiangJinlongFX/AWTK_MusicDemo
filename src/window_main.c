@@ -27,13 +27,17 @@
 #include "api/api.h"
 #include "api/lrc.h"
 
+
 current_info_t* Global_Current_Info;
 widget_t* Main_Window;
+bool_t is_scroll=FALSE;
+
 
 static void music_switch(bool_t is_next) {
   int i;
   widget_t* widget;
   wchar_t str[50];
+  char cover_name[20];
 
   if(Global_Current_Info->play_mode == 2) {
     i = Global_Current_Info->index;
@@ -61,6 +65,10 @@ static void music_switch(bool_t is_next) {
   Global_Current_Info->total_time = p->total_time;
   Global_Current_Info->play_time = 0;
   Global_Current_Info->lrc_index = 0;
+  //加载专辑封面图片
+  widget = widget_lookup(Main_Window, "cover", TRUE);
+  sprintf(str,"cover_%02d",Global_Current_Info->index);
+  album_cover_set_image(widget,str);
   //显示歌曲名称
   chat_to_wchar(Global_Current_Info->song_name,str);
   widget = widget_lookup(Main_Window, "song_name", TRUE);
@@ -92,11 +100,14 @@ static void music_switch(bool_t is_next) {
   widget_set_text(widget,L"");
   widget = widget_lookup(Main_Window, "lrclist_4", TRUE);
   widget_set_text(widget,L"");
+  //复位歌词滚动标志
+  is_scroll = FALSE;
   //切换时自动播放
+  /* 停顿动画 */
+  album_cover_t* album_cover = ALBUM_COVER(widget_lookup(Main_Window, "cover", TRUE));
   widget = widget_lookup(Main_Window, "music:play", TRUE);
   widget_use_style(widget,"pause");
   Global_Current_Info->is_play = TRUE;
-  album_cover_t* album_cover = ALBUM_COVER(widget_lookup(Main_Window, "cover", TRUE));
   album_cover_start(album_cover);
 }
 
@@ -139,14 +150,22 @@ static ret_t equalizer_changed(void* ctx, event_t* e) {
 
 static void lyric_display(widget_t* win) {
   wchar_t lrcstr[250];
-  lyric_t* lrc_plist[5];
+  static lyric_t* lrc_plist[5];
+  lyric_t* p = NULL;
   widget_t* widget;
 
-  lrc_plist[2] = lyric_find(Global_Current_Info->song_lyric,Global_Current_Info->play_time);
-  if(lrc_plist[2] != NULL) {
+  p = lyric_find(Global_Current_Info->song_lyric,Global_Current_Info->play_time);
+  if(p != NULL) {
+    if(!is_scroll)
+      lrc_plist[2] = p;
     chat_to_wchar(lrc_plist[2]->verse,lrcstr);
     widget = widget_lookup(win, "lrclist_2", TRUE);
     widget_set_text(widget,lrcstr);
+    if(!is_scroll) {
+      widget_use_style(widget,"lyric_light");
+    } else {
+      widget_use_style(widget,"default");
+    }
     //
     lrc_plist[1] = lrc_plist[2]->prev;
     widget = widget_lookup(win, "lrclist_1", TRUE);
@@ -170,6 +189,11 @@ static void lyric_display(widget_t* win) {
     if(lrc_plist[3] != NULL) {
       chat_to_wchar(lrc_plist[3]->verse,lrcstr);
       widget_set_text(widget,lrcstr);
+      if(is_scroll) {
+        widget_use_style(widget,"lyric_light");
+      } else {
+        widget_use_style(widget,"default");
+      }
       lrc_plist[4] = lrc_plist[3]->next;
       widget = widget_lookup(win, "lrclist_4", TRUE);
       if(lrc_plist[4] != NULL) {
@@ -181,7 +205,7 @@ static void lyric_display(widget_t* win) {
     } else {
       widget_set_text(widget,L" ");
     }
-
+    is_scroll = ~is_scroll;
   }
 }
 
@@ -225,11 +249,37 @@ static ret_t on_musicprocess(void* ctx, event_t* e) {
 
 static ret_t close_playlist(void* ctx, event_t* e) {
   widget_t* dialog = (widget_t*)ctx;
+  // 歌单对话框关闭时才切歌的话使用此段代码，同时不要注册radio_button按钮事件
+  // widget_t* music_item;
+  // uint16_t i=0;
+  // uint32_t res;
+  // char str[10];
+  // //加载歌单
+  // for(i=0;i<10;i++) {
+  //   sprintf(str,"item_%d",i);
+  //   music_item = widget_lookup(dialog, str, TRUE);
+  //   res = widget_get_value(music_item);
+  //   if(res)
+  //     break;
+  // }
+  // if(i != Global_Current_Info->index) {
+  //   Global_Current_Info->index = i-1;
+  //   music_switch(TRUE);
+  // }
+
+  dialog_quit(dialog, 0);
+
+  return RET_OK;
+}
+
+static ret_t on_playlistchanged(void* ctx, event_t* e) {
+  widget_t* dialog = (widget_t*)ctx;
   widget_t* music_item;
   uint16_t i=0;
   uint32_t res;
   char str[10];
-  //加载歌单
+
+  //检测当前歌单索引改变值
   for(i=0;i<10;i++) {
     sprintf(str,"item_%d",i);
     music_item = widget_lookup(dialog, str, TRUE);
@@ -241,10 +291,6 @@ static ret_t close_playlist(void* ctx, event_t* e) {
     Global_Current_Info->index = i-1;
     music_switch(TRUE);
   }
-
-  dialog_quit(dialog, 0);
-
-  return RET_OK;
 }
 
 static ret_t load_playlist(widget_t* dialog)
@@ -266,12 +312,20 @@ static ret_t load_playlist(widget_t* dialog)
       sprintf(str,"%s-%s",p->song_name,p->singer_name);
       chat_to_wchar(str,wstr);
       widget_set_text(music_item,wstr);
+      widget_on(music_item, EVT_VALUE_CHANGED, on_playlistchanged, dialog);
     }
   }
 
   return RET_OK;  
 }
 
+/**
+ * @method on_playlist
+ * 打开歌单对话框时的回调函数
+ * @param
+ *
+ * @return
+ */
 static ret_t on_playlist(void* ctx, event_t* e) {
   widget_t* dialog_list = dialog_open("dialog_playlist");
   widget_t* music_item;
@@ -290,9 +344,23 @@ static ret_t on_playlist(void* ctx, event_t* e) {
   return dialog_modal(dialog_list);
 }
 
+/**
+ * @method 关闭advance对话框时的回调函数
+ *
+ * @param
+ *
+ * @return
+ */
+static ret_t close_advance(void* ctx, event_t* e) {
+  widget_t* dialog = (widget_t*)ctx;
+  dialog_quit(dialog, 0);
+
+  return RET_OK;
+}
+
 static ret_t on_advance(void* ctx, event_t* e) {
   widget_t* dialog_list = dialog_open("advance");
-  widget_child_on(dialog_list,"dialog_close",EVT_CLICK,close_playlist,dialog_list);
+  widget_child_on(dialog_list,"dialog_close",EVT_CLICK,close_advance,dialog_list);
   dialog_modal(dialog_list);
   
   return RET_OK;
@@ -399,4 +467,7 @@ void application_init() {
   widget_on(button_previous, EVT_CLICK, on_musicprevious, win_main);
   widget_on(button_playmode, EVT_CLICK, on_modechanged, button_playmode);
   widget_on(music_bar, EVT_VALUE_CHANGED, on_musicprocess, win_main);
+  //开启Console
+  AllocConsole();
+  freopen("conout$","w",stdout);
 }

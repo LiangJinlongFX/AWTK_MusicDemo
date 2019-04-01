@@ -19,6 +19,16 @@
 #include "assets/inc/images/bg_bar.res"
 #include "assets/inc/images/bg_bar_v.res"
 #include "assets/inc/images/close.res"
+#include "assets/inc/images/cover_00.res"
+#include "assets/inc/images/cover_01.res"
+#include "assets/inc/images/cover_02.res"
+#include "assets/inc/images/cover_03.res"
+#include "assets/inc/images/cover_04.res"
+#include "assets/inc/images/cover_05.res"
+#include "assets/inc/images/cover_06.res"
+#include "assets/inc/images/cover_07.res"
+#include "assets/inc/images/cover_08.res"
+#include "assets/inc/images/cover_09.res"
 #include "assets/inc/images/cycle.res"
 #include "assets/inc/images/equalizer.res"
 #include "assets/inc/images/fg_bar.res"
@@ -60,6 +70,7 @@
 #ifdef WITH_MINI_FONT
 #include "assets/inc/fonts/default.mini.res"
 #else/*WITH_MINI_FONT*/
+#include "assets/inc/fonts/default.res"
 #endif/*WITH_MINI_FONT*/
 #else/*WITH_STB_FONT*/
 #endif/*WITH_STB_FONT*/
@@ -88,6 +99,16 @@ ret_t assets_init(void) {
   assets_manager_add(rm, image_bg_bar);
   assets_manager_add(rm, image_bg_bar_v);
   assets_manager_add(rm, image_close);
+  assets_manager_add(rm, image_cover_00);
+  assets_manager_add(rm, image_cover_01);
+  assets_manager_add(rm, image_cover_02);
+  assets_manager_add(rm, image_cover_03);
+  assets_manager_add(rm, image_cover_04);
+  assets_manager_add(rm, image_cover_05);
+  assets_manager_add(rm, image_cover_06);
+  assets_manager_add(rm, image_cover_07);
+  assets_manager_add(rm, image_cover_08);
+  assets_manager_add(rm, image_cover_09);
   assets_manager_add(rm, image_cycle);
   assets_manager_add(rm, image_equalizer);
   assets_manager_add(rm, image_fg_bar);

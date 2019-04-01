@@ -119,7 +119,7 @@ static ret_t knob_on_event(widget_t* widget, event_t* e) {
               printf("EVT_POINTER_UP\n");
               knob->pressed = FALSE;
               /* 激活按键点击事件 */
-              evt.e = event_init(EVT_CLICK, widget);
+              evt.e = event_init(EVT_VALUE_CHANGED, widget);
               widget_dispatch(widget, (event_t*)&evt);
               /* 清除事件状态并请求重绘控件 */
               widget_ungrab(widget->parent, widget);
@@ -142,6 +142,12 @@ static ret_t knob_on_event(widget_t* widget, event_t* e) {
               knob->value += knob->step;
               knob->direction = TRUE;               
             }
+            //请求分发值改变中事件
+            event_t evt = event_init(EVT_VALUE_CHANGING, widget);
+            widget_dispatch(widget, (event_t*)&evt);
+            /* 清除事件状态并请求重绘控件 */
+            widget_ungrab(widget->parent, widget);
+            widget_set_state(widget, WIDGET_STATE_NORMAL);
             widget_invalidate_force(widget, NULL);
           }
         }

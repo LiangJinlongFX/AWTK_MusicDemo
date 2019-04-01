@@ -7,11 +7,23 @@
   </dialog_title>
   <!--client-->
   <dialog_client x="0" y="b" w="100%" h="-40">
-      <view x="0" y="0" w="100%" h="100%" children_layout="default(c=2,r=2,m=5,s=5)">
-        <knob  name="knob0" value="80" style="default" start_angle="135" angle_range="270" line_width="5" image="icon_12" rotation="-135"/>
-        <knob  name="knob0" value="80" style="default" start_angle="135" angle_range="270" line_width="5" image="icon_12" rotation="-135"/>
-        <knob  name="knob0" value="80" style="default" start_angle="135" angle_range="270" line_width="5" image="icon_12" rotation="-135"/>
-        <knob  name="knob0" value="80" style="default" start_angle="135" angle_range="270" line_width="5" image="icon_12" rotation="-135"/>
-      </view>
+    <grid x="0" y="10%" w="100%" h="80%" children_layout="default(r=2,c=2,x=50,s=10)">
+        <column name="1" children_layout="default(r=0,c=1,ym=0)">
+            <knob  name="knob0" h="80%" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" line_width="10" rotation="-135"/>
+            <label h="20%" text="-  Low  +" style="advance_label"/>
+        </column>
+        <column name="2" children_layout="default(r=0,c=1,ym=0)">
+            <knob  name="knob0"  h="80%" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" line_width="10" rotation="-135"/>
+            <label h="20%" text="-  High  +" style="advance_label"/>
+        </column> 
+        <column name="3" children_layout="default(r=0,c=1,ym=0)">
+            <knob  name="knob0"  h="80%" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" line_width="10" rotation="-135"/>
+            <label h="20%" text="- SURR-Strenth +" style="advance_label"/>
+        </column> 
+        <column name="4" children_layout="default(r=0,c=1,ym=0)">
+            <knob  name="knob0"  h="80%" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" line_width="10" rotation="-135"/>
+            <label h="20%" text="- SURR-Depth +" style="advance_label"/>
+        </column> 
+    </grid>
   </dialog_client>
 </dialog>
