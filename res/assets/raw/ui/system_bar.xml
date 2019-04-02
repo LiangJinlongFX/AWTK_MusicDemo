@@ -1,7 +1,8 @@
 <system_bar h="52">
-  <label x="0" y="m" w="30%" h="100%" text="Music Player" theme="music_player"/>
-  <row x="r" y="m" w="30%" h="100%" children_layout="default(r=1,c=2,xm=2,s=10)">
-    <digit_clock x="l" y="m" w="60%" h="100%" format="Y-MM-DD hh:mm"/>
-    <button x="r:10" y="m" w="40%" h="100%" text="EN"/>
+  <label x="0" y="m" w="30%" h="100%" text="Music Player" margin="10"/>
+  <row x="r" y="m" w="30%" h="100%" children_layout="default(r=1,c=0)">
+    <digit_clock w="70%" w="60%" h="100%" format="Y-MM-DD hh:mm"/>
+    <image w="10%" image="header_div" draw_type="icon"/>
+    <button w="20%" w="40%" h="100%" text="EN"/>
   </row>
 </system_bar>

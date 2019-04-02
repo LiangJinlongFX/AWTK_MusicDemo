@@ -2,27 +2,27 @@
 <!--用于显示歌曲列表的对话框 anim_hint="bottom_to_top"  -->
 <dialog x="r" y="52" w="50%" h="353" theme="music_player">
   <!--title-->
-  <dialog_title x="0" y="0" w="100%" h="40" text="EQ" style="default">
+  <dialog_title x="0" y="0" w="100%" h="40" text="Advance" style="default">
     <button name="dialog_close" x="r" y="m" w="40" h="100%" style="dialog_close"/>
   </dialog_title>
   <!--client-->
   <dialog_client x="0" y="b" w="100%" h="-40">
     <grid x="0" y="10%" w="100%" h="80%" children_layout="default(r=2,c=2,x=50,s=10)">
         <column name="1" children_layout="default(r=0,c=1,ym=0)">
-            <knob  name="knob0" h="80%" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" line_width="10" rotation="-135"/>
-            <label h="20%" text="-  Low  +" style="advance_label"/>
+            <knob  name="knob0" h="80%" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" line_width="6" rotation="-135" max="200"/>
+            <label h="20%" text="-  Pitch  +" style="advance_label"/>
         </column>
         <column name="2" children_layout="default(r=0,c=1,ym=0)">
-            <knob  name="knob0"  h="80%" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" line_width="10" rotation="-135"/>
-            <label h="20%" text="-  High  +" style="advance_label"/>
+            <knob  name="knob1"  h="80%" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" line_width="6" rotation="-135" max="200"/>
+            <label h="20%" text="-  Rate  +" style="advance_label"/>
         </column> 
         <column name="3" children_layout="default(r=0,c=1,ym=0)">
-            <knob  name="knob0"  h="80%" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" line_width="10" rotation="-135"/>
-            <label h="20%" text="- SURR-Strenth +" style="advance_label"/>
+            <knob  name="knob2"  h="80%" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" line_width="6" rotation="-135" max="200"/>
+            <label h="20%" text="- Tempo +" style="advance_label"/>
         </column> 
         <column name="4" children_layout="default(r=0,c=1,ym=0)">
-            <knob  name="knob0"  h="80%" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" line_width="10" rotation="-135"/>
-            <label h="20%" text="- SURR-Depth +" style="advance_label"/>
+            <knob  name="knob3"  h="80%" value="80" style="default" start_angle="135" angle_range="270" image="icon_12" line_width="6" rotation="-135" max="100"/>
+            <label h="20%" text="- Volume +" style="advance_label"/>
         </column> 
     </grid>
   </dialog_client>

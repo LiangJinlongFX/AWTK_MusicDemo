@@ -56,6 +56,16 @@ typedef struct _current_info_t {
     char* album_cover;
     //当前播放的歌曲歌词链表
     lyric_t* song_lyric;
+    //当前的均衡器值信息
+    int EQ_Params[8];
+    //
+    uint16_t Pitch;
+    //
+    uint16_t Rate;
+    //
+    uint16_t Tempo;
+    //
+    uint16_t Volume;
 } current_info_t;
 
 

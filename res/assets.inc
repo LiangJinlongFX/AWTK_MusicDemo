@@ -31,8 +31,10 @@
 #include "assets/inc/images/cover_09.res"
 #include "assets/inc/images/cycle.res"
 #include "assets/inc/images/equalizer.res"
+#include "assets/inc/images/eq_slider.res"
 #include "assets/inc/images/fg_bar.res"
 #include "assets/inc/images/fg_bar_v.res"
+#include "assets/inc/images/header_div.res"
 #include "assets/inc/images/icon_03.res"
 #include "assets/inc/images/icon_06.res"
 #include "assets/inc/images/icon_08.res"
@@ -111,8 +113,10 @@ ret_t assets_init(void) {
   assets_manager_add(rm, image_cover_09);
   assets_manager_add(rm, image_cycle);
   assets_manager_add(rm, image_equalizer);
+  assets_manager_add(rm, image_eq_slider);
   assets_manager_add(rm, image_fg_bar);
   assets_manager_add(rm, image_fg_bar_v);
+  assets_manager_add(rm, image_header_div);
   assets_manager_add(rm, image_icon_03);
   assets_manager_add(rm, image_icon_06);
   assets_manager_add(rm, image_icon_08);

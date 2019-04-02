@@ -142,9 +142,9 @@
     <over icon="slider"/>
   </style>
   <style name="process_v" bg_image="bg_bar_v" fg_image="fg_bar_v">
-    <normal icon="slider"/>
-    <pressed icon="slider"/>
-    <over icon="slider"/>
+    <normal icon="eq_slider"/>
+    <pressed icon="eq_slider"/>
+    <over icon="eq_slider"/>
   </style>
 </slider>
 

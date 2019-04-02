@@ -1,50 +1,50 @@
 <!--用于显示歌曲列表的对话框 anim_hint="bottom_to_top"  -->
 <dialog x="r" y="52" w="50%" h="353" theme="music_player">
   <!--title-->
-  <dialog_title x="0" y="0" w="100%" h="40" text="EQ" style="default">
+  <dialog_title x="0" y="0" w="100%" h="40" text="Equailzer" style="default">
     <button name="return" x="r" y="m" w="40" h="100%" style="dialog_close"/>
   </dialog_title>
   <!--client-->
   <dialog_client x="0" y="b" w="100%" h="-40">
     <!--均衡器增益指示-->
     <view x="0" y="10" w="15%" h="48%">
-      <label x="l" y="t" w="100%" h="10%" text="+12dB"/>
-      <label x="l" y="m" w="100%" h="10%" text="0dB"/>
-      <label x="l" y="b" w="100%" h="10%" text="-12dB"/>
+      <label x="l" y="t" w="100%" h="10%" text="+12dB" style="advance_label"/>
+      <label x="l" y="m" w="100%" h="10%" text="0dB" style="advance_label"/>
+      <label x="l" y="b" w="100%" h="10%" text="-12dB" style="advance_label"/>
     </view>
     <!--均衡器控制块-->
     <row x="15%" y="10" w="85%" h="60%" children_layout="default(r=1,c=8,xm=5,s=10)">
       <column children_layout="default(r=0,c=1)">
         <slider name="slider::32" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="32" h="20%"/>
+        <label text="32" h="20%" style="advance_label"/>
       </column>
       <column children_layout="default(r=0,c=1)">
         <slider name="slider::63" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="63" h="20%"/>
+        <label text="63" h="20%" style="advance_label"/>
       </column>
       <column children_layout="default(r=0,c=1)">
         <slider name="slider::125" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="125" h="20%"/>
+        <label text="125" h="20%" style="advance_label"/>
       </column>
       <column children_layout="default(r=0,c=1)">
         <slider name="slider::250" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="250" h="20%"/>
+        <label text="250" h="20%" style="advance_label"/>
       </column>
       <column children_layout="default(r=0,c=1)">
         <slider name="slider::500" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="500" h="20%"/>
+        <label text="500" h="20%" style="advance_label"/>
       </column>
       <column children_layout="default(r=0,c=1)">
         <slider name="slider::1k" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="1k" h="20%"/>
+        <label text="1k" h="20%" style="advance_label"/>
       </column>
       <column children_layout="default(r=0,c=1)">
         <slider name="slider::2k" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="2k" h="20%"/>
+        <label text="2k" h="20%" style="advance_label"/>
       </column>
       <column children_layout="default(r=0,c=1)">
         <slider name="slider::4k" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="4k" h="20%"/>
+        <label text="4k" h="20%" style="advance_label"/>
       </column>
     </row>
     <!--增益曲线显示-->
