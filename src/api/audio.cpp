@@ -1,6 +1,10 @@
-#include <iostream>
+#include <stdio.h>
+#include <string.h>
+#include <windows.h>
+#include <io.h>
 #include "audio.h"
 #include "libzplay.h"
+#include "api.h"
 
 BEGIN_C_DECLS
 
@@ -11,11 +15,140 @@ using namespace std;
 using namespace libZPlay;
 
 
-int print(void) {
-    cout << "HelloWorld" <<endl;
 
-    return 0;
+/**
+ * @description: 初始化歌单链表 
+ * @param {type} 
+ * @return: music_info_t*
+ */
+music_info_t* musiclist_init(void) {
+   return (music_info_t*)malloc(sizeof(music_info_t));
 }
+
+/**
+ * @description: 在歌单链表尾部追加一个结点 
+ * @param  music_info_t* pHead
+ * @return: music_info_t*
+ */
+music_info_t* musiclist_insert(music_info_t* pHead) {
+  music_info_p p;
+  music_info_t* New;
+  uint32_t i=0;
+  //为新节点分配空间
+  New = (music_info_t*)malloc(sizeof(music_info_t));
+  if(!New) {
+    printf("new error\n");
+    return NULL;
+  }
+  //指针移动到尾节点
+  p = pHead;
+  while(p->next != NULL)
+  {
+    p = p->next;
+    i++;
+  }
+  //追加节点
+  p->next = New;
+  New->index = i+1;
+  New->next = NULL;
+
+  return New;
+}
+
+/**
+ * @description: 在歌单链表中查找指定索引的歌曲结点 
+ * @param music_info_t* pHead, uint32_t index 
+ * @return: music_info_t*
+ */
+music_info_t* musiclist_find(music_info_t* pHead, uint32_t index) {
+  music_info_p p;
+  p = pHead;
+  while(p != NULL) {
+    if(p->index == index)
+      return p;
+    else
+      p = p->next;
+  }
+
+  return NULL;
+}
+
+/**
+ * @description: 获取歌单链表总数
+ * @param music_info_t* pHead
+ * @return: uint32_t
+ */
+uint32_t musiclist_count(music_info_t* pHead) {
+  uint32_t i=0;
+  music_info_p p;
+  p = pHead;
+  while(p != NULL) {
+    p = p->next;
+    i++;
+  }
+
+  return i;
+}
+
+void print_playlist(music_info_t* pHead) {
+  music_info_t* p;
+  p = pHead;
+  while(p != NULL) {
+    printf("%d path: %s\n",p->index,p->song_name);
+    p = p->next;
+  }
+}
+
+
+/**
+ * @description: 从文件目录中加载歌单并保存歌曲信息到歌单链表中
+ * @param {char* dir_path, music_info_t* pHead}
+ * @return: 已检索到的歌单曲目数量
+ */
+int Audiofile_load(char* dir_path, music_info_t* pHead) {
+  char dir[200];
+  char fullpath[100];
+  int i=0;
+  intptr_t handle;
+  ZPlay* player;
+  struct _finddata_t fileinfo;
+  music_info_t* p=pHead;
+
+  strcpy(dir, dir_path);
+  strcat(dir, "*.mp3");
+  //创建zplayer实例
+  Zplay_Create();
+  //开始读取文件
+  handle = _findfirst(dir, &fileinfo);
+  if (handle == -1) return -1;
+  do {
+    sprintf(fullpath, "%s%s", dir_path, fileinfo.name);
+    TID3InfoEx id3_info;
+    if (zplay_LoadFileID3Ex(Global_player,fullpath, sfAutodetect, &id3_info, 1))  // loading ID3v2
+    {
+      if(i==0) {
+        p = pHead;
+      } else {
+        p = musiclist_insert(pHead);
+      }
+      if(p == NULL) {
+        continue;
+      } else {
+        sprintf(p->song_name,"%s",id3_info.Title);
+        sprintf(p->Artist_name,"%s",id3_info.Artist);
+        sprintf(p->Album_name,"%s",id3_info.Album);
+        sprintf(p->song_path,"%s",fullpath);
+        i++;
+      }
+    }
+  } while (!_findnext(handle, &fileinfo));
+  _findclose(handle);
+  Zplay_Destroy();
+
+  return i+1;
+}
+
+
 
 void Zplay_Create(void) {
 	Global_player = zplay_CreateZPlay();

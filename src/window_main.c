@@ -71,12 +71,12 @@ static void music_switch(bool_t is_next) {
   if(p == NULL)
     return;
   Global_Current_Info->song_name = p->song_name;
-  Global_Current_Info->singer_name = p->singer_name;
+  Global_Current_Info->singer_name = p->Artist_name;
   Global_Current_Info->total_time = p->total_time;
   Global_Current_Info->play_time = 0;
   Global_Current_Info->lrc_index = 0;
   //打开音频文件
-  Zplay_OpenFile("E:\\AWTK_MusicDemo_UI\\res\\assets\\raw\\123.mp3");
+  Zplay_OpenFile(p->song_path);
   //获取总时长
   Global_Current_Info->total_time = Zplay_GetTimeLength();
   //加载专辑封面图片
@@ -412,7 +412,7 @@ static ret_t load_playlist(widget_t* dialog)
       widget_set_value(music_item, FALSE);
       sprintf(str,"item_%d",i);
       widget_set_name(music_item,str);
-      sprintf(str,"%s-%s",p->song_name,p->singer_name);
+      sprintf(str,"%s-%s",p->song_name,p->Artist_name);
       chat_to_wchar(str,wstr);
       widget_set_text(music_item,wstr);
       widget_on(music_item, EVT_VALUE_CHANGED, on_playlistchanged, dialog);
@@ -650,6 +650,7 @@ static ret_t on_equalizer(void* ctx, event_t* e) {
  * 初始化
  */
 void application_init() {
+  int i;
   window_manager();
   widget_t* system_bar = window_open("system_bar");
   widget_t* win_main = window_open("main");
@@ -657,7 +658,10 @@ void application_init() {
   widget_t* widget;
   /* 分配内存 */
   Global_Current_Info = TKMEM_ZALLOC(current_info_t);
-  Global_Current_Info->play_list = musiclist_default();
+  Global_Current_Info->play_list = musiclist_init();
+  i = Audiofile_load("D:\\CloudMusic\\",Global_Current_Info->play_list);
+  if(i <= 0) printf("cannot find the audio file\n");
+  else print_playlist(Global_Current_Info->play_list);
   Global_Current_Info->music_num = musiclist_count(Global_Current_Info->play_list);
   Global_Current_Info->is_play = FALSE;
   Global_Current_Info->play_mode = 0;

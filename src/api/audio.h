@@ -2,10 +2,18 @@
 #define _AUDIO_H
 
 #include <awtk.h>
+#include "api.h"
 
 BEGIN_C_DECLS
 
-int print(void);
+
+int Audiofile_load(char* dir_path, music_info_t* pHead);
+void print_playlist(music_info_t* pHead);
+uint32_t musiclist_count(music_info_t* pHead);
+music_info_t* musiclist_find(music_info_t* pHead, uint32_t index);
+music_info_t* musiclist_insert(music_info_t* pHead);
+music_info_t* musiclist_init(void);
+
 void Zplay_Create(void);
 int Zplay_Destroy(void);
 void Zplay_GetError(void);
