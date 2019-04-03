@@ -44,6 +44,7 @@ bool_t is_scroll=FALSE;
 static void music_switch(bool_t is_next) {
   int i;
   widget_t* widget;
+  char str[30];
   wchar_t wstr[50];
   char cover_name[20];
 
@@ -114,16 +115,17 @@ static void music_switch(bool_t is_next) {
   time_to_wchar(Global_Current_Info->play_time,wstr);
   widget_set_text(widget,wstr);
   //复位歌词显示栏
-  widget = widget_lookup(Main_Window, "lrclist_0", TRUE);
-  widget_set_text(widget,L"");
-  widget = widget_lookup(Main_Window, "lrclist_1", TRUE);
-  widget_set_text(widget,L"AWTK");
-  widget = widget_lookup(Main_Window, "lrclist_2", TRUE);
-  widget_set_text(widget,L"MusicPlayer Demo");
-  widget = widget_lookup(Main_Window, "lrclist_3", TRUE);
-  widget_set_text(widget,L"");
-  widget = widget_lookup(Main_Window, "lrclist_4", TRUE);
-  widget_set_text(widget,L"");
+  for(i=0;i<=9;i++) {
+    sprintf(str, "lrclist_%d", i);
+    widget = widget_lookup(Main_Window, str, TRUE);
+    if(i == 2) {
+      widget_set_text(widget,L"AWTK");
+    } else if(i == 3) {
+      widget_set_text(widget,L"MusicPlayer Demo");
+    } else {
+      widget_set_text(widget,L"");
+    }
+  }
   //复位歌词滚动标志
   is_scroll = FALSE;
   //切换时自动播放
@@ -197,64 +199,69 @@ static ret_t equalizer_changed(void* ctx, event_t* e) {
   * @return 
   */
 static void lyric_display(widget_t* win) {
+  int i=0;
+  char str[30];
   wchar_t lrcstr[250];
-  static lyric_t* lrc_plist[5];
+  static lyric_t* lrc_plist[10];
   lyric_t* p = NULL;
   widget_t* widget;
 
   p = lyric_find(Global_Current_Info->song_lyric,Global_Current_Info->play_time);
-  if(p != NULL) {
-    if(!is_scroll)
-      lrc_plist[2] = p;
-    chat_to_wchar(lrc_plist[2]->verse,lrcstr);
-    widget = widget_lookup(win, "lrclist_2", TRUE);
+  if(p == NULL)
+    return;
+  if(!is_scroll)
+    lrc_plist[2] = p;
+  chat_to_wchar(lrc_plist[2]->verse,lrcstr);
+  widget = widget_lookup(win, "lrclist_2", TRUE);
+  widget_set_text(widget,lrcstr);
+  if(!is_scroll) {
+    widget_use_style(widget,"lyric_light");
+  } else {
+    widget_use_style(widget,"default");
+  }
+  lrc_plist[3] = lrc_plist[2]->next;
+  widget = widget_lookup(win, "lrclist_3", TRUE);
+  if(lrc_plist[3] != NULL) {
+    chat_to_wchar(lrc_plist[3]->verse,lrcstr);
     widget_set_text(widget,lrcstr);
-    if(!is_scroll) {
+    if(is_scroll) {
       widget_use_style(widget,"lyric_light");
     } else {
       widget_use_style(widget,"default");
     }
-    //
-    lrc_plist[1] = lrc_plist[2]->prev;
-    widget = widget_lookup(win, "lrclist_1", TRUE);
-    if(lrc_plist[1] != NULL) {
-      chat_to_wchar(lrc_plist[1]->verse,lrcstr);
-      widget_set_text(widget,lrcstr);
-      lrc_plist[0] = lrc_plist[1]->prev;
-      widget = widget_lookup(win, "lrclist_0", TRUE);
-      if(lrc_plist[0] != NULL) {
-        chat_to_wchar(lrc_plist[0]->verse,lrcstr);
-        widget_set_text(widget,lrcstr);
-      } else {
-        widget_set_text(widget,L" ");
-      }
-    } else {
-      widget_set_text(widget,L" ");
-    }
-    //
-    lrc_plist[3] = lrc_plist[2]->next;
-    widget = widget_lookup(win, "lrclist_3", TRUE);
-    if(lrc_plist[3] != NULL) {
-      chat_to_wchar(lrc_plist[3]->verse,lrcstr);
-      widget_set_text(widget,lrcstr);
-      if(is_scroll) {
-        widget_use_style(widget,"lyric_light");
-      } else {
-        widget_use_style(widget,"default");
-      }
-      lrc_plist[4] = lrc_plist[3]->next;
-      widget = widget_lookup(win, "lrclist_4", TRUE);
-      if(lrc_plist[4] != NULL) {
-        chat_to_wchar(lrc_plist[4]->verse,lrcstr);
-        widget_set_text(widget,lrcstr);
-      } else {
-        widget_set_text(widget,L" ");
-      }   
-    } else {
-      widget_set_text(widget,L" ");
-    }
-    is_scroll = ~is_scroll;
+  } else {
+    widget_set_text(widget, L"");
   }
+
+  /* 显示过去胡两行歌词 */
+  for(i=1;i>=0;i--) {
+    if(lrc_plist[i+1] != NULL)
+      lrc_plist[i] = lrc_plist[i+1]->prev;
+    sprintf(str, "lrclist_%d", i);
+    widget = widget_lookup(win, str, TRUE);
+    if(lrc_plist[i] != NULL) {
+      chat_to_wchar(lrc_plist[i]->verse,lrcstr);
+      widget_set_text(widget,lrcstr);
+    } else {
+      widget_set_text(widget, L"");
+    }
+  }
+
+  /* 显示未来的6行歌词 */
+  for(i=4;i<=9;i++) {
+    if(lrc_plist[i-1] != NULL)
+      lrc_plist[i] = lrc_plist[i-1]->next;
+    sprintf(str, "lrclist_%d", i);
+    widget = widget_lookup(win, str, TRUE);
+    if(lrc_plist[i] != NULL) {
+      chat_to_wchar(lrc_plist[i]->verse,lrcstr);
+      widget_set_text(widget,lrcstr);
+    } else {
+      widget_set_text(widget, L"");
+    }
+  }
+
+  is_scroll = ~is_scroll;
 }
 
 /**
@@ -686,6 +693,25 @@ void application_init() {
   album_cover_t* album_cover = ALBUM_COVER(widget_lookup(win_main, "cover", TRUE));
   timer_add(timer_preload, win_main, 500);
   music_switch(TRUE);
+  //更改控件透明度
+  widget = widget_lookup(Main_Window, "lrclist_0", TRUE);
+  widget_set_opacity(widget, 150);
+  widget = widget_lookup(Main_Window, "lrclist_1", TRUE);
+  widget_set_opacity(widget, 200);
+  widget = widget_lookup(Main_Window, "lrclist_3", TRUE);
+  widget_set_opacity(widget, 240);
+  widget = widget_lookup(Main_Window, "lrclist_4", TRUE);
+  widget_set_opacity(widget, 220);
+  widget = widget_lookup(Main_Window, "lrclist_5", TRUE);
+  widget_set_opacity(widget, 180);
+  widget = widget_lookup(Main_Window, "lrclist_6", TRUE);
+  widget_set_opacity(widget, 120);
+  widget = widget_lookup(Main_Window, "lrclist_7", TRUE);
+  widget_set_opacity(widget, 80);
+  widget = widget_lookup(Main_Window, "lrclist_8", TRUE);
+  widget_set_opacity(widget, 50);
+  widget = widget_lookup(Main_Window, "lrclist_9", TRUE);
+  widget_set_opacity(widget, 10);
   /* 注册按钮事件 */
   widget_t* button_list = widget_lookup(win_main, "music:list", TRUE);
   widget_t* button_EQ = widget_lookup(win_main, "music:equalizer", TRUE);

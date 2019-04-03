@@ -38,6 +38,11 @@
       <label name="lrclist_2" text="MusicPlayer Demo" style="lyric_light" length="50"/>
       <label name="lrclist_3" text="" length="50"/>
       <label name="lrclist_4" text="" length="50"/>
+      <label name="lrclist_5" text="" length="50"/>
+      <label name="lrclist_6" text="" length="50"/>
+      <label name="lrclist_7" text="" length="50"/>
+      <label name="lrclist_8" text="" length="50"/>
+      <label name="lrclist_9" text="" length="50"/>
     </scroll_view>
     <scroll_bar_m name="scroll_bar" x="right" y="0" w="6" h="100%" value="0"/>
   </list_view>
