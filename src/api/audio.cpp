@@ -110,7 +110,6 @@ int Audiofile_load(char* dir_path, music_info_t* pHead) {
   char fullpath[100];
   int i=0;
   intptr_t handle;
-  ZPlay* player;
   struct _finddata_t fileinfo;
   music_info_t* p=pHead;
 
@@ -134,10 +133,12 @@ int Audiofile_load(char* dir_path, music_info_t* pHead) {
       if(p == NULL) {
         continue;
       } else {
+        p->index = i;
         sprintf(p->song_name,"%s",id3_info.Title);
         sprintf(p->Artist_name,"%s",id3_info.Artist);
         sprintf(p->Album_name,"%s",id3_info.Album);
         sprintf(p->song_path,"%s",fullpath);
+        sprintf(p->lyric_path, "%s%s.lrc", dir_path, p->song_name);
         i++;
       }
     }
@@ -185,6 +186,12 @@ int Zplay_GetPlayStatus(void) {
 	TStreamStatus status;
 	zplay_GetStatus(Global_player, &status);
 	return status.fPlay;
+}
+
+int Zplay_GetPuaseStatus(void) {
+	TStreamStatus status;
+	zplay_GetStatus(Global_player, &status);
+	return status.fPause;
 }
 
 //返回毫秒数

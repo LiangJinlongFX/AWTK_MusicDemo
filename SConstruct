@@ -130,7 +130,7 @@ RES_ROOT = os.path.normpath(TK_ROOT + '/demos').replace("\\", "\\\\")
 COMMON_CCFLAGS = COMMON_CCFLAGS + ' -DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" '
 
 LINKFLAGS=OS_LINKFLAGS;
-LIBPATH=[LIB_DIR] + OS_LIBPATH + ['F:\\AWTK_Develop\\AWTK_MusicDemo\\src\\api']
+LIBPATH=[LIB_DIR] + OS_LIBPATH + ['E:\AWTK_MusicDemo_Zplay\\src\\api']
 CCFLAGS=OS_FLAGS + COMMON_CCFLAGS 
 LIBS=['awtk', 'gpinyin', 'awtk', 'linebreak'] + NANOVG_BACKEND_LIBS + ['nanovg', 'SDL2', 'glad'] + OS_LIBS + ['libzplay']
 

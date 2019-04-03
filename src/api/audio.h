@@ -22,6 +22,7 @@ int Zplay_CloseFile(void);
 int Zplay_Play(void);
 int Zplay_Pause(void);
 int Zplay_GetPlayStatus(void);
+int Zplay_GetPuaseStatus(void);
 int Zplay_GetPosition(void);
 int Zplay_GetTimeLength(void);
 int Zplay_Seek(int seek_time);

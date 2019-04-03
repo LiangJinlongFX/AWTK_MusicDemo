@@ -15,6 +15,18 @@ void chat_to_wchar(char* str1, wchar_t* str2)
   str2[i] = '\0';
 }
 
+void wchar_to_chat(wchar_t* str1, char* str2) {
+  unsigned int i;
+  
+  i=0;
+  while(str1[i] != '\0')
+  {
+    str2[i] = (char)str1[i];
+    i++;
+  }
+  str2[i] = '\0'; 
+}
+
 void time_to_wchar(uint32_t s, wchar_t* str)
 {
     uint32_t min;

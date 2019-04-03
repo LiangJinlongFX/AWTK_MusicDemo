@@ -28,16 +28,19 @@ static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
     return RET_OK;
   }
 
+  //TODO:默认控件长宽相等且图片素材适合控件比例,没有添加比例校验
+  wh_t w = tk_min(widget->w, widget->h);
+
   /* 绘制唱盘 */
   vgcanvas_save(vg);
   album_cover_transform(widget,c);
   if (widget_load_image(widget, album_cover->image, &bitmap) == RET_OK) {
-    rect_t dst = rect_init(widget->w*0.15, widget->w*0.15, widget->w*0.7, widget->h*0.7);
+    rect_t dst = rect_init(widget->w*0.25, widget->h*0.25, w*0.5, w*0.5);
     canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_SCALE_AUTO, &dst);
   }
 
   if (widget_load_image(widget, album_cover->bg_image, &bitmap) == RET_OK) {
-    rect_t dst = rect_init(0, 0, widget->w, widget->h);
+    rect_t dst = rect_init(widget->w*0.1, widget->h*0.1, w*0.8, w*0.8);
     canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_SCALE_AUTO, &dst);
   }
   vgcanvas_restore(vg);
@@ -89,9 +92,9 @@ ret_t cartridge_transform(widget_t* widget, canvas_t* c)
 
   vgcanvas_translate(vg, c->ox, c->oy);
   if(album_cover->is_play == TRUE)
-    vgcanvas_rotate(vg, 0);
+    vgcanvas_rotate(vg, TK_D2R(0));
   else
-    vgcanvas_rotate(vg, -45);
+    vgcanvas_rotate(vg, TK_D2R(-45));
   vgcanvas_translate(vg, -c->ox, -c->oy);
 
   return RET_OK; 

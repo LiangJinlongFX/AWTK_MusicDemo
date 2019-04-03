@@ -109,7 +109,7 @@ lyric_t* lyric_find(lyric_t* head, long time) {
 	lyric_t* p;
 
 	for(p=head;p!=NULL;p=p->next) {
-		if((p->timeLine >= time)&&(p->timeLine < time+500)) {
+		if((p->timeLine > time - 400)&&(p->timeLine < time+500)) {
 			printf("timeLine=%d time=%d\n",p->timeLine,time);
 			return p;
 		}
@@ -130,6 +130,21 @@ void lyric_delete(lyric_t* head) {
 			p->prev = NULL;
 		head = p;
 	}
+}
+
+lyric_t* lyric_default(void) {
+	lyric_t* head;
+
+	/* 初始化首节点 */
+	head =  (lyric_t*)malloc(sizeof(lyric_t));
+	if(head==NULL)
+		return NULL;
+	head->timeLine = 1000;
+	strcpy(head->verse,"can\'t find lrc file");
+	head->next = NULL;
+	head->prev = NULL;
+	
+	return head;
 }
 
 #if 0

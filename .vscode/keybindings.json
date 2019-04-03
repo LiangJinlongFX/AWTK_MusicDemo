@@ -1,0 +1,18 @@
+// 将密钥绑定放在此文件中以覆盖默认值
+[{
+    "key": "f9",
+    "command": "workbench.action.tasks.runTask",
+    "args": "scons",
+    "when": "editorTextFocus"
+},{
+    "key": "f11",
+    "command": "workbench.action.tasks.runTask",
+    "args": "run",
+    "when": "editorTextFocus"
+},{
+    "key": "f10",
+    "command": "workbench.action.tasks.runTask",
+    "args": "assets_gen",
+    "when": "editorTextFocus"
+}
+]

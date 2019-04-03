@@ -6,6 +6,8 @@
 
 BEGIN_C_DECLS
 
+#define AUDIO_DIR "D:\\audiofile\\"
+
 
 /*
  * 曲目信息存储结构体
@@ -78,6 +80,8 @@ typedef struct _current_info_t {
 
 /*将char类型字符串转换成wchar_t类型 */
 void chat_to_wchar(char* str1, wchar_t* str2);
+/**/
+void wchar_to_chat(wchar_t* str1, char* str2);
 /* 将毫秒数转换成m:n格式 */
 void time_to_wchar(uint32_t s, wchar_t* str);
 

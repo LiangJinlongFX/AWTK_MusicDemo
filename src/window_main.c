@@ -29,7 +29,7 @@
 #include "api/audio.h"
 
 
-//TODO:全局变量声明
+//TODO:
 current_info_t* Global_Current_Info;
 widget_t* Main_Window;
 bool_t is_scroll=FALSE;
@@ -44,7 +44,7 @@ bool_t is_scroll=FALSE;
 static void music_switch(bool_t is_next) {
   int i;
   widget_t* widget;
-  wchar_t str[50];
+  wchar_t wstr[50];
   char cover_name[20];
 
   if(Global_Current_Info->play_mode == 2) {
@@ -53,8 +53,9 @@ static void music_switch(bool_t is_next) {
   else {
     if(is_next) {
       i = Global_Current_Info->index + 1;
-      if(i>9)
+      if(i>=Global_Current_Info->music_num) {
         i=0;
+      }
     } else {
       i = Global_Current_Info->index - 1;
       if(i<0)
@@ -62,47 +63,56 @@ static void music_switch(bool_t is_next) {
     }
   }
   Global_Current_Info->index = i;
+  //TODO:检测当前的播放索引
+  print_playlist(Global_Current_Info->play_list);
+  printf("current_music_index: %d\n", Global_Current_Info->index);
   //关闭音频文件
   Zplay_CloseFile();
   music_info_t* p = musiclist_find(Global_Current_Info->play_list,i);
+  if(p == NULL) return;
   //重新加载歌词文件
   lyric_delete(Global_Current_Info->song_lyric);
-  Global_Current_Info->song_lyric = lyric_analysis("E:\\Code_Unit\\123.lrc");
-  if(p == NULL)
-    return;
+  //TODO:检查歌词文件加载
+  printf("%s\n",p->lyric_path);
+  Global_Current_Info->song_lyric = lyric_analysis(p->lyric_path);
+  if(Global_Current_Info->song_lyric == NULL) {
+    Global_Current_Info->song_lyric = lyric_default();
+  }
+  //复制歌曲信息到当前播放状态信息结构体中
   Global_Current_Info->song_name = p->song_name;
   Global_Current_Info->singer_name = p->Artist_name;
   Global_Current_Info->total_time = p->total_time;
   Global_Current_Info->play_time = 0;
   Global_Current_Info->lrc_index = 0;
   //打开音频文件
-  Zplay_OpenFile(p->song_path);
+  if(!Zplay_OpenFile(p->song_path))
+    return;
   //获取总时长
   Global_Current_Info->total_time = Zplay_GetTimeLength();
   //加载专辑封面图片
   widget = widget_lookup(Main_Window, "cover", TRUE);
-  sprintf(str,"cover_%02d",Global_Current_Info->index);
-  album_cover_set_image(widget,str);
+  sprintf(wstr,"cover_%02d",Global_Current_Info->index);
+  album_cover_set_image(widget,wstr);
   //显示歌曲名称
-  chat_to_wchar(Global_Current_Info->song_name,str);
   widget = widget_lookup(Main_Window, "song_name", TRUE);
-  widget_set_text(widget,str);
+  chat_to_wchar(Global_Current_Info->song_name, wstr);
+  widget_set_text(widget,wstr);
   //显示歌手名称
-  chat_to_wchar(Global_Current_Info->singer_name,str);
   widget = widget_lookup(Main_Window, "singer", TRUE);
-  widget_set_text(widget,str);
+  chat_to_wchar(Global_Current_Info->singer_name, wstr);
+  widget_set_text(widget,wstr);
   //调整进度条最大值为总播放时长
   widget = widget_lookup(Main_Window, "music_progress", TRUE);
   slider_set_max(widget,Global_Current_Info->total_time/1000);
   widget_set_value(widget,Global_Current_Info->play_time/1000);
   //调整进度条总时长显示
   widget = widget_lookup(Main_Window, "total_time", TRUE);
-  time_to_wchar(Global_Current_Info->total_time,str);
-  widget_set_text(widget,str);
+  time_to_wchar(Global_Current_Info->total_time,wstr);
+  widget_set_text(widget,wstr);
   //复位已播放时长
   widget = widget_lookup(Main_Window, "play_time", TRUE);
-  time_to_wchar(Global_Current_Info->play_time,str);
-  widget_set_text(widget,str);
+  time_to_wchar(Global_Current_Info->play_time,wstr);
+  widget_set_text(widget,wstr);
   //复位歌词显示栏
   widget = widget_lookup(Main_Window, "lrclist_0", TRUE);
   widget_set_text(widget,L"");
@@ -118,7 +128,7 @@ static void music_switch(bool_t is_next) {
   is_scroll = FALSE;
   //切换时自动播放
   Zplay_Play();
-  /* 停顿动画 */
+  /* 启动播放动画 */
   album_cover_t* album_cover = ALBUM_COVER(widget_lookup(Main_Window, "cover", TRUE));
   widget = widget_lookup(Main_Window, "music:play", TRUE);
   widget_use_style(widget,"pause");
@@ -265,14 +275,17 @@ static ret_t timer_preload(const timer_info_t* timer) {
 
   
   //TODO:检测歌曲是播放完毕还是异常停止
-  if(Zplay_GetPlayStatus) {
+  if(Zplay_GetPlayStatus()) {
     Global_Current_Info->play_time = Zplay_GetPosition();
     time_to_wchar(Global_Current_Info->play_time,str);
     widget_set_text(label,str);
     widget_set_value(bar,Global_Current_Info->play_time/1000);
     lyric_display(win);
   } else {
-    music_switch(TRUE);
+    if(!Zplay_GetPuaseStatus()) {
+      printf("no play and pause status, will switch music?\n");
+      music_switch(TRUE);
+    }
   }
 
   return RET_REPEAT;
@@ -413,7 +426,7 @@ static ret_t load_playlist(widget_t* dialog)
       sprintf(str,"item_%d",i);
       widget_set_name(music_item,str);
       sprintf(str,"%s-%s",p->song_name,p->Artist_name);
-      chat_to_wchar(str,wstr);
+      chat_to_wchar(str, wstr);
       widget_set_text(music_item,wstr);
       widget_on(music_item, EVT_VALUE_CHANGED, on_playlistchanged, dialog);
     }
@@ -505,10 +518,10 @@ static ret_t on_advance(void* ctx, event_t* e) {
   knob_item = widget_lookup(dialog_list, "knob3", TRUE);
   knob_set_value(knob_item,Global_Current_Info->Volume);
   widget_child_on(dialog_list,"dialog_close",EVT_CLICK,close_advance,dialog_list);
-  widget_child_on(dialog_list,"knob0",EVT_VALUE_CHANGING,advance_changed,dialog_list);
-  widget_child_on(dialog_list,"knob1",EVT_VALUE_CHANGING,advance_changed,dialog_list);
-  widget_child_on(dialog_list,"knob2",EVT_VALUE_CHANGING,advance_changed,dialog_list);
-  widget_child_on(dialog_list,"knob3",EVT_VALUE_CHANGING,advance_changed,dialog_list);
+  widget_child_on(dialog_list,"knob0",EVT_VALUE_CHANGED,advance_changed,dialog_list);
+  widget_child_on(dialog_list,"knob1",EVT_VALUE_CHANGED,advance_changed,dialog_list);
+  widget_child_on(dialog_list,"knob2",EVT_VALUE_CHANGED,advance_changed,dialog_list);
+  widget_child_on(dialog_list,"knob3",EVT_VALUE_CHANGED,advance_changed,dialog_list);
   dialog_modal(dialog_list);
   
   return RET_OK;
@@ -659,7 +672,7 @@ void application_init() {
   /* 分配内存 */
   Global_Current_Info = TKMEM_ZALLOC(current_info_t);
   Global_Current_Info->play_list = musiclist_init();
-  i = Audiofile_load("D:\\CloudMusic\\",Global_Current_Info->play_list);
+  i = Audiofile_load(AUDIO_DIR,Global_Current_Info->play_list);
   if(i <= 0) printf("cannot find the audio file\n");
   else print_playlist(Global_Current_Info->play_list);
   Global_Current_Info->music_num = musiclist_count(Global_Current_Info->play_list);
