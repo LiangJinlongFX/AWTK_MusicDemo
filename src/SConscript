@@ -4,7 +4,6 @@ import glob
 
 env=DefaultEnvironment().Clone()
 BIN_DIR='../bin'
-env.AppendENVPath('PATH','E:\\AWTK_MusicDemo_UI\\src\\api');
 
 #sharelib_files = glob.glob('api/*.c')
 #sharelib_files += glob.glob('api/*/*.c')
@@ -13,7 +12,8 @@ src_files = glob.glob('*.c')
 src_files += glob.glob('custom_widgets/*.c')
 src_files += glob.glob('custom_widgets/*/*.c')
 src_files += glob.glob('api/*.c')
-src_files += glob.glob('api/*.cpp')
+#src_files += glob.glob('api/*.cpp')
 
 #env.SharedLibrary(os.path.join(BIN_DIR, 'api'), sharelib_files)
-env.Program(os.path.join(BIN_DIR, 'player'), src_files)
+#env.Program(os.path.join(BIN_DIR, 'demo'), src_files, LIBS=["libzplay"], LIBPATH=["./api/"]);
+env.Program(os.path.join(BIN_DIR, 'demo'), src_files)

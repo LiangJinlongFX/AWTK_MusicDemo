@@ -12,26 +12,20 @@ BEGIN_C_DECLS
  */
 typedef struct _music_info_t {
     //索引
-    unsigned int index;
+    uint32_t index;
     //歌曲名称
     char song_name[100];
-    //艺术家名称
-    char Artist_name[100];
-    //专辑名称
-    char Album_name[100];
-    //歌曲文件路径
-    char song_path[100];
+    //歌手名称
+    char singer_name[100];
     //歌词文件路径
-    char lyric_path[200];
-    //歌曲专辑封面路径
-    char cover_path[200];
-    //歌曲总时长(ms)
-    unsigned int total_time;
+    char lyric_path[100];
+    //歌曲专辑封面
+    char album_cover[100];
+    //歌曲总时长
+    uint32_t total_time;
     //下一曲
     struct _music_info_t* next;  
-}music_info_t,*music_info_p;
-
-
+}music_info_t;
 
 /*
  * 当前音乐播放状态存储结构体
@@ -44,8 +38,10 @@ typedef struct _current_info_t {
     music_info_t* play_list;
     //歌单中的歌曲数
     uint32_t music_num;
-    //当前lrc链表索引
-    int lrc_index;
+    //显示的歌词缓存指针
+    lyric_t* lrc_prevlist;
+    //歌词交替变化标志
+    bool_t is_scroll;
     //当前歌曲播放模式
     uint8_t play_mode;
     //当前是否在播放
@@ -71,7 +67,7 @@ typedef struct _current_info_t {
     //
     uint16_t Tempo;
     //
-    uint16_t Volume;
+    uint16_t Volume;  
 } current_info_t;
 
 
@@ -81,9 +77,11 @@ void chat_to_wchar(char* str1, wchar_t* str2);
 /* 将毫秒数转换成m:n格式 */
 void time_to_wchar(uint32_t s, wchar_t* str);
 
+music_info_t* musiclist_insert(music_info_t* pHead);
+music_info_t* musiclist_find(music_info_t* pHead, uint32_t index);
+uint32_t musiclist_count(music_info_t* pHead);
 music_info_t* musiclist_default(void);
-
-
+void print_playlist(music_info_t* pHead);
 
 END_C_DECLS
 

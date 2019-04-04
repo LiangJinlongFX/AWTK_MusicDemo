@@ -35,6 +35,8 @@ typedef struct _album_cover_t {
     bool_t is_play;
     /*private*/
     int32_t timer_id;
+    /* 图片管理器 */
+    image_manager_t* cover_image_manager;
 }album_cover_t;
 
 
