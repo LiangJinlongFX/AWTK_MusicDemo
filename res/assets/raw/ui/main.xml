@@ -33,16 +33,16 @@
   <!--歌词显示布局-->
   <list_view x="r:30"  y="90" w="60%" h="50%" item_height="30">
     <scroll_view name="lyric_list" x="0"  y="0" w="100%" h="100%">
-      <label name="lrclist_0" text="" length="50"/>
-      <label name="lrclist_1" text="AWTK" length="50"/>
+      <label name="lrclist_0" opacity="150" text="" length="50"/>
+      <label name="lrclist_1" opacity="200" text="AWTK" length="50"/>
       <label name="lrclist_2" text="MusicPlayer Demo" style="lyric_light" length="50"/>
-      <label name="lrclist_3" text="" length="50"/>
-      <label name="lrclist_4" text="" length="50"/>
-      <label name="lrclist_5" text="" length="50"/>
-      <label name="lrclist_6" text="" length="50"/>
-      <label name="lrclist_7" text="" length="50"/>
-      <label name="lrclist_8" text="" length="50"/>
-      <label name="lrclist_9" text="" length="50"/>
+      <label name="lrclist_3" opacity="240" text="" length="50"/>
+      <label name="lrclist_4" opacity="220" text="" length="50"/>
+      <label name="lrclist_5" opacity="180" text="" length="50"/>
+      <label name="lrclist_6" opacity="120" text="" length="50"/>
+      <label name="lrclist_7" opacity="80"  text="" length="50"/>
+      <label name="lrclist_8" opacity="50"  text="" length="50"/>
+      <label name="lrclist_9" opacity="30"  text="" length="50"/>
     </scroll_view>
     <scroll_bar_m name="scroll_bar" x="right" y="0" w="6" h="100%" value="0"/>
   </list_view>
