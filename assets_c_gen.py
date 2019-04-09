@@ -125,7 +125,7 @@ def run():
     print('Usage: assets_c_gen.py assets_dir')
     exit()
   assets_dir = os.path.abspath(sys.argv[1])
-  assets_c_path = joinPath(assets_dir, '../assets.inc')
+  assets_c_path = joinPath(assets_dir, '../assets.h')
   gen_assets_c(assets_dir, assets_c_path)
 
 run()

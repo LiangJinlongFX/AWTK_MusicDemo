@@ -2,19 +2,12 @@
 #include "awtk.h"
 #include "album_cover.h"
 
-
-
-/**
- * @method album_cover_on_paint_self
- * 绘制 album_cover 对象
- * @annotation ["constructor", "scriptable"]
- * @param {widget_t*} parent 父控件
- * @param {xy_t} x x坐标
- * @param {xy_t} y y坐标
- * @param {wh_t} w 宽度
- * @param {wh_t} h 高度
- *
- * @return {widget_t*} 对象。
+/*
+ * 绘制控件自身
+ * 注意图片的缩放显示问题
+ * 前景图片使用实际比例
+ * 背景图片缩放到控件大小的0.8
+ * 封面图片缩放到控件大小的0.5
  */
 static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
   bitmap_t bitmap;
@@ -34,12 +27,11 @@ static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
   /* 绘制唱盘 */
   vgcanvas_save(vg);
   album_cover_transform(widget,c);
-  //TODO:使用控件自身的image_manager实现图片资源管理,但内存波动较大，加载图片资源时有点卡
-  //TODO:使用控件自身胡image_manager加载图片10张,内存占用高达192M,但资源加载完毕后不会卡顿
   if (widget_load_image(widget, album_cover->image, &bitmap) == RET_OK) {
     rect_t dst = rect_init(widget->w*0.25, widget->h*0.25, w*0.5, w*0.5);
     canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_SCALE_AUTO, &dst);
   }
+  //TODO:使用控件自身的image_manager实现图片资源管理,但内存波动较大
   // if (image_manager_get_bitmap(album_cover->cover_image_manager, album_cover->image, &bitmap) == RET_OK) {
   //   rect_t dst = rect_init(widget->w*0.25, widget->h*0.25, w*0.5, w*0.5);
   //   canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_SCALE_AUTO, &dst);
@@ -63,6 +55,9 @@ static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
   return RET_OK;
 }
 
+/*
+ * 图片旋转(image&bg_image)
+ */
 ret_t album_cover_transform(widget_t* widget, canvas_t* c)
 {
   float_t anchor_x = 0;
@@ -77,13 +72,17 @@ ret_t album_cover_transform(widget_t* widget, canvas_t* c)
 
   vgcanvas_translate(vg, c->ox, c->oy);
   vgcanvas_translate(vg, anchor_x, anchor_y);
-  vgcanvas_rotate(vg, album_cover->rotation);
+  vgcanvas_rotate(vg, TK_D2R(album_cover->rotation));
   vgcanvas_translate(vg, -anchor_x, -anchor_y);
   vgcanvas_translate(vg, -c->ox, -c->oy);
 
   return RET_OK; 
 }
 
+/*
+ * 图片旋转(fg_image)
+ * 45
+ */
 ret_t cartridge_transform(widget_t* widget, canvas_t* c)
 {
   float_t anchor_x = 0;
@@ -184,7 +183,7 @@ ret_t album_cover_set_image(widget_t* widget, const char* name) {
 
   image_manager_t* default_image_manager = image_manager();
 
-  image_manager_unload_unused(album_cover->cover_image_manager, 1);
+  //image_manager_unload_unused(album_cover->cover_image_manager, 1);
   printf("current default_image_manager num: %d  capacity: %d\n", (default_image_manager->images).size, (default_image_manager->images).capacity);
   printf("current cover_image_manager num: %d  capacity: %d\n", (album_cover->cover_image_manager->images).size, (album_cover->cover_image_manager->images).capacity);
   album_cover->image = tk_str_copy(album_cover->image, name);
@@ -195,7 +194,7 @@ ret_t album_cover_set_image(widget_t* widget, const char* name) {
 }
 
 /*
- * 设置控件图片
+ * 设置控件背景图片
  */
 ret_t album_cover_set_bg_image(widget_t* widget, const char* name) {
   album_cover_t* album_cover = ALBUM_COVER(widget);
@@ -206,6 +205,9 @@ ret_t album_cover_set_bg_image(widget_t* widget, const char* name) {
   return RET_OK;
 }
 
+/*
+ * 播放动画
+ */
 ret_t album_cover_start(widget_t* widget) {
   return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
 
@@ -215,6 +217,9 @@ ret_t album_cover_start(widget_t* widget) {
   return RET_OK;
 }
 
+/*
+ * 暂停动画
+ */
 ret_t album_cover_pause(widget_t* widget) {
   return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
 
@@ -225,7 +230,7 @@ ret_t album_cover_pause(widget_t* widget) {
 }
 
 /*
- * 设置控件图片
+ * 设置控件前景图片
  */
 ret_t album_cover_set_fg_image(widget_t* widget, const char* name) {
   album_cover_t* album_cover = ALBUM_COVER(widget);
@@ -236,12 +241,16 @@ ret_t album_cover_set_fg_image(widget_t* widget, const char* name) {
   return RET_OK;
 }
 
+/*
+ * 控件定时器回调函数
+ * TODO:通过协调旋转步进值和定时间隔来调整动画效果
+ */
 static ret_t timer_album_cover(const timer_info_t* timer)
 {
   widget_t* widget = WIDGET(timer->ctx);
   album_cover_t* album_cover = ALBUM_COVER(widget);
   if(album_cover->is_play == TRUE) {
-    album_cover->rotation += 0.05;
+    album_cover->rotation += 0.5;
     if(album_cover->rotation >360)
       album_cover->rotation = 0;
     widget_invalidate(widget, NULL);

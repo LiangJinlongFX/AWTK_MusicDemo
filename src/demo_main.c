@@ -21,7 +21,7 @@
 
 #include "awtk.h"
 
-#include "../res/assets.inc"
+#include "../res/assets.h"
 
 #ifdef USE_GUI_MAIN
 int gui_app_start(int lcd_w, int lcd_h) {

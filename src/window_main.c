@@ -19,6 +19,7 @@
  *
  */
 #include "awtk.h"
+#include "stdlib.h"
 #include "custom_widgets/chart/chart_view.h"
 #include "custom_widgets/chart/line_series.h"
 #include "custom_widgets/chart/bar_series.h"
@@ -43,20 +44,22 @@ static void music_switch(bool_t is_next) {
   /* 根据播放模式改变音乐播放索引 */
   if(Global_Current_Info->play_mode == 2) {
     i = Global_Current_Info->index;
-  }
-  else {
-    if(is_next) {
+  } else if (Global_Current_Info->play_mode == 1) {
+    i = rand()%Global_Current_Info->music_num;
+    if (i < 0 || i >= Global_Current_Info->music_num) {
+      i = 0;
+    }
+  } else {
+    if (is_next) {
       i = Global_Current_Info->index + 1;
-      if(i>=Global_Current_Info->music_num)
-        i=0;
+      if (i >= Global_Current_Info->music_num) i = 0;
     } else {
       i = Global_Current_Info->index - 1;
-      if(i<0)
-      i = 0;
+      if (i < 0) i = 0;
     }
   }
   Global_Current_Info->index = i;
-  
+  printf("Global_Current_Info index: %d\n", i);
   // print_playlist(Global_Current_Info->play_list);
   p = musiclist_find(Global_Current_Info->play_list,i);
   //重新加载歌词文件
