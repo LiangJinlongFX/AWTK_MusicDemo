@@ -33,6 +33,38 @@ current_info_t* Global_Current_Info=NULL;
 widget_t* Main_Window=NULL;
 
 
+static void lrc_loaditem(current_info_t* info) {
+  char str[20];
+  wchar_t wstr[256];
+  uint16_t count=0;
+  uint16_t i=0;
+  lyric_t* p=NULL;
+  widget_t* item=NULL;
+  p = info->song_lyric;
+  /* 查找歌词栏容器 */
+  widget_t* lyric_list = widget_lookup(Main_Window, "lyric_list", TRUE);
+  /* 销毁所有歌词栏下的label */
+  widget_destroy_children(lyric_list);
+  /* 统计当前歌曲歌词的所有行数 */
+  while(p != NULL) {
+    p = p->next;
+    count++;
+  }
+  /* 创建所有歌词标签 */
+  p = info->song_lyric;
+  for(i=0;i<count;i++) {
+    item = label_create(lyric_list, 100, 200, 80, 30);
+    snprintf(str, 20, "lrclist_%d", i);
+    widget_set_name(item, str);
+    chat_to_wchar(p->verse, wstr);
+    widget_set_text(item, wstr);
+    p = p->next; 
+  }
+  info->lrc_item = 5;
+  scroll_view_scroll_to(lyric_list,0,0,10);
+}
+
+
 static void music_switch(bool_t is_next) {
   int i;
   widget_t* widget;
@@ -98,20 +130,8 @@ static void music_switch(bool_t is_next) {
   widget = widget_lookup(Main_Window, "play_time", TRUE);
   time_to_wchar(Global_Current_Info->play_time,wstr);
   widget_set_text(widget,wstr);
-  //复位歌词显示栏
-  for(i=0;i<=9;i++) {
-    sprintf(str, "lrclist_%d", i);
-    widget = widget_lookup(Main_Window, str, TRUE);
-    if(i == 2) {
-      widget_set_text(widget,L"AWTK");
-    } else if(i == 3) {
-      widget_set_text(widget,L"MusicPlayer Demo");
-    } else {
-      widget_set_text(widget,L"");
-    }
-  }
-  //复位歌词滚动标志
-  Global_Current_Info->is_scroll = FALSE;
+  /* 加载歌词控件 */
+  lrc_loaditem(Global_Current_Info);
   /* 切歌时实现自动播放 */
   album_cover_t* album_cover = ALBUM_COVER(widget_lookup(Main_Window, "cover", TRUE));
   widget = widget_lookup(Main_Window, "music:play", TRUE);
@@ -123,90 +143,29 @@ static void music_switch(bool_t is_next) {
 
 
 /**
- * 歌词显示实现函数
+ * 歌词滚动显示显示实现函数
  **/
 static void lyric_display(widget_t* win) {
-  int i=0;
-  char str[30];
-  wchar_t lrcstr[250];
-  lyric_t* lrc_plist[10];
-  lyric_t* p = NULL;
-  widget_t* widget;
-
-  for(i=0;i<10;i++) {
-    lrc_plist[i] = NULL;
-  }
-
-  p = lyric_find(Global_Current_Info->song_lyric,Global_Current_Info->play_time);
-  if(p == NULL)
-    return;
-  /* 更新歌词缓存 */
-  if(!Global_Current_Info->is_scroll) {
-    lrc_plist[2] = p;
-    Global_Current_Info->lrc_prevlist = p;
-  } else {
-    lrc_plist[2] = Global_Current_Info->lrc_prevlist;
-  }
-
-  /* 显示第3行 */
-  widget = widget_lookup(win, "lrclist_2", TRUE);
-  if(lrc_plist[2] != NULL) {
-    chat_to_wchar(lrc_plist[2]->verse,lrcstr);
-    widget_set_text(widget,lrcstr);
-    if(!Global_Current_Info->is_scroll) {
-      widget_use_style(widget,"lyric_light");
-    } else {
-      widget_use_style(widget,"default");
-    }
-  } else {
-      widget_set_text(widget, L"");
-  }
-
-  /* 显示第4行 */
-  lrc_plist[3] = lrc_plist[2]->next;
-  widget = widget_lookup(win, "lrclist_3", TRUE);
-  if(lrc_plist[3] != NULL) {
-    chat_to_wchar(lrc_plist[3]->verse,lrcstr);
-    widget_set_text(widget,lrcstr);
-    if(Global_Current_Info->is_scroll) {
-      widget_use_style(widget,"lyric_light");
-    } else {
-      widget_use_style(widget,"default");
-    }
-  } else {
-    widget_set_text(widget, L"");
-  }
-
-  /* 显示过去的两行歌词 */
-  for(i=1;i>=0;i--) {
-    if(lrc_plist[i+1] != NULL)
-      lrc_plist[i] = lrc_plist[i+1]->prev;
-    snprintf(str, 30, "lrclist_%d", i);
+  int line;
+  widget_t* widget=NULL;
+  char str[20];
+  /* 查找歌词栏容器 */
+  widget_t* lyric_list = widget_lookup(Main_Window, "lyric_list", TRUE);
+  int i = lyric_findwithcounter(Global_Current_Info->song_lyric, Global_Current_Info->play_time);
+  if(i>=0) {
+    snprintf(str, 20, "lrclist_%d", i);
     widget = widget_lookup(win, str, TRUE);
-    if(lrc_plist[i] != NULL) {
-      chat_to_wchar(lrc_plist[i]->verse,lrcstr);
-      widget_set_text(widget,lrcstr);
-    } else {
-      widget_set_text(widget, L"");
-    }
-  }
-
-  /* 显示未来的6行歌词 */
-  for(i=4;i<=9;i++) {
-    if(lrc_plist[i-1] != NULL)
-      lrc_plist[i] = lrc_plist[i-1]->next;
-    snprintf(str, 30, "lrclist_%d", i);
+    widget_use_style(widget,"lyric_light");
+    snprintf(str, 20, "lrclist_%d", Global_Current_Info->lrc_previtem);
     widget = widget_lookup(win, str, TRUE);
-    if(lrc_plist[i] != NULL) {
-      chat_to_wchar(lrc_plist[i]->verse,lrcstr);
-      widget_set_text(widget,lrcstr);
-    } else {
-      widget_set_text(widget, L"");
+    widget_use_style(widget,"default");
+    Global_Current_Info->lrc_previtem = i;
+    if(i>=Global_Current_Info->lrc_item+2 || i<= Global_Current_Info->lrc_item-2) {
+      Global_Current_Info->lrc_item = i;
+      line = (Global_Current_Info->lrc_previtem-2)*24;
+      scroll_view_scroll_to(lyric_list,0,line,500);
     }
   }
-
-  /* 切换滚动显示标志 */
-  Global_Current_Info->is_scroll = ~Global_Current_Info->is_scroll;
 }
 
 /**
@@ -220,7 +179,6 @@ static ret_t timer_preload(const timer_info_t* timer) {
   widget_t* win = WIDGET(timer->ctx);
   widget_t* bar = widget_lookup(win, "music_progress", TRUE);
   widget_t* label = widget_lookup(win, "play_time", TRUE);
-  widget_t* lyric_list = widget_lookup(win, "lyric_list", TRUE);
 
   if(Global_Current_Info->is_play) {
     Global_Current_Info->play_time += 500;
@@ -525,6 +483,26 @@ static ret_t on_equalizer(void* ctx, event_t* e) {
   return dialog_modal(dialog_eq);
 }
 
+static ret_t on_setting(void* ctx, event_t* e) {
+  widget_t* win = (widget_t*)ctx;
+  widget_t* advance_item = widget_lookup(win, "music:equalizer", TRUE);
+  widget_t* equalizer_item = widget_lookup(win, "music:advance", TRUE);
+  widget_t* setting_item = widget_lookup(win, "music:setting", TRUE);
+  if(widget_get_value(setting_item)) {
+    printf("visible\n");
+    widget_set_visible(advance_item, TRUE, FALSE);
+    widget_set_visible(equalizer_item, TRUE, FALSE);
+    widget_set_enable(advance_item, TRUE);
+    widget_set_enable(equalizer_item, TRUE);
+  } else {
+    printf("unvisible\n");
+    widget_set_visible(advance_item, FALSE, FALSE);
+    widget_set_visible(equalizer_item, FALSE, FALSE);
+    widget_set_enable(advance_item, FALSE);
+    widget_set_enable(equalizer_item, FALSE);
+  }
+}
+
 /**
  * 初始化
  */
@@ -539,7 +517,6 @@ void application_init() {
   Global_Current_Info->play_list = musiclist_default();
   Global_Current_Info->music_num = musiclist_count(Global_Current_Info->play_list);
   Global_Current_Info->is_play = FALSE;
-  Global_Current_Info->is_scroll = FALSE;
   Global_Current_Info->play_mode = 0;
   Global_Current_Info->index = -1;
   
@@ -548,10 +525,21 @@ void application_init() {
   /* 启动时进行自动切歌播放 */
   music_switch(TRUE);
 
+  /* 默认隐藏设置图标 */
+  widget_t* advance_item = widget_lookup(win_main, "music:equalizer", TRUE);
+  widget_t* equalizer_item = widget_lookup(win_main, "music:advance", TRUE);
+  widget_t* setting_item = widget_lookup(win_main, "music:setting", TRUE);
+  widget_set_value(setting_item, 0);
+  widget_set_visible(advance_item, FALSE, FALSE);
+  widget_set_visible(equalizer_item, FALSE, FALSE);
+  widget_set_enable(advance_item, FALSE);
+  widget_set_enable(equalizer_item, FALSE);
+
   //FIXME:歌词条目透明度改到xml文件中设置
   //FIXME:mainK界面控件事件注册改用widget_child_on
   /* 注册控件事件 */
   widget_child_on(win_main, "music:list", EVT_CLICK, on_playlist, win_main);
+  widget_child_on(win_main, "music:setting", EVT_VALUE_WILL_CHANGE, on_setting, win_main);
   widget_child_on(win_main, "music:equalizer", EVT_CLICK, on_equalizer, win_main);
   widget_child_on(win_main, "music:advance", EVT_CLICK, on_advance, win_main);
   widget_child_on(win_main, "music:play", EVT_CLICK, on_play, win_main);

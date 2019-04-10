@@ -96,6 +96,14 @@
     <pressed_of_checked bg_color="#282f75" icon="icon_50" text_color="#00fffc"/>
     <over_of_checked bg_color="#282f75" icon="icon_50" text_color="#00fffc"/>
   </style>
+  <style name="setting">
+    <normal     icon="setting"/>
+    <pressed    icon="setting" x_offset="1" y_offset="1"/>
+    <over       icon="setting"/>
+    <normal_of_checked icon="setting"/>
+    <pressed_of_checked icon="setting" x_offset="1" y_offset="1"/>
+    <over_of_checked icon="setting"/>
+  </style>
 </radio_button>
 
 <check_button>
@@ -107,6 +115,14 @@
     <normal_of_checked icon="pause"/>
     <pressed_of_checked icon="pause" x_offset="1" y_offset="1"/>
     <over_of_checked icon="pause" x_offset="1" y_offset="1"/>
+  </style>
+  <style name="setting">
+    <normal     icon="setting"/>
+    <pressed    icon="setting" x_offset="1" y_offset="1"/>
+    <over       icon="setting"/>
+    <normal_of_checked icon="setting"/>
+    <pressed_of_checked icon="setting" x_offset="1" y_offset="1"/>
+    <over_of_checked icon="setting"/>
   </style>
 </check_button>
 

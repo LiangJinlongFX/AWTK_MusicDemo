@@ -38,10 +38,10 @@ typedef struct _current_info_t {
     music_info_t* play_list;
     //歌单中的歌曲数
     uint32_t music_num;
-    //显示的歌词缓存指针
-    lyric_t* lrc_prevlist;
-    //歌词交替变化标志
-    bool_t is_scroll;
+    //显示当前歌词缓存索引
+    int lrc_item;
+    //记录歌词上一个索引
+    int lrc_previtem;
     //当前歌曲播放模式
     uint8_t play_mode;
     //当前是否在播放
