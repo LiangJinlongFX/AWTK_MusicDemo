@@ -96,7 +96,7 @@ static void music_switch(bool_t is_next) {
   p = musiclist_find(Global_Current_Info->play_list,i);
   //重新加载歌词文件
   lyric_delete(Global_Current_Info->song_lyric);
-  Global_Current_Info->song_lyric = lyric_analysis("E:\\Code_Unit\\123.lrc");
+  Global_Current_Info->song_lyric = lyric_analysis("F:\\AWTK_Develop\\C-C-_Unit\\123.lrc");
   if(p == NULL) {
     return ;
   }
@@ -551,4 +551,9 @@ void application_init() {
   /* 打开CMD窗口方便调试 */
   AllocConsole();
   freopen("conout$","w",stdout);
+
+  assets_manager_t* rm = assets_manager();
+  asset_info_t* t = assets_manager_find_in_cache(rm, ASSET_TYPE_DATA, "Favor.lrc");
+  char* p = t->data;
+  printf("%s\n", p);
 }
