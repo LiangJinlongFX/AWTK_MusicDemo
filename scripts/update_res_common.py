@@ -1,4 +1,5 @@
 #!/usr/bin/python
+#encoding:utf-8
 
 import os
 import sys
@@ -20,10 +21,14 @@ AWTK_ROOT = ''
 INPUT_DIR = ''
 OUTPUT_DIR = ''
 IMAGEGEN_OPTIONS = ''
+OS_NAME = platform.system()
 ###########################
 
 
 def to_var_name(s):
+    '''
+    将字符串转换成由数字和字母组成的字符串,其他符号则转换成_
+    '''
     out = ''
     for c in s:
         if(c.isalpha() or c.isdigit()):
@@ -34,6 +39,9 @@ def to_var_name(s):
 
 
 def fix_output_file_name(name):
+    '''
+    规范化文件名
+    '''
     filename, extname = os.path.splitext(name)
     basename = os.path.basename(filename)
     dirname = os.path.dirname(filename)
@@ -43,11 +51,13 @@ def fix_output_file_name(name):
 
 
 def joinPath(root, subdir):
+    '''
+    @method 拼接路径
+    @params root 根目录
+    @params subdir 要拼接的相对目录
+    @return 合成的路径
+    '''
     return os.path.normpath(os.path.join(root, subdir))
-
-
-OS_NAME = platform.system()
-
 
 def toExe(name):
     if OS_NAME == 'Windows':
@@ -57,16 +67,25 @@ def toExe(name):
 
 
 def buildAll():
+    '''
+    调用 scons 编译命令
+    '''
     os.system('scons')
 
 
 def removeDir(path):
+    '''
+    移除目录
+    '''
     if os.path.isdir(path):
         print('rmdir:' + path)
         shutil.rmtree(path)
 
 
 def prepareOutputDir(name):
+    '''
+    检查输出目录是否存在, 没有则创建
+    '''
     fullpath = joinPath(OUTPUT_DIR, name)
     if os.path.exists(fullpath):
         print(fullpath+" exist.")
@@ -75,6 +94,9 @@ def prepareOutputDir(name):
 
 
 def prepare():
+    '''
+    准备资源生成目录
+    '''
     prepareOutputDir('styles')
     prepareOutputDir('images')
     prepareOutputDir('fonts')
@@ -86,6 +108,9 @@ def prepare():
 
 
 def execCmd(cmd):
+    '''
+    调用系统命令
+    '''
     print(cmd)
     os.system(cmd)
 
@@ -301,81 +326,80 @@ def gen_add_assets(files):
 
 
 def gen_assets_header(assets_dir, assets_c_path):
-  assets_inc_dir = joinPath(assets_dir, "inc")
-  #检测文件路径是否有效
-	if not os.path.exists(assets_inc_dir) :
-    print('assets inc dir not exist')
-    exit()
+    assets_inc_dir = joinPath(assets_dir, "inc")
+    if not os.path.exists(assets_inc_dir):
+        print('assets inc dir not exist')
+        exit()
 
-  result = '#include "awtk.h"\n'
-  result += '#include "base/assets_manager.h"\n'
+    result = '#include "awtk.h"\n'
+    result += '#include "base/assets_manager.h"\n'
 
-  result += '#ifndef WITH_FS_RES\n'
-  
-  #include .data文件
-	files=glob.glob(joinPath(assets_inc_dir, 'strings/*.data')) \
+    result += '#ifndef WITH_FS_RES\n'
+
+    #include .data文件
+    files=glob.glob(joinPath(assets_inc_dir, 'strings/*.data')) \
     + glob.glob(joinPath(assets_inc_dir, 'styles/*.data')) \
     + glob.glob(joinPath(assets_inc_dir, 'ui/*.data')) 
-  result += genIncludes(files, assets_inc_dir);
+    result += genIncludes(files, assets_inc_dir);
 
-  #包含图片的 .res文件
-	result += "#ifdef WITH_STB_IMAGE\n"
-  files=glob.glob(joinPath(assets_inc_dir, 'images/*.res')) 
-  result += genIncludes(files, assets_inc_dir)
-  result += "#else\n"
-  files=glob.glob(joinPath(assets_inc_dir, 'images/*.data')) 
-  result += genIncludes(files, assets_inc_dir)
-  result += '#endif/*WITH_STB_IMAGE*/\n'
-  
-  #包含字体文件
-	result += "#ifdef WITH_STB_FONT\n"
-  result += "#ifdef WITH_MINI_FONT\n"
-  files=glob.glob(joinPath(assets_inc_dir, 'fonts/default.mini.res')) 
-  result += genIncludes(files, assets_inc_dir)
-  result += "#else/*WITH_MINI_FONT*/\n"
-  files=glob.glob(joinPath(assets_inc_dir, 'fonts/default.res')) 
-  result += genIncludes(files, assets_inc_dir)
-  result += '#endif/*WITH_MINI_FONT*/\n'
-  result += "#else/*WITH_STB_FONT*/\n"
-  files=glob.glob(joinPath(assets_inc_dir, 'fonts/*.data')) 
-  result += genIncludes(files, assets_inc_dir)
-  result += '#endif/*WITH_STB_FONT*/\n'
+    #包含图片的 .res文件
+    result += "#ifdef WITH_STB_IMAGE\n"
+    files=glob.glob(joinPath(assets_inc_dir, 'images/*.res')) 
+    result += genIncludes(files, assets_inc_dir)
+    result += "#else\n"
+    files=glob.glob(joinPath(assets_inc_dir, 'images/*.data')) 
+    result += genIncludes(files, assets_inc_dir)
+    result += '#endif/*WITH_STB_IMAGE*/\n'
 
-  result += '#endif/*WITH_FS_RES*/\n'
+    #包含字体文件
+    result += "#ifdef WITH_STB_FONT\n"
+    result += "#ifdef WITH_MINI_FONT\n"
+    files=glob.glob(joinPath(assets_inc_dir, 'fonts/default.mini.res')) 
+    result += genIncludes(files, assets_inc_dir)
+    result += "#else/*WITH_MINI_FONT*/\n"
+    files=glob.glob(joinPath(assets_inc_dir, 'fonts/default.res')) 
+    result += genIncludes(files, assets_inc_dir)
+    result += '#endif/*WITH_MINI_FONT*/\n'
+    result += "#else/*WITH_STB_FONT*/\n"
+    files=glob.glob(joinPath(assets_inc_dir, 'fonts/*.data')) 
+    result += genIncludes(files, assets_inc_dir)
+    result += '#endif/*WITH_STB_FONT*/\n'
 
-  result += '\n';
-  result += 'ret_t assets_init(void) {\n'
-  result += '  assets_manager_t* rm = assets_manager();\n\n'
-  result += ''
+    result += '#endif/*WITH_FS_RES*/\n'
 
-  result += '#ifdef WITH_FS_RES\n'
-  result += '#ifdef WITH_MINI_FONT\n'
-  result += '  asset_info_t* info = assets_manager_load(rm, ASSET_TYPE_FONT, "default.mini");\n'
-  result += '  if (info) {\n'
-  result += '    strcpy(info->name, "default");\n'
-  result += '  }\n'
-  result += '#else \n'
-  result += '  assets_manager_load(rm, ASSET_TYPE_FONT, "default");\n'
-  result += '#endif\n'
-  result += '  assets_manager_load(rm, ASSET_TYPE_STYLE, "default");\n'
-  result += '#else\n'
-  
-  result += '#ifdef WITH_STB_FONT\n'
-  result += '  assets_manager_add(rm, font_default'  + ');\n'
- 
-  result += genAssetsManagerAdd(assets_inc_dir, 'fonts/*.data', 'fonts', 'font_', '.data')
-  result += '#endif\n'
-  result += genAssetsManagerAdd(assets_inc_dir, 'images/*.res', 'images', 'image_', '.res')
-  result += genAssetsManagerAdd(assets_inc_dir, 'styles/*.data', 'styles', 'style_', '.data')
-  result += genAssetsManagerAdd(assets_inc_dir, 'ui/*.data', 'ui', 'ui_',  '.data')
-  result += genAssetsManagerAdd(assets_inc_dir, 'strings/*.data', 'strings', 'strings_', '.data')
-  result += '#endif\n'
+    result += '\n';
+    result += 'ret_t assets_init(void) {\n'
+    result += '  assets_manager_t* rm = assets_manager();\n\n'
+    result += ''
 
-  result += '\n'
-  result += '  tk_init_assets();\n'
-  result += '  return RET_OK;\n'
-  result += '}\n'
-  writeToFile(assets_c_path, result);
+    result += '#ifdef WITH_FS_RES\n'
+    result += '#ifdef WITH_MINI_FONT\n'
+    result += '  asset_info_t* info = assets_manager_load(rm, ASSET_TYPE_FONT, "default.mini");\n'
+    result += '  if (info) {\n'
+    result += '    strcpy(info->name, "default");\n'
+    result += '  }\n'
+    result += '#else \n'
+    result += '  assets_manager_load(rm, ASSET_TYPE_FONT, "default");\n'
+    result += '#endif\n'
+    result += '  assets_manager_load(rm, ASSET_TYPE_STYLE, "default");\n'
+    result += '#else\n'
+
+    result += '#ifdef WITH_STB_FONT\n'
+    result += '  assets_manager_add(rm, font_default'  + ');\n'
+
+    result += genAssetsManagerAdd(assets_inc_dir, 'fonts/*.data', 'fonts', 'font_', '.data')
+    result += '#endif\n'
+    result += genAssetsManagerAdd(assets_inc_dir, 'images/*.res', 'images', 'image_', '.res')
+    result += genAssetsManagerAdd(assets_inc_dir, 'styles/*.data', 'styles', 'style_', '.data')
+    result += genAssetsManagerAdd(assets_inc_dir, 'ui/*.data', 'ui', 'ui_',  '.data')
+    result += genAssetsManagerAdd(assets_inc_dir, 'strings/*.data', 'strings', 'strings_', '.data')
+    result += '#endif\n'
+
+    result += '\n'
+    result += '  tk_init_assets();\n'
+    result += '  return RET_OK;\n'
+    result += '}\n'
+    writeToFile(assets_c_path, result);
 
 
 def gen_res_c():
@@ -616,3 +640,6 @@ def showUsage():
 
 
 #showUsage()
+if __name__ == '__main__':
+    a = fix_output_file_name("../123qsad,,.data");
+    print(a)

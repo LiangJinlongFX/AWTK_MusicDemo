@@ -77,6 +77,8 @@ void chat_to_wchar(char* str1, wchar_t* str2);
 /* 将毫秒数转换成m:n格式 */
 void time_to_wchar(uint32_t s, wchar_t* str);
 
+void my_str_replace(char* str, char src, char dst);
+
 music_info_t* musiclist_insert(music_info_t* pHead);
 music_info_t* musiclist_find(music_info_t* pHead, uint32_t index);
 uint32_t musiclist_count(music_info_t* pHead);

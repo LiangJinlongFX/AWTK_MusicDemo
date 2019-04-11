@@ -4,12 +4,13 @@ import sys
 import glob
 import shutil
 import copy
+import re
 import platform
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-TOOTS_DIR = "F:\\AWTK_Develop\\awtk\\bin\\"
+TOOTS_DIR = "E:\\awtk\\bin\\"
 DST_DIR = "..\\res\\assets\\inc"
 SRC_DIR = "..\\res\\assets\\raw"
 
@@ -31,10 +32,26 @@ def removeDir(path):
 		shutil.rmtree(path)
 
 def toExePath(root, name):
+	'''
+	获取生成工具程序路径
+	@params root 根目录
+	@params name 工具程序名称
+	'''
 	if platform.system() == 'Windows':
 		return joinPath(root, name + '.exe')
 	else:
 		return joinPath(root, name)
+
+def format_filename(path):
+	'''
+	格式化目录下的所有文件名
+	将文件名的',' ';' ' ' 统统替换成'_'
+	'''
+	filenames = os.walk(path)
+	for item in filenames:
+		for i in item[2]:
+			b = re.sub(r'[ ,;-]', '_', i)
+			print(b)
 
 def generate(tools_dir, tool_name, src_dir, src_sub_dir, src_suffix, dst_dir, dst_sub_dir, dst_suffix, option, is_remake_dir):
 	'''
@@ -49,7 +66,7 @@ def generate(tools_dir, tool_name, src_dir, src_sub_dir, src_suffix, dst_dir, ds
 	@params: dst_sub_dir 目标生成资源子目录
 	@params: dst_suffix 目标生成资源文件后缀
 	@params: option 	附加选项
-	@params: is_remake_dir 是否要重建目录
+	@params: is_remake_dir 是否要重建目录 
 	'''
 	tool_path = toExePath(tools_dir, tool_name)
 	src_dir = joinPath(src_dir, src_sub_dir)
@@ -97,7 +114,13 @@ def generate(tools_dir, tool_name, src_dir, src_sub_dir, src_suffix, dst_dir, ds
 			os.system(tool_path + ' ' + joinPath(src_dir, raw) + ' ' + joinPath(dst_dir, inc) + ' ' + option)
 
 def joinPath(root, subdir):
-    return os.path.normpath(os.path.join(root, subdir))
+	'''
+	@method 拼接路径
+	@params root 根目录
+	@params subdir 要拼接的相对目录
+	@return 合成的路径
+	'''
+	return os.path.normpath(os.path.join(root, subdir))
 
 def output_res_c_source(filename, type, subtype, buff):
 	'''
@@ -160,4 +183,5 @@ if __name__ == '__main__':
 	tools_dir = os.path.abspath(TOOTS_DIR)
 	src_dir = os.path.abspath(SRC_DIR)
 	dst_dir = os.path.abspath(DST_DIR)
-	generate(tools_dir, "resgen", src_dir, "lrc", ".lrc", dst_dir, "lrc", ".data", '', 1)
+	format_filename("D:\\audiofile\\")
+	#generate(tools_dir, "resgen", src_dir, "data", ".lrc", dst_dir, "data", ".data", '', 1)

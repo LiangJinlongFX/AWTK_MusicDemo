@@ -32,6 +32,19 @@
 current_info_t* Global_Current_Info=NULL;
 widget_t* Main_Window=NULL;
 
+static load_assets_manager(char* name) {
+  char str[100];
+  strcpy(str, name);
+  my_str_replace(str, ' ', '_');
+  strcat(str,".lrc");
+  assets_manager_t* rm = assets_manager();
+  asset_info_t* t = assets_manager_find_in_cache(rm, ASSET_TYPE_DATA, str);
+  if(t != NULL)
+    return t->data;
+  else
+    return NULL;
+}
+
 
 static void lrc_loaditem(current_info_t* info) {
   char str[20];
@@ -45,6 +58,20 @@ static void lrc_loaditem(current_info_t* info) {
   widget_t* lyric_list = widget_lookup(Main_Window, "lyric_list", TRUE);
   /* 销毁所有歌词栏下的label */
   widget_destroy_children(lyric_list);
+
+  /* song_lyric为空,创建默认控件 */
+  if(p == NULL) {
+    item = label_create(lyric_list, 100, 200, 80, 30);
+    widget_set_text_utf8(item, "");
+    item = label_create(lyric_list, 100, 200, 80, 30);
+    widget_set_text_utf8(item, "");
+    item = label_create(lyric_list, 100, 200, 80, 30);
+    widget_set_text_utf8(item, "Can't find the lrc data");
+    item = label_create(lyric_list, 100, 200, 80, 30);
+    widget_set_text_utf8(item, "");
+    item = label_create(lyric_list, 100, 200, 80, 30);
+    widget_set_text_utf8(item, "");
+  }
   /* 统计当前歌曲歌词的所有行数 */
   while(p != NULL) {
     p = p->next;
@@ -56,8 +83,7 @@ static void lrc_loaditem(current_info_t* info) {
     item = label_create(lyric_list, 100, 200, 80, 30);
     snprintf(str, 20, "lrclist_%d", i);
     widget_set_name(item, str);
-    chat_to_wchar(p->verse, wstr);
-    widget_set_text(item, wstr);
+    widget_set_text_utf8(item, p->verse);
     p = p->next; 
   }
   info->lrc_item = 5;
@@ -96,7 +122,14 @@ static void music_switch(bool_t is_next) {
   p = musiclist_find(Global_Current_Info->play_list,i);
   //重新加载歌词文件
   lyric_delete(Global_Current_Info->song_lyric);
-  Global_Current_Info->song_lyric = lyric_analysis("F:\\AWTK_Develop\\C-C-_Unit\\123.lrc");
+  //Global_Current_Info->song_lyric = lyric_analysis("F:\\AWTK_Develop\\C-C-_Unit\\123.lrc");
+  char* lrc_data = load_assets_manager(p->song_name);
+  if(lrc_data != NULL)
+    Global_Current_Info->song_lyric = lyric_load(lrc_data);
+  else 
+    Global_Current_Info->song_lyric = NULL;
+
+  //TODO:添加加载曲目失败的提示信息
   if(p == NULL) {
     return ;
   }
@@ -235,6 +268,8 @@ static ret_t on_playlistchanged(void* ctx, event_t* e) {
   /* 若不是选中在播的条目则切歌 */
   if(i != Global_Current_Info->index) {
     Global_Current_Info->index = i-1;
+    Global_Current_Info->play_mode = 3;
+    on_modechanged(Main_Window, NULL);
     music_switch(TRUE);
   }
 }
@@ -552,8 +587,5 @@ void application_init() {
   AllocConsole();
   freopen("conout$","w",stdout);
 
-  assets_manager_t* rm = assets_manager();
-  asset_info_t* t = assets_manager_find_in_cache(rm, ASSET_TYPE_DATA, "Favor.lrc");
-  char* p = t->data;
-  printf("%s\n", p);
 }
+

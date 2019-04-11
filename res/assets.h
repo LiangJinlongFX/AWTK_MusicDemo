@@ -24,7 +24,10 @@
 #endif/*WITH_STB_FONT*/
 #endif/*WITH_FS_RES*/
 
-#include "assets/inc/lrc/Favor.data"
+#include "assets/inc/data/Favor.data"
+#include "assets/inc/data/Blow_You_Up.data"
+#include "assets/inc/data/Feel_Alive.data"
+#include "assets/inc/data/Turn_It_Up.data"
 
 ret_t assets_init(void) {
   assets_manager_t* rm = assets_manager();
@@ -57,6 +60,9 @@ ret_t assets_init(void) {
 #endif
 
   assets_manager_add(rm, data_Favor_lrc);
+  assets_manager_add(rm, data_Blow_You_Up_lrc);
+  assets_manager_add(rm, data_Feel_Alive_lrc);
+  assets_manager_add(rm, data_Turn_It_Up_lrc);
 
   tk_init_assets();
   return RET_OK;

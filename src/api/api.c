@@ -25,6 +25,16 @@ void time_to_wchar(uint32_t s, wchar_t* str) {
   chat_to_wchar(char_str, str);
 }
 
+void my_str_replace(char* str, char src, char dst) {
+	char* p = str;
+
+	while(*p != '\0') {
+		if(*p == src)
+			*p = dst;
+		p++;
+	}
+}
+
 /**
  * 在链表尾部插入一个节点
  **/
@@ -119,36 +129,7 @@ music_info_t* musiclist_default(void) {
   sprintf(p->song_name, "MISS U");
   sprintf(p->singer_name, "Cesqeaux");
   p->total_time = 210000;
-  p = musiclist_insert(head);
-  if (p == NULL) return head;
-  sprintf(p->song_name, "Nobody");
-  sprintf(p->singer_name, "Danelle Sandoval");
-  p->total_time = 210000;
-  p = musiclist_insert(head);
-  if (p == NULL) return head;
-  sprintf(p->song_name, "Mind(4B Remix)");
-  sprintf(p->singer_name, "4B/Skrillex");
-  p->total_time = 210000;
-  p = musiclist_insert(head);
-  if (p == NULL) return head;
-  sprintf(p->song_name, "Can't Let You Go");
-  sprintf(p->singer_name, "Josef Bamba");
-  p->total_time = 210000;
-  p = musiclist_insert(head);
-  if (p == NULL) return head;
-  sprintf(p->song_name, "The Middle");
-  sprintf(p->singer_name, "Zedd/Grey/Maren Morris");
-  p->total_time = 210000;
-  p = musiclist_insert(head);
-  if (p == NULL) return head;
-  sprintf(p->song_name, "Drunk");
-  sprintf(p->singer_name, "Marky Style");
-  p->total_time = 210000;
-  p = musiclist_insert(head);
-  if (p == NULL) return head;
-  sprintf(p->song_name, "Test End");
-  sprintf(p->singer_name, "AWTK");
-  p->total_time = 210000;
+
 
   return head;
 }

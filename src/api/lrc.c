@@ -11,8 +11,10 @@ static long ms(char origin[9]) {
 
 /*   输出模块   */
 void OutputLyrics(lyric_t* head) {
-  lyric_t* p;
-  for (p = head; p != NULL; p = p->next) printf("%ld >> %s\n", p->timeLine, p->verse);
+  lyric_t* p=NULL;
+  for (p = head; p != NULL; p = p->next) {
+    printf("%ld >> %s\n", p->timeLine, p->verse);
+  }
 }
 
 /*
@@ -33,6 +35,10 @@ static int LrcAnalysis_line(lyric_t* head, char* str) {
 
   //提取信息保存到节点
   p = (lyric_t*)malloc(sizeof(lyric_t));  //为歌词节点分配内存
+  if(p == NULL) {
+    printf("malloc error!\n");
+    return -1;
+  }
   p->timeLine = ms(str + i - 9);          //解析每行歌词时间轴
   strcpy(p->verse, str + i);              //复制每行歌词正文到节点
   p->next = NULL;
@@ -46,6 +52,64 @@ static int LrcAnalysis_line(lyric_t* head, char* str) {
     q->next = p;
     p->prev = q;
   }
+
+  return 0;
+}
+
+/*
+ * 在常量数组里读取每行歌词
+ * 读取到\0或者超过缓冲区的最大长度返回 0,以表示读结束
+ * API接口参照fgets
+ */
+static int array_readline(char* str, unsigned int len, arrayfile_t* file) {
+  unsigned int i=0;
+  char* p=NULL;
+  unsigned char* q=NULL;
+  p = str;
+  q = file->array;
+  i = file->offset;
+  
+  if(q[i] == 0x00) return 0;
+  
+  while(q[i] != '\0') {
+    *p = q[i];
+    if(*p == '\r')
+      break;
+    i++;
+    p++;
+  }
+
+  *p = '\0'; 
+  file->offset = i+1;
+
+  return 1;
+}
+
+
+lyric_t* lyric_load(unsigned char* lrc_data) {
+  char linePointer[256];
+  lyric_t* head=NULL;
+
+  /* 初始化首节点 */
+  head = (lyric_t*)malloc(sizeof(lyric_t));
+  if (head == NULL) return NULL;
+  head->timeLine = 0;
+  strcpy(head->verse, "AWTK");
+  head->next = NULL;
+  head->prev = NULL;
+
+  /* 初始化数据结构 */
+  arrayfile_t file;
+  file.offset = 0;
+  file.array = lrc_data;
+
+  while(array_readline(linePointer, 256, &file) != 0) {
+    if (linePointer[1] >= '0' && linePointer[2] <= '9') { 
+      LrcAnalysis_line(head, linePointer);
+    }
+  }
+
+  return head;
 }
 
 lyric_t* lyric_analysis(char* str) {
@@ -97,7 +161,7 @@ lyric_t* lyric_find(lyric_t* head, long time) {
   lyric_t* p;
 
   for (p = head; p != NULL; p = p->next) {
-    if ((p->timeLine >= time - 400) && (p->timeLine < time + 400)) {
+    if ((p->timeLine >= time - 400) && (p->timeLine < time + 500)) {
       printf("timeLine=%d time=%d\n", p->timeLine, time);
       return p;
     }
@@ -105,25 +169,24 @@ lyric_t* lyric_find(lyric_t* head, long time) {
   return NULL;
 }
 
+/* 
+ * 根据时间查找当前歌词 
+ * 精度 +-100ms 
+ * 若存在相同的情况下返回最近行数 
+ * 若+-100ms的范围内都没有合适的则返回-1 
+ */ 
+int lyric_findwithcounter(lyric_t* head, long time) { 
+  int i=0; 
+  lyric_t* p; 
 
-/*
- * 根据时间查找当前歌词
- * 精度 +-100ms
- * 若存在相同的情况下返回最近行数
- * 若+-100ms的范围内都没有合适的则返回-1
- */
-int lyric_findwithcounter(lyric_t* head, long time) {
-  int i=0;
-  lyric_t* p;
-
-  for (p = head; p != NULL; p = p->next) {
-    if ((p->timeLine >= time) && (p->timeLine < time + 500)) {
-      printf("count: %d timeLine=%d time=%d\n", i, p->timeLine, time);
-      return i;
-    }
-    i++;
-  }
-  return -1;
+  for (p = head; p != NULL; p = p->next) { 
+    if ((p->timeLine >= time) && (p->timeLine < time + 500)) { 
+      printf("count: %d timeLine=%d time=%d\n", i, p->timeLine, time); 
+      return i; 
+    } 
+    i++; 
+  } 
+  return -1; 
 }
 
 /*
