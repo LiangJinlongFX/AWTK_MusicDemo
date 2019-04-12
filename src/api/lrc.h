@@ -17,7 +17,7 @@ typedef struct _arrayfile_t {
 void OutputLyrics(lyric_t* head);
 lyric_t* lyric_analysis(char* str);
 lyric_t* lyric_find(lyric_t* head, long time);
-int lyric_findwithcounter(lyric_t* head, long time);
+int lyric_findwithcounter(lyric_t* head, long time, int range);
 void lyric_delete(lyric_t* head);
 lyric_t* lyric_load(unsigned char* str);
 

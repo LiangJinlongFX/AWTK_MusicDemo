@@ -42,6 +42,8 @@ typedef struct _current_info_t {
     int lrc_item;
     //记录歌词上一个索引
     int lrc_previtem;
+    //播放进度条是否被拖动
+    bool_t is_scroll;
     //当前歌曲播放模式
     uint8_t play_mode;
     //当前是否在播放

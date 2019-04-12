@@ -28,7 +28,7 @@ static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
   vgcanvas_save(vg);
   album_cover_transform(widget,c);
   if (widget_load_image(widget, album_cover->image, &bitmap) == RET_OK) {
-    rect_t dst = rect_init(widget->w*0.25, widget->h*0.25, w*0.5, w*0.5);
+    rect_t dst = rect_init(widget->w*0.25, widget->h*0.25, widget->w*0.5, widget->h*0.5);
     canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_SCALE_AUTO, &dst);
   }
   //TODO:使用控件自身的image_manager实现图片资源管理,但内存波动较大
@@ -38,7 +38,7 @@ static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
   // }
 
   if (widget_load_image(widget, album_cover->bg_image, &bitmap) == RET_OK) {
-    rect_t dst = rect_init(widget->w*0.1, widget->h*0.1, w*0.8, w*0.8);
+    rect_t dst = rect_init(widget->w*0.1, widget->h*0.1, widget->w*0.8, widget->h*0.8);
     canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_SCALE_AUTO, &dst);
   }
   vgcanvas_restore(vg);
@@ -47,7 +47,7 @@ static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
   vgcanvas_save(vg);
   cartridge_transform(widget,c);
   if (widget_load_image(widget, album_cover->fg_image, &bitmap) == RET_OK) {
-    rect_t dst = rect_init(0, 0, widget->w, widget->h);
+    rect_t dst = rect_init(widget->w/2, 0, w, w);
     canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_DEFAULT, &dst);
   }
   vgcanvas_restore(vg);
@@ -96,11 +96,13 @@ ret_t cartridge_transform(widget_t* widget, canvas_t* c)
   anchor_y = 0.5 * widget->h;
 
   vgcanvas_translate(vg, c->ox, c->oy);
+  vgcanvas_translate(vg, anchor_x, 0);
   if(album_cover->is_play == TRUE)
-    vgcanvas_rotate(vg, TK_D2R(0));
+      vgcanvas_rotate(vg, TK_D2R(1));
   else
-    vgcanvas_rotate(vg, TK_D2R(-45));
+    vgcanvas_rotate(vg, TK_D2R(-60));
   vgcanvas_translate(vg, -c->ox, -c->oy);
+  vgcanvas_translate(vg, -anchor_x, 0);
 
   return RET_OK; 
 }

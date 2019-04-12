@@ -175,12 +175,12 @@ lyric_t* lyric_find(lyric_t* head, long time) {
  * 若存在相同的情况下返回最近行数 
  * 若+-100ms的范围内都没有合适的则返回-1 
  */ 
-int lyric_findwithcounter(lyric_t* head, long time) { 
+int lyric_findwithcounter(lyric_t* head, long time, int range) { 
   int i=0; 
   lyric_t* p; 
 
   for (p = head; p != NULL; p = p->next) { 
-    if ((p->timeLine >= time) && (p->timeLine < time + 500)) { 
+    if ((p->timeLine >= time) && (p->timeLine < time + range)) { 
       printf("count: %d timeLine=%d time=%d\n", i, p->timeLine, time); 
       return i; 
     } 

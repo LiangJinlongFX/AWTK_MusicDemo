@@ -8,22 +8,15 @@ import glob
 import shutil
 import platform
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
 ###########################
-DPI = ''
-ACTION = 'all'
-ASSET_C = ''
-BIN_DIR = ''
-ASSETS_ROOT = ''
-AWTK_ROOT = ''
-INPUT_DIR = ''
-OUTPUT_DIR = ''
-IMAGEGEN_OPTIONS = ''
-OS_NAME = platform.system()
+ASSETS_ROOT_DIR = ""
+ASSETS_RAW_DIR = ""
+ASSETS_INC_DIR = ""
+TOOLS_DIR = ""
 ###########################
 
+
+################################# 通用函数 ##################################################################
 
 def to_var_name(s):
     '''
@@ -59,11 +52,11 @@ def joinPath(root, subdir):
     '''
     return os.path.normpath(os.path.join(root, subdir))
 
-def toExe(name):
-    if OS_NAME == 'Windows':
-        return joinPath(BIN_DIR, name+'.exe')
+def toExePath(root, name):
+    if platform.system() == 'Windows':
+        return joinPath(root, name + '.exe')
     else:
-        return joinPath(BIN_DIR, name)
+        return joinPath(root, name)
 
 
 def buildAll():
@@ -82,268 +75,300 @@ def removeDir(path):
         shutil.rmtree(path)
 
 
-def prepareOutputDir(name):
+def prepareOutputDir(assets_inc_dir, name):
     '''
     检查输出目录是否存在, 没有则创建
     '''
-    fullpath = joinPath(OUTPUT_DIR, name)
+    fullpath = joinPath(assets_inc_dir, name)
     if os.path.exists(fullpath):
         print(fullpath+" exist.")
     else:
         os.makedirs(fullpath)
 
+def generate(tools_dir, tool_name, src_dir, src_sub_dir, src_suffix, dst_dir, dst_sub_dir, dst_suffix, option, is_remake_dir):
+	'''
+	调用exe工具生成资源文件
+	@params: tools_dir 工具集目录
+	@params: tool_name 生成工具名称
+	@params: src_dir   源文件目录
+	@params: src_sub_dir 源文件子资源目录
+	@params: src_suffix 生成工具名称
+	@params: src_suffix 源文件后缀
+	@params: dst_dir 目标生成资源目录
+	@params: dst_sub_dir 目标生成资源子目录
+	@params: dst_suffix 目标生成资源文件后缀
+	@params: option 	附加选项
+	@params: is_remake_dir 是否要重建目录 
+	'''
+	tool_path = toExePath(tools_dir, tool_name)
+	src_dir = joinPath(src_dir, src_sub_dir)
+	dst_dir = joinPath(dst_dir, dst_sub_dir)
 
-def prepare():
+	if not os.path.exists(tool_path) :
+		print(tool_path + ' not exist')
+		return
+	if not os.path.exists(src_dir) :
+		print(src_dir + ' not exist')
+		return
+	# Delete History
+	if is_remake_dir :
+		removeDir(dst_dir)
+		os.makedirs(dst_dir);
+
+	print(tool_path + '\n' + src_dir + '\n' + dst_dir)
+	print("Start Generate...")
+
+	# Generate
+	# 判断对象是否是一个已知的类型
+	if isinstance(src_suffix, list) :
+		for f in glob.glob(joinPath(src_dir, '*.*')):
+			raw=copy.copy(f);
+			if dst_suffix == '':
+				inc=''
+			else :
+				inc=copy.copy(f);
+				inc=inc.replace(src_dir, dst_dir)
+				for suffix in src_suffix : 
+					inc=inc.replace(suffix, dst_suffix)
+			print(tool_path + ' ' + joinPath(src_dir, raw) + ' ' + joinPath(dst_dir, inc) + ' ' + option)
+			os.system(tool_path + ' ' + joinPath(src_dir, raw) + ' ' + joinPath(dst_dir, inc) + ' ' + option)
+	else :
+		for f in glob.glob(joinPath(src_dir, '*' + src_suffix)):
+			print(f)
+			raw=copy.copy(f);
+			if dst_suffix == '':
+				inc=''
+			else :
+				inc=copy.copy(f);
+				inc=inc.replace(src_dir, dst_dir)
+				inc=inc.replace(src_suffix, dst_suffix)
+			print(tool_path + ' ' + joinPath(src_dir, raw) + ' ' + joinPath(dst_dir, inc) + ' ' + option)
+			os.system(tool_path + ' ' + joinPath(src_dir, raw) + ' ' + joinPath(dst_dir, inc) + ' ' + option)
+
+
+###################################### 资源生成方法 ##########################################################
+
+def genTheme(tools_dir, src_dir, dst_dir):
     '''
-    准备资源生成目录
+    生成主题形式资源文件
     '''
-    prepareOutputDir('styles')
-    prepareOutputDir('images')
-    prepareOutputDir('fonts')
-    prepareOutputDir('strings')
-    prepareOutputDir('ui')
-    prepareOutputDir('scripts')
-    prepareOutputDir('data')
-    prepareOutputDir('xml')
+    generate(tools_dir, 'themegen', src_dir, 'styles', '.xml', dst_dir, 'styles', '.data', '', 1)
 
-
-def execCmd(cmd):
+def genTheme_bin(tools_dir, src_dir, dst_dir):
     '''
-    调用系统命令
+    生成主题形式资源二进制数据
     '''
-    print(cmd)
-    os.system(cmd)
+    generate(tools_dir, 'themegen', src_dir, 'styles', '.xml', src_dir, 'styles', '.bin', 'bin', 0)
 
 
-def themegen(raw, inc):
-    execCmd(toExe('themegen') + ' ' + joinPath(INPUT_DIR, raw) +
-            ' ' + joinPath(OUTPUT_DIR, inc))
+def genUI(tools_dir, src_dir, dst_dir):
+    '''
+    生成UI资源文件
+    '''
+    generate(tools_dir, 'xml_to_ui', src_dir, 'ui', '.xml', src_dir, 'ui', '.bin', 'bin', 0)
+
+def genUI_bin(tools_dir, src_dir, dst_dir):
+    '''
+    生成UI资源二进制数据
+    '''
+    generate(tools_dir, 'xml_to_ui', src_dir, 'ui', '.xml', dst_dir, 'ui', '.data', '', 1)
+
+def genString(tools_dir, src_dir, dst_dir):
+    '''
+    生成字符资源文件
+    '''
+    generate(tools_dir, 'strgen', src_dir, 'strings', '.xml', dst_dir, 'strings', '', '', 1)
 
 
-def themegen_bin(raw, bin):
-    execCmd(toExe('themegen') + ' ' + joinPath(INPUT_DIR, raw) +
-            ' ' + joinPath(INPUT_DIR, bin) + ' bin')
+def genString_bin(tools_dir, src_dir, dst_dir):
+    '''
+    生成字符资源二进制文件
+    '''
+    generate(tools_dir, 'strgen', src_dir, 'strings', '.xml', src_dir, 'strings', '', '.bin', 0)
 
 
-def strgen(raw, inc):
-    execCmd(toExe('strgen') + ' ' + joinPath(INPUT_DIR, raw) +
-            ' ' + joinPath(OUTPUT_DIR, inc))
+def genRes(tools_dir, src_dir, dst_dir):
+    '''
+    生成其他资源的资源文件
+    '''
+    generate(tools_dir, 'resgen', src_dir, 'data', '.lrc', src_dir, 'data', '', '.data', 0)
 
 
-def strgen_bin(raw, bin):
-    execCmd(toExe('strgen') + ' ' + joinPath(INPUT_DIR, raw) +
-            ' ' + joinPath(INPUT_DIR, bin) + ' bin')
+def genFont(tools_dir, src_dir, dst_dir):
+    '''
+    生成字体资源文件
+    '''
+    generate(tools_dir, 'resgen', src_dir, 'fonts', '.ttf', dst_dir, 'fonts', '.res', '', 1)
 
 
-def resgen(raw, inc):
-    execCmd(toExe('resgen') + ' ' + joinPath(INPUT_DIR, raw) +
-            ' ' + joinPath(OUTPUT_DIR, inc))
+def genImage(tools_dir, src_dir, dst_dir, dpi):
+    '''
+    生成图像资源文件
+    '''
+    IMAGEGEN_OPTIONS = '\"bgra|bgr565\"'
+    suffix = ['.png', '.jpg']
+    generate(tools_dir, 'imagegen', src_dir, 'images/' + dpi, suffix, dst_dir, 'images', '.data', IMAGEGEN_OPTIONS, 1)
+    #generate(tools_dir, 'resgen', src_dir, 'images/' + dpi, suffix, dst_dir, 'images', '.res', '', 0)
 
 
-def fontgen(raw, text, inc, size):
-    execCmd(toExe('fontgen') + ' ' + joinPath(INPUT_DIR, raw) + ' ' +
-            joinPath(INPUT_DIR, text) + ' ' + joinPath(OUTPUT_DIR, inc) + ' ' + str(size))
-
-
-def imagegen(raw, inc):
-    execCmd(toExe('imagegen') + ' ' + raw + ' ' + inc + ' ' + IMAGEGEN_OPTIONS)
-    inc = inc.replace('.data', '.res')
-    resgen(raw, inc)
-
-
-def svggen(raw, inc, bin):
-    execCmd(toExe('bsvggen') + ' ' + raw + ' ' + inc)
-    execCmd(toExe('bsvggen') + ' ' + raw + ' ' + bin + ' bin')
-
-
-def xml_to_ui(raw, inc):
-    execCmd(toExe('xml_to_ui') + ' ' + raw + ' ' + inc)
-
-
-def xml_to_ui_bin(raw, bin):
-    execCmd(toExe('xml_to_ui') + ' ' + raw + ' ' + bin + ' bin')
-
-
-def gen_res_all_style():
-    for f in glob.glob(joinPath(INPUT_DIR, 'styles/*.xml')):
-        inc = copy.copy(f)
-        raw = copy.copy(f)
-        bin = copy.copy(f)
-        inc = inc.replace('.xml', '.data')
-        inc = inc.replace(INPUT_DIR, OUTPUT_DIR)
-        inc = fix_output_file_name(inc)
-        themegen(raw, inc)
-        bin = bin.replace('.xml', '.bin')
-        themegen_bin(raw, bin)
-
-
-def gen_res_svg():
-    for f in glob.glob(joinPath(INPUT_DIR, 'images/svg/*.svg')):
-        inc = copy.copy(f)
-        bin = copy.copy(f)
-        raw = copy.copy(f)
-        basename = os.path.basename(inc)
-        inc = joinPath(OUTPUT_DIR, 'images/'+basename)
-        inc = inc.replace('.svg', '.bsvg')
-        inc = fix_output_file_name(inc)
-        bin = bin.replace('.svg', '.bsvg')
-        svggen(raw, inc, bin)
-
-
-def gen_res_png_jpg():
-    for f in glob.glob(joinPath(INPUT_DIR, 'images/'+DPI+'/*.*')):
-        inc = copy.copy(f)
-        raw = copy.copy(f)
-        basename = os.path.basename(inc)
-        inc = joinPath(OUTPUT_DIR, 'images/'+basename)
-        inc = inc.replace('.png', '.data')
-        inc = inc.replace('.jpg', '.data')
-        inc = inc.replace('.gif', '.data')
-        inc = fix_output_file_name(inc)
-        imagegen(raw, inc)
+########################################## 生成某类资源函数集合 ###############################################################
 
 
 def gen_res_all_image():
-    gen_res_png_jpg()
-    gen_res_svg()
+    '''
+    生成所有image资源文件
+    '''
+    genImage(TOOLS_DIR, ASSETS_RAW_DIR, ASSETS_INC_DIR, 'x1')
 
+def gen_res_all_style():
+    '''
+    生成所有style资源文件
+    '''
+    genTheme(TOOLS_DIR, ASSETS_RAW_DIR, ASSETS_INC_DIR)
+    genTheme_bin(TOOLS_DIR, ASSETS_RAW_DIR, ASSETS_INC_DIR)
 
 def gen_res_all_ui():
-    for f in glob.glob(joinPath(INPUT_DIR, 'ui/*.xml')):
-        inc = copy.copy(f)
-        raw = copy.copy(f)
-        bin = copy.copy(f)
-        inc = inc.replace('.xml', '.data')
-        inc = inc.replace(INPUT_DIR, OUTPUT_DIR)
-        inc = fix_output_file_name(inc)
-        xml_to_ui(raw, inc)
-        bin = bin.replace('.xml', '.bin')
-        xml_to_ui_bin(raw, bin)
-
+    '''
+    生成所有ui资源文件
+    '''
+    genUI(TOOLS_DIR, ASSETS_RAW_DIR, ASSETS_INC_DIR)
+    genUI_bin(TOOLS_DIR, ASSETS_RAW_DIR, ASSETS_INC_DIR)
 
 def gen_res_all_data():
-    for f in glob.glob(joinPath(INPUT_DIR, 'data/*.*')):
-        inc = copy.copy(f)
-        raw = copy.copy(f)
-        _, extname = os.path.splitext(inc)
-        uextname = extname.replace('.', '_')
-        inc = inc.replace(extname, uextname+'.data')
-        inc = inc.replace(INPUT_DIR, OUTPUT_DIR)
-        inc = fix_output_file_name(inc)
-        resgen(raw, inc)
-
-
-def gen_res_all_xml():
-    for f in glob.glob(joinPath(INPUT_DIR, 'xml/*.xml')):
-        inc = copy.copy(f)
-        raw = copy.copy(f)
-        inc = inc.replace('.xml', '.data')
-        inc = inc.replace(INPUT_DIR, OUTPUT_DIR)
-        inc = fix_output_file_name(inc)
-        resgen(raw, inc)
-
+    '''
+    生成所有data资源文件
+    '''
+    genRes(TOOLS_DIR, ASSETS_RAW_DIR, ASSETS_INC_DIR)
 
 def gen_res_all_font():
-    for f in glob.glob(joinPath(INPUT_DIR, 'fonts/*.ttf')):
-        res = copy.copy(f)
-        raw = copy.copy(f)
-        res = res.replace(INPUT_DIR, '.')
-        res = res.replace('.ttf', '.res')
-        raw = raw.replace(INPUT_DIR, '.')
-        resgen(raw, res)
-    fontgen('fonts/default.ttf', 'fonts/text.txt', 'fonts/default.data', 18)
-
-
-def gen_res_all_script():
-    for f in glob.glob(joinPath(INPUT_DIR, 'scripts/*.js')):
-        res = copy.copy(f)
-        raw = copy.copy(f)
-        res = res.replace(INPUT_DIR, '.')
-        res = res.replace('.js', '.res')
-        raw = raw.replace(INPUT_DIR, '.')
-        raw = fix_output_file_name(raw)
-        resgen(raw, res)
-
+    '''
+    生成所有font资源文件
+    '''
+    genFont(TOOLS_DIR, ASSETS_RAW_DIR, ASSETS_INC_DIR) 
 
 def gen_res_all_string():
-    strgen('strings/strings.xml', 'strings')
-    strgen_bin('strings/strings.xml', 'strings')
+    '''
+    生成所有的字符串资源
+    '''
+    genString(TOOLS_DIR, ASSETS_RAW_DIR, ASSETS_INC_DIR) 
+    genString_bin(TOOLS_DIR, ASSETS_RAW_DIR, ASSETS_INC_DIR) 
 
-
-def gen_gpinyin():
-    execCmd(toExe('resgen') + ' ' + joinPath('3rd', 'gpinyin/data/gpinyin.dat') +
-            ' ' + joinPath('3rd', 'gpinyin/src/gpinyin.inc'))
-    execCmd(toExe('resgen') + ' ' + joinPath('tools', 'word_gen/words.bin') +
-            ' ' + joinPath('src', 'input_methods/suggest_words.inc'))
-    execCmd(toExe('resgen') + ' ' + joinPath('tools',
-                                             'word_gen/words.bin') + ' ' + joinPath('tests', 'suggest_test.inc'))
+def cleanRes(assets_dir):
+    '''
+    清除编译生成的inc资源文件
+    @params assets_dir 资源根目录
+    '''
+    assets_raw_dir = joinPath(assets_dir, "raw")
+    assets_inc_dir = joinPath(assets_dir, "inc")
+    print("==================================================================")
+    resFiles = glob.glob(joinPath(assets_raw_dir, '*/*.bin')) + \
+        glob.glob(joinPath(assets_raw_dir, '*/*/*.bin'))
+    for f in resFiles:
+        print("remove: " + f)
+        os.remove(f)
+    resFiles = glob.glob(joinPath(assets_raw_dir, '*/*.bin')) + \
+        glob.glob(joinPath(assets_raw_dir, '*/*/*.bsvg'))
+    for f in resFiles:
+        print("remove: " + f)
+        os.remove(f)
+    removeDir(assets_inc_dir)
+    print("==================================================================")
 
 
 def gen_res_all():
     gen_res_all_string()
     gen_res_all_font()
-    gen_res_all_script()
     gen_res_all_image()
     gen_res_all_ui()
     gen_res_all_style()
     gen_res_all_data()
-    gen_res_all_xml()
 
 
-def writeResult(str):
-    fd = os.open(ASSET_C, os.O_RDWR | os.O_CREAT | os.O_TRUNC)
+################################################## 生成资源包含 C Header文件方法 ###################################################################
+
+
+def writeToFile(file_name, str):
+    '''
+    将内容写入文件
+    '''
+    fd = os.open(file_name, os.O_RDWR|os.O_CREAT|os.O_TRUNC)
     os.write(fd, str)
     os.close(fd)
 
 
-def genIncludes(files):
+def genIncludes(files, dir_name):
+    '''
+    生成#include C语句
+    @params files 文件列表
+    @params dir_name 文件目录路径
+    '''
     str1 = ""
     for f in files:
-        incf = copy.copy(f)
-        incf = incf.replace(os.path.dirname(ASSETS_ROOT), ".")
-        incf = incf.replace('\\', '/')
-        incf = incf.replace('./', '')
+        incf = copy.copy(f);
+        incf=incf.replace(dir_name, "assets/inc");
+        incf=incf.replace('\\', '/');
         str1 += '#include "'+incf+'"\n'
-
     return str1
 
+def GetFileBaseName(file_name, root_dir_name, subdir_name, suffix):
+    '''
+    生成资源文件名中的数组名
+    @params file_name 文件名
+    @params root_dir_name 资源根目录
+    @params subdir_name 子资源目录
+    @params suffix 后缀名
+    '''
+    name = file_name.replace(root_dir_name, '');
+    name = name.replace('\\', '/');
+    name = name.replace('/' + subdir_name + '/', '');
+    name = name.replace(suffix, '');
+    return name;
 
-def gen_add_assets(files):
-    result = ""
+def genAssetsManagerAdd(assets_inc_dir, filter, dir_name, name, suffix):
+    '''
+    生成"assets_manager_add"C语句,往资源管理器添加数据
+    @params assets_inc_dir 资源inc目录路径
+    @params filter 文件过滤器
+    @params dir_name 当前资源目录名称
+    @params name 资源命名前缀
+    @params suffix 资源文件后缀
+    '''
+    files=glob.glob(joinPath(assets_inc_dir, filter))
+    result = ''
     for f in files:
-        incf = copy.copy(f)
-        basename = incf.replace(OUTPUT_DIR, '.')
-        basename = basename.replace('\\', '/')
-        basename = basename.replace('/fonts/', '/font/')
-        basename = basename.replace('/images/', '/image/')
-        basename = basename.replace('/styles/', '/style/')
-        basename = basename.replace('./', '')
-        basename = basename.replace('/', '_')
-        basename = basename.replace('.data', '')
-        basename = basename.replace('.bsvg', '')
-        result += '  assets_manager_add(rm, '+basename+');\n'
+        basename = GetFileBaseName(copy.copy(f), assets_inc_dir, dir_name,  suffix)
+        result += '  assets_manager_add(rm, ' + name + basename + ');\n'
     return result
 
 
 def gen_assets_header(assets_dir, assets_c_path):
+    '''
+    生成资源的 C 头文件，以将资源引入AWTK中
+    @params assets_dir 工程里的资源存放目录
+    @params assets_c_path 生成的C文件存放路径
+    '''
+    #获取inc文件路径
     assets_inc_dir = joinPath(assets_dir, "inc")
     if not os.path.exists(assets_inc_dir):
         print('assets inc dir not exist')
         exit()
 
+    #包含AWTK头文件
     result = '#include "awtk.h"\n'
-    result += '#include "base/assets_manager.h"\n'
 
+    #定义是否使用文件系统的宏
     result += '#ifndef WITH_FS_RES\n'
 
-    #include .data文件
-    files=glob.glob(joinPath(assets_inc_dir, 'strings/*.data')) \
-    + glob.glob(joinPath(assets_inc_dir, 'styles/*.data')) \
-    + glob.glob(joinPath(assets_inc_dir, 'ui/*.data')) 
-    result += genIncludes(files, assets_inc_dir);
+    #包含data文件夹下的数据
+    result += '//包含data文件夹下的数据\n'
+    files = glob.glob(joinPath(assets_inc_dir, 'data/*.data')) \
+        + glob.glob(joinPath(assets_inc_dir, 'data/*.bin'))
+    result += genIncludes(files, assets_inc_dir)
 
-    #包含图片的 .res文件
+    #包含图片文件
+    result += '//包含图片资源文件\n'
     result += "#ifdef WITH_STB_IMAGE\n"
+    result += '//如果定义了WITH_STB_IMAGE宏,使用原始的图片res数据,否则使用经解码后的.data数据\n'
     files=glob.glob(joinPath(assets_inc_dir, 'images/*.res')) 
     result += genIncludes(files, assets_inc_dir)
     result += "#else\n"
@@ -352,8 +377,11 @@ def gen_assets_header(assets_dir, assets_c_path):
     result += '#endif/*WITH_STB_IMAGE*/\n'
 
     #包含字体文件
+    result += '//包含字体资源文件\n'
     result += "#ifdef WITH_STB_FONT\n"
+    result += '//如果定义了WITH_STB_FONT宏,将使用原始的ttf字体资源,否则使用解码后的.data数据\n'
     result += "#ifdef WITH_MINI_FONT\n"
+    result += '//如果定义了WITH_MINI_FONT宏,将使用MINI字体资源\n'
     files=glob.glob(joinPath(assets_inc_dir, 'fonts/default.mini.res')) 
     result += genIncludes(files, assets_inc_dir)
     result += "#else/*WITH_MINI_FONT*/\n"
@@ -365,35 +393,48 @@ def gen_assets_header(assets_dir, assets_c_path):
     result += genIncludes(files, assets_inc_dir)
     result += '#endif/*WITH_STB_FONT*/\n'
 
+    #结束WITH_FS_RES
     result += '#endif/*WITH_FS_RES*/\n'
 
     result += '\n';
+    result += '//定义资源初始化函数\n'
     result += 'ret_t assets_init(void) {\n'
     result += '  assets_manager_t* rm = assets_manager();\n\n'
     result += ''
 
+    result += '//在文件系统中预先加载字体资源\n'
     result += '#ifdef WITH_FS_RES\n'
-    result += '#ifdef WITH_MINI_FONT\n'
+    result += '  #ifdef WITH_MINI_FONT\n'
     result += '  asset_info_t* info = assets_manager_load(rm, ASSET_TYPE_FONT, "default.mini");\n'
     result += '  if (info) {\n'
     result += '    strcpy(info->name, "default");\n'
     result += '  }\n'
-    result += '#else \n'
-    result += '  assets_manager_load(rm, ASSET_TYPE_FONT, "default");\n'
-    result += '#endif\n'
+    result += '  #else \n'
+    result += '    assets_manager_load(rm, ASSET_TYPE_FONT, "default");\n'
+    result += '  #endif\n'
+    result += '  //预先加载默认风格\n'
     result += '  assets_manager_load(rm, ASSET_TYPE_STYLE, "default");\n'
-    result += '#else\n'
-
+    result += '#else /*WITH_FS_RES*/\n'
     result += '#ifdef WITH_STB_FONT\n'
-    result += '  assets_manager_add(rm, font_default'  + ');\n'
+    result += '  //如果定义了WITH_STB_FONT宏,将使用原始的ttf字体资源,否则使用解码后的.data数据\n'
+    result += '  #ifdef WITH_MINI_FONT\n'
+    result += '  assets_manager_add(rm, "default.mini");\n'
+    result += '  if (info) {\n'
+    result += '    strcpy(info->name, "default");\n'
+    result += '  }\n'
+    result += '  #else \n'
+    result += '  assets_manager_add(rm, "default");\n'
+    result += '  #endif /*WITH_MINI_FONT*/\n'
+    result += '#endif /*WITH_STB_FONT*/\n'
 
+    #添加资源常量数组
+    result += genAssetsManagerAdd(assets_inc_dir, 'data/*.data', 'data', 'data_', '.data')
     result += genAssetsManagerAdd(assets_inc_dir, 'fonts/*.data', 'fonts', 'font_', '.data')
-    result += '#endif\n'
     result += genAssetsManagerAdd(assets_inc_dir, 'images/*.res', 'images', 'image_', '.res')
     result += genAssetsManagerAdd(assets_inc_dir, 'styles/*.data', 'styles', 'style_', '.data')
     result += genAssetsManagerAdd(assets_inc_dir, 'ui/*.data', 'ui', 'ui_',  '.data')
     result += genAssetsManagerAdd(assets_inc_dir, 'strings/*.data', 'strings', 'strings_', '.data')
-    result += '#endif\n'
+    result += '#endif /*WITH_FS_RES*/\n'
 
     result += '\n'
     result += '  tk_init_assets();\n'
@@ -401,220 +442,76 @@ def gen_assets_header(assets_dir, assets_c_path):
     result += '}\n'
     writeToFile(assets_c_path, result);
 
-
-def gen_res_c():
-    result = '#include "awtk.h"\n'
-    result += '#include "base/assets_manager.h"\n'
-
-    result += '#ifndef WITH_FS_RES\n'
-    files = glob.glob(joinPath(OUTPUT_DIR, 'strings/*.data')) \
-        + glob.glob(joinPath(OUTPUT_DIR, 'styles/*.data'))  \
-        + glob.glob(joinPath(OUTPUT_DIR, 'ui/*.data')) \
-        + glob.glob(joinPath(OUTPUT_DIR, 'xml/*.data')) \
-        + glob.glob(joinPath(OUTPUT_DIR, 'data/*.data'))
-
-    result += genIncludes(files)
-
-    result += "#ifdef WITH_STB_IMAGE\n"
-    files = glob.glob(joinPath(OUTPUT_DIR, 'images/*.res'))
-    result += genIncludes(files)
-    result += "#else\n"
-    files = glob.glob(joinPath(OUTPUT_DIR, 'images/*.data'))
-    result += genIncludes(files)
-    result += '#endif/*WITH_STB_IMAGE*/\n'
-
-    result += "#ifdef WITH_VGCANVAS\n"
-    files = glob.glob(joinPath(OUTPUT_DIR, 'images/*.bsvg'))
-    result += genIncludes(files)
-    result += '#endif/*WITH_VGCANVAS*/\n'
-
-    result += "#if defined(WITH_STB_FONT) || defined(WITH_FT_FONT)\n"
-    result += "#ifdef WITH_MINI_FONT\n"
-    files = glob.glob(joinPath(OUTPUT_DIR, 'fonts/default.mini.res'))
-    result += genIncludes(files)
-    result += "#else/*WITH_MINI_FONT*/\n"
-    files = glob.glob(joinPath(OUTPUT_DIR, 'fonts/default.res'))
-    result += genIncludes(files)
-    result += '#endif/*WITH_MINI_FONT*/\n'
-    result += "#else/*WITH_STB_FONT or WITH_FT_FONT*/\n"
-    files = glob.glob(joinPath(OUTPUT_DIR, 'fonts/*.data'))
-    result += genIncludes(files)
-    result += '#endif/*WITH_STB_FONT or WITH_FT_FONT*/\n'
-
-    result += '#endif/*WITH_FS_RES*/\n'
-
-    result += '\n'
-    result += 'ret_t assets_init(void) {\n'
-    result += '  assets_manager_t* rm = assets_manager();\n\n'
-    result += ''
-
-    result += '#ifdef WITH_FS_RES\n'
-    result += '  assets_manager_load(rm, ASSET_TYPE_STYLE, "default");\n'
-    result += '  assets_manager_load(rm, ASSET_TYPE_FONT, "default");\n'
-    result += '#else\n'
-
-    files = glob.glob(joinPath(OUTPUT_DIR, '**/*.data'))
-    result += gen_add_assets(files)
-
-    result += "#ifdef WITH_VGCANVAS\n"
-    files = glob.glob(joinPath(OUTPUT_DIR, 'images/*.bsvg'))
-    result += gen_add_assets(files)
-    result += '#endif/*WITH_VGCANVAS*/\n'
-
-    result += '#endif\n'
-
-    result += '\n'
-    result += '  tk_init_assets();\n'
-    result += '  return RET_OK;\n'
-    result += '}\n'
-    writeResult(result)
-
-
-def gen_res_web_c():
-    result = '#include "awtk.h"\n'
-    result += '#include "base/assets_manager.h"\n'
-
-    files = glob.glob(joinPath(OUTPUT_DIR, 'images/*.bsvg')) \
-        + glob.glob(joinPath(OUTPUT_DIR, 'strings/*.data')) \
-        + glob.glob(joinPath(OUTPUT_DIR, 'styles/*.data'))  \
-        + glob.glob(joinPath(OUTPUT_DIR, 'ui/*.data')) \
-        + glob.glob(joinPath(OUTPUT_DIR, 'xml/*.data')) \
-        + glob.glob(joinPath(OUTPUT_DIR, 'data/*.data'))
-
-    result += genIncludes(files)
-
-    result += '\n'
-    result += 'ret_t assets_init(void) {\n'
-    result += '  assets_manager_t* rm = assets_manager();\n\n'
-    result += ''
-
-    result += gen_add_assets(files)
-
-    result += '\n'
-    result += '  tk_init_assets();\n'
-    result += '  return RET_OK;\n'
-    result += '}\n'
-    writeResult(result)
-
-def gen_res():
-    prepare()
-    gen_res_all()
-    gen_res_c()
-
+###########################################################################################################
 
 def init(awtk_root, assets_root, asset_c):
     '''
-    init all path
+    初始化资源生成工具环境以及资源输出目录
     '''
-    global DPI
-    global ASSET_C
-    global BIN_DIR
-    global ASSETS_ROOT
-    global AWTK_ROOT
-    global INPUT_DIR
-    global OUTPUT_DIR
-    global IMAGEGEN_OPTIONS
+    tools_dir = os.path.abspath(joinPath(awtk_root, 'bin'))
+    assets_root_dir = os.path.abspath(assets_root)
+    assets_c_path = os.path.abspath(asset_c)
 
-    ASSET_C = asset_c
-    AWTK_ROOT = awtk_root
-    ASSETS_ROOT = assets_root
+    #检查 raw 目录是否存在
+    assets_raw_dir = joinPath(assets_root_dir, 'raw')
+    if os.path.exists(assets_raw_dir):
+        print(assets_raw_dir + " exist.")
+    else:
+        print("cannot find the " + assets_raw_dir)
+        exit()
 
-    BIN_DIR = joinPath(AWTK_ROOT, 'bin')
-    INPUT_DIR = joinPath(ASSETS_ROOT, 'raw')
-    OUTPUT_DIR = joinPath(ASSETS_ROOT, 'inc')
-    print("-------------------------------------------------")
-    dumpArgs()
-    print("-------------------------------------------------")
+    #检查 inc 目录是否存在
+    assets_inc_dir = joinPath(assets_root_dir, 'inc')
+    if os.path.exists(assets_inc_dir):
+        print(assets_inc_dir + " exist.")
+    else:
+        print("make dir " + assets_inc_dir)
+        os.makedirs(assets_inc_dir)
+    #检查 子资源 目录是否存在
+    prepareOutputDir(assets_inc_dir, "data")
+    prepareOutputDir(assets_inc_dir, "fonts")
+    prepareOutputDir(assets_inc_dir, "images")
+    prepareOutputDir(assets_inc_dir, "strings")
+    prepareOutputDir(assets_inc_dir, "styles")
+    prepareOutputDir(assets_inc_dir, "ui")
+    #赋值全局变量
+    global TOOLS_DIR
+    global ASSETS_INC_DIR
+    global ASSETS_RAW_DIR
+    global ASSETS_ROOT_DIR
+
+    ASSETS_ROOT_DIR = assets_root
+    ASSETS_RAW_DIR = assets_raw_dir
+    ASSETS_INC_DIR = assets_inc_dir
+    TOOLS_DIR = tools_dir
 
 
-def dumpArgs():
+def updateRes(option):
     '''
-    print all args and path
+    功能选择菜单
     '''
-    print('ASSETS_ROOT='+ASSETS_ROOT)
-    print('AWTK_ROOT='+AWTK_ROOT)
-    print('INPUT_DIR='+INPUT_DIR)
-    print('OUTPUT_DIR='+OUTPUT_DIR)
-    print('ASSET_C='+ASSET_C)
-    print('DPI='+DPI)
-    print('IMAGEGEN_OPTIONS='+IMAGEGEN_OPTIONS)
-    print('BIN_DIR='+BIN_DIR)
-
-
-def updateRes():
-    '''
-    select menu
-    '''
-    global ACTION
-    if ACTION == 'all':
-        removeDir(OUTPUT_DIR)
-        gen_res()
-    elif ACTION == 'clean':
-        cleanRes()
-    elif ACTION == 'web':
-        gen_res_web_c()
-    elif ACTION == 'string':
-        prepare()
+    if option == '-all':
+        gen_res_all()
+    elif option == '-c':
+        cleanRes(ASSETS_ROOT_DIR)
+    elif option == '-string':
         gen_res_all_string()
-        gen_res_c()
-    elif ACTION == "font":
-        prepare()
+    elif option == "-font":
         gen_res_all_font()
-        gen_res_c()
-    elif ACTION == "script":
-        prepare()
-        gen_res_all_script()
-        gen_res_c()
-    elif ACTION == 'image':
-        prepare()
+    elif option == '-image':
         gen_res_all_image()
-        gen_res_c()
-    elif ACTION == 'ui':
-        prepare()
+    elif option == '-ui':
         gen_res_all_ui()
-        gen_res_c()
-    elif ACTION == 'style':
-        prepare()
+    elif option == '-style':
         gen_res_all_style()
-        gen_res_c()
-    elif ACTION == 'data':
-        prepare()
+    elif option == '-data':
         gen_res_all_data()
-        gen_res_c()
-    elif ACTION == 'xml':
-        prepare()
-        gen_res_all_xml()
-        gen_res_c()
-    elif ACTION == 'pinyin':
-        prepare()
-        gen_gpinyin()
-        gen_res_c()
-    dumpArgs()
-
-
-def cleanRes():
-    '''
-    remove inc dir and *.bin file in the raw
-    '''
-    print("==================================================================")
-    resFiles = glob.glob(joinPath(INPUT_DIR, '*/*.bin')) + \
-        glob.glob(joinPath(INPUT_DIR, '*/*/*.bin'))
-    for f in resFiles:
-        print("remove: " + f)
-        os.remove(f)
-    resFiles = glob.glob(joinPath(INPUT_DIR, '*/*.bin')) + \
-        glob.glob(joinPath(INPUT_DIR, '*/*/*.bsvg'))
-    for f in resFiles:
-        print("remove: " + f)
-        os.remove(f)
-    removeDir(OUTPUT_DIR)
-    print("==================================================================")
+    else:
+        showUsage()
 
 
 def showUsage():
-    global DPI
-    global ACTION
-    global IMAGEGEN_OPTIONS
+  
     args = ' action[clean|web|all|font|image|ui|style|string|script|data|xml] dpi[x1|x2] image_options[rgba|bgra+bgr565]'
     if len(sys.argv) == 1:
         print('=========================================================')
@@ -641,5 +538,6 @@ def showUsage():
 
 #showUsage()
 if __name__ == '__main__':
-    a = fix_output_file_name("../123qsad,,.data");
-    print(a)
+    init("../../awtk", "../res/assets", "./");
+    updateRes("-c");
+    updateRes("-all");
