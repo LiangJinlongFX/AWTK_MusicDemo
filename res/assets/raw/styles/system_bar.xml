@@ -5,18 +5,18 @@
 
 <label>
   <style name="default">
-    <normal text_color="white" text_align_h="center" font_size="32"/>
+    <normal text_color="white" text_align_h="left" font_size="24"/>
   </style>
 </label>
 
 <digit_clock>
   <style name="default">
-    <normal text_color="white" text_align_h="center" font_size="24"/>
+    <normal text_color="white" text_align_h="center" font_size="16"/>
   </style>
 </digit_clock>
 
 <button>
-  <style name="default" font_size="24">
+  <style name="default" font_size="16">
     <normal text_color="white"/>
     <pressed text_color="#04fd21"/>
     <over text_color="#04fd21"/>

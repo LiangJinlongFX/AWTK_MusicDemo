@@ -6,8 +6,6 @@
 
 BEGIN_C_DECLS
 
-#define AUDIO_DIR "D:\\audiofile\\"
-
 
 /*
  * 曲目信息存储结构体
@@ -31,9 +29,7 @@ typedef struct _music_info_t {
     unsigned int total_time;
     //下一曲
     struct _music_info_t* next;  
-}music_info_t,*music_info_p;
-
-
+}music_info_t;
 
 /*
  * 当前音乐播放状态存储结构体
@@ -46,8 +42,12 @@ typedef struct _current_info_t {
     music_info_t* play_list;
     //歌单中的歌曲数
     uint32_t music_num;
-    //当前lrc链表索引
-    int lrc_index;
+    //显示当前歌词缓存索引
+    int lrc_item;
+    //记录歌词上一个索引
+    int lrc_previtem;
+    //播放进度条是否被拖动
+    bool_t is_scroll;
     //当前歌曲播放模式
     uint8_t play_mode;
     //当前是否在播放
@@ -73,21 +73,23 @@ typedef struct _current_info_t {
     //
     uint16_t Tempo;
     //
-    uint16_t Volume;
-} current_info_t;
+    uint16_t Volume;  
+}current_info_t;
 
 
 
 /*将char类型字符串转换成wchar_t类型 */
 void chat_to_wchar(char* str1, wchar_t* str2);
-/**/
-void wchar_to_chat(wchar_t* str1, char* str2);
 /* 将毫秒数转换成m:n格式 */
 void time_to_wchar(uint32_t s, wchar_t* str);
 
+void my_str_replace(char* str, char src, char dst);
+
+music_info_t* musiclist_insert(music_info_t* pHead);
+music_info_t* musiclist_find(music_info_t* pHead, uint32_t index);
+uint32_t musiclist_count(music_info_t* pHead);
 music_info_t* musiclist_default(void);
-
-
+void print_playlist(music_info_t* pHead);
 
 END_C_DECLS
 

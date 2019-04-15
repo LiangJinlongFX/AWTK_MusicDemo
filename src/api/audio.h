@@ -4,10 +4,11 @@
 #include <awtk.h>
 #include "api.h"
 
+#define AUDIO_DIR "D:/audiofile/" 
+
 BEGIN_C_DECLS
 
-
-int Audiofile_load(char* dir_path, music_info_t* pHead);
+music_info_t* Audiofile_load(char* dir_path);
 void print_playlist(music_info_t* pHead);
 uint32_t musiclist_count(music_info_t* pHead);
 music_info_t* musiclist_find(music_info_t* pHead, uint32_t index);
@@ -26,6 +27,7 @@ int Zplay_GetPuaseStatus(void);
 int Zplay_GetPosition(void);
 int Zplay_GetTimeLength(void);
 int Zplay_Seek(int seek_time);
+int Zplay_SetSettings(void);
 
 int Zplay_SetEquailzerPoints(void);
 void Zplay_GetEquailzerPoints(void);

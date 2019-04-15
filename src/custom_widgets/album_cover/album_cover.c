@@ -2,19 +2,12 @@
 #include "awtk.h"
 #include "album_cover.h"
 
-
-
-/**
- * @method album_cover_on_paint_self
- * 绘制 album_cover 对象
- * @annotation ["constructor", "scriptable"]
- * @param {widget_t*} parent 父控件
- * @param {xy_t} x x坐标
- * @param {xy_t} y y坐标
- * @param {wh_t} w 宽度
- * @param {wh_t} h 高度
- *
- * @return {widget_t*} 对象。
+/*
+ * 绘制控件自身
+ * 注意图片的缩放显示问题
+ * 前景图片使用实际比例
+ * 背景图片缩放到控件大小的0.8
+ * 封面图片缩放到控件大小的0.5
  */
 static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
   bitmap_t bitmap;
@@ -35,12 +28,17 @@ static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
   vgcanvas_save(vg);
   album_cover_transform(widget,c);
   if (widget_load_image(widget, album_cover->image, &bitmap) == RET_OK) {
-    rect_t dst = rect_init(widget->w*0.25, widget->h*0.25, w*0.5, w*0.5);
+    rect_t dst = rect_init(widget->w*0.25, widget->h*0.25, widget->w*0.5, widget->h*0.5);
     canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_SCALE_AUTO, &dst);
   }
+  //TODO:使用控件自身的image_manager实现图片资源管理,但内存波动较大
+  // if (image_manager_get_bitmap(album_cover->cover_image_manager, album_cover->image, &bitmap) == RET_OK) {
+  //   rect_t dst = rect_init(widget->w*0.25, widget->h*0.25, w*0.5, w*0.5);
+  //   canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_SCALE_AUTO, &dst);
+  // }
 
   if (widget_load_image(widget, album_cover->bg_image, &bitmap) == RET_OK) {
-    rect_t dst = rect_init(widget->w*0.1, widget->h*0.1, w*0.8, w*0.8);
+    rect_t dst = rect_init(widget->w*0.1, widget->h*0.1, widget->w*0.8, widget->h*0.8);
     canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_SCALE_AUTO, &dst);
   }
   vgcanvas_restore(vg);
@@ -49,7 +47,7 @@ static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
   vgcanvas_save(vg);
   cartridge_transform(widget,c);
   if (widget_load_image(widget, album_cover->fg_image, &bitmap) == RET_OK) {
-    rect_t dst = rect_init(0, 0, widget->w, widget->h);
+    rect_t dst = rect_init(widget->w/2, 0, w, w);
     canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_DEFAULT, &dst);
   }
   vgcanvas_restore(vg);
@@ -57,6 +55,9 @@ static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
   return RET_OK;
 }
 
+/*
+ * 图片旋转(image&bg_image)
+ */
 ret_t album_cover_transform(widget_t* widget, canvas_t* c)
 {
   float_t anchor_x = 0;
@@ -71,13 +72,17 @@ ret_t album_cover_transform(widget_t* widget, canvas_t* c)
 
   vgcanvas_translate(vg, c->ox, c->oy);
   vgcanvas_translate(vg, anchor_x, anchor_y);
-  vgcanvas_rotate(vg, album_cover->rotation);
+  vgcanvas_rotate(vg, TK_D2R(album_cover->rotation));
   vgcanvas_translate(vg, -anchor_x, -anchor_y);
   vgcanvas_translate(vg, -c->ox, -c->oy);
 
   return RET_OK; 
 }
 
+/*
+ * 图片旋转(fg_image)
+ * 45
+ */
 ret_t cartridge_transform(widget_t* widget, canvas_t* c)
 {
   float_t anchor_x = 0;
@@ -91,11 +96,13 @@ ret_t cartridge_transform(widget_t* widget, canvas_t* c)
   anchor_y = 0.5 * widget->h;
 
   vgcanvas_translate(vg, c->ox, c->oy);
+  vgcanvas_translate(vg, anchor_x, 0);
   if(album_cover->is_play == TRUE)
-    vgcanvas_rotate(vg, TK_D2R(0));
+      vgcanvas_rotate(vg, TK_D2R(1));
   else
-    vgcanvas_rotate(vg, TK_D2R(-45));
+    vgcanvas_rotate(vg, TK_D2R(-60));
   vgcanvas_translate(vg, -c->ox, -c->oy);
+  vgcanvas_translate(vg, -anchor_x, 0);
 
   return RET_OK; 
 }
@@ -158,6 +165,7 @@ static ret_t album_cover_set_prop(widget_t* widget, const char* name, value_t* v
 static ret_t album_cover_on_destroy(widget_t* widget) {
   album_cover_t* album_cover = ALBUM_COVER(widget);
 
+  image_manager_destroy(album_cover->cover_image_manager);
   timer_remove(album_cover->timer_id);
   TKMEM_FREE(album_cover->image);
   TKMEM_FREE(album_cover->bg_image);
@@ -169,17 +177,26 @@ static ret_t album_cover_on_destroy(widget_t* widget) {
 /*
  * 设置控件图片
  */
+//FIXME:需修复切换图片后内存增大胡问题
+//TODO: 切换图片时清除长时间没用的图片缓存
 ret_t album_cover_set_image(widget_t* widget, const char* name) {
   album_cover_t* album_cover = ALBUM_COVER(widget);
   return_value_if_fail(widget != NULL && name != NULL, RET_BAD_PARAMS);
 
+  image_manager_t* default_image_manager = image_manager();
+
+  //image_manager_unload_unused(album_cover->cover_image_manager, 1);
+  printf("current default_image_manager num: %d  capacity: %d\n", (default_image_manager->images).size, (default_image_manager->images).capacity);
+  printf("current cover_image_manager num: %d  capacity: %d\n", (album_cover->cover_image_manager->images).size, (album_cover->cover_image_manager->images).capacity);
   album_cover->image = tk_str_copy(album_cover->image, name);
+
+  return widget_invalidate(widget, NULL);
 
   return RET_OK;
 }
 
 /*
- * 设置控件图片
+ * 设置控件背景图片
  */
 ret_t album_cover_set_bg_image(widget_t* widget, const char* name) {
   album_cover_t* album_cover = ALBUM_COVER(widget);
@@ -190,6 +207,9 @@ ret_t album_cover_set_bg_image(widget_t* widget, const char* name) {
   return RET_OK;
 }
 
+/*
+ * 播放动画
+ */
 ret_t album_cover_start(widget_t* widget) {
   return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
 
@@ -199,6 +219,9 @@ ret_t album_cover_start(widget_t* widget) {
   return RET_OK;
 }
 
+/*
+ * 暂停动画
+ */
 ret_t album_cover_pause(widget_t* widget) {
   return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
 
@@ -209,7 +232,7 @@ ret_t album_cover_pause(widget_t* widget) {
 }
 
 /*
- * 设置控件图片
+ * 设置控件前景图片
  */
 ret_t album_cover_set_fg_image(widget_t* widget, const char* name) {
   album_cover_t* album_cover = ALBUM_COVER(widget);
@@ -220,12 +243,16 @@ ret_t album_cover_set_fg_image(widget_t* widget, const char* name) {
   return RET_OK;
 }
 
+/*
+ * 控件定时器回调函数
+ * TODO:通过协调旋转步进值和定时间隔来调整动画效果
+ */
 static ret_t timer_album_cover(const timer_info_t* timer)
 {
   widget_t* widget = WIDGET(timer->ctx);
   album_cover_t* album_cover = ALBUM_COVER(widget);
   if(album_cover->is_play == TRUE) {
-    album_cover->rotation += 0.05;
+    album_cover->rotation += 0.5;
     if(album_cover->rotation >360)
       album_cover->rotation = 0;
     widget_invalidate(widget, NULL);
@@ -264,6 +291,11 @@ widget_t* album_cover_create(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h) {
   return_value_if_fail(album_cover != NULL, NULL);
 
   widget_init(widget, parent, &s_album_cover_vtable, x, y, w, h);
+  #ifdef WITH_STB_IMAGE
+    image_loader_t* image_loader = image_loader_stb();
+  #endif /*WITH_STB_IMAGE*/
+  album_cover->cover_image_manager = image_manager_create(image_loader);
+
   album_cover->timer_id = timer_add(timer_album_cover, widget, 40);
   album_cover->is_play = FALSE;
   album_cover->rotation = 0;

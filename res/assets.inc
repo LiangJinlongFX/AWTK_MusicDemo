@@ -13,7 +13,6 @@
 #include "assets/inc/ui/main.data"
 #include "assets/inc/ui/system_bar.data"
 #ifdef WITH_STB_IMAGE
-#include "assets/inc/images/123.res"
 #include "assets/inc/images/advance.res"
 #include "assets/inc/images/background_1.res"
 #include "assets/inc/images/bg_bar.res"
@@ -39,11 +38,6 @@
 #include "assets/inc/images/icon_06.res"
 #include "assets/inc/images/icon_08.res"
 #include "assets/inc/images/icon_12.res"
-#include "assets/inc/images/icon_33.res"
-#include "assets/inc/images/icon_35.res"
-#include "assets/inc/images/icon_37.res"
-#include "assets/inc/images/icon_39.res"
-#include "assets/inc/images/icon_44.res"
 #include "assets/inc/images/icon_50.res"
 #include "assets/inc/images/line.res"
 #include "assets/inc/images/next.res"
@@ -55,21 +49,46 @@
 #include "assets/inc/images/rank.res"
 #include "assets/inc/images/setting.res"
 #include "assets/inc/images/slider.res"
-#include "assets/inc/images/timer.res"
-#include "assets/inc/images/上一曲_失效.res"
-#include "assets/inc/images/下一曲_失效.res"
-#include "assets/inc/images/单曲循环.res"
-#include "assets/inc/images/均衡器上的圆点.res"
-#include "assets/inc/images/头部的分割线.res"
-#include "assets/inc/images/播放进度的圆点.res"
-#include "assets/inc/images/歌词的分割线.res"
-#include "assets/inc/images/随机播放.res"
-#include "assets/inc/images/顺序播放.res"
 #else
+#include "assets/inc/images/advance.data"
+#include "assets/inc/images/background_1.data"
+#include "assets/inc/images/bg_bar.data"
+#include "assets/inc/images/bg_bar_v.data"
+#include "assets/inc/images/close.data"
+#include "assets/inc/images/cover_00.data"
+#include "assets/inc/images/cover_01.data"
+#include "assets/inc/images/cover_02.data"
+#include "assets/inc/images/cover_03.data"
+#include "assets/inc/images/cover_04.data"
+#include "assets/inc/images/cover_05.data"
+#include "assets/inc/images/cover_06.data"
+#include "assets/inc/images/cover_07.data"
+#include "assets/inc/images/cover_08.data"
+#include "assets/inc/images/cover_09.data"
+#include "assets/inc/images/cycle.data"
+#include "assets/inc/images/equalizer.data"
+#include "assets/inc/images/eq_slider.data"
+#include "assets/inc/images/fg_bar.data"
+#include "assets/inc/images/fg_bar_v.data"
+#include "assets/inc/images/header_div.data"
+#include "assets/inc/images/icon_03.data"
+#include "assets/inc/images/icon_06.data"
+#include "assets/inc/images/icon_08.data"
+#include "assets/inc/images/icon_12.data"
+#include "assets/inc/images/icon_50.data"
+#include "assets/inc/images/line.data"
+#include "assets/inc/images/next.data"
+#include "assets/inc/images/pause.data"
+#include "assets/inc/images/play.data"
+#include "assets/inc/images/playlist.data"
+#include "assets/inc/images/previous.data"
+#include "assets/inc/images/random.data"
+#include "assets/inc/images/rank.data"
+#include "assets/inc/images/setting.data"
+#include "assets/inc/images/slider.data"
 #endif/*WITH_STB_IMAGE*/
 #ifdef WITH_STB_FONT
 #ifdef WITH_MINI_FONT
-#include "assets/inc/fonts/default.mini.res"
 #else/*WITH_MINI_FONT*/
 #include "assets/inc/fonts/default.res"
 #endif/*WITH_MINI_FONT*/
@@ -94,7 +113,6 @@ ret_t assets_init(void) {
 #ifdef WITH_STB_FONT
   assets_manager_add(rm, font_default);
 #endif
-  assets_manager_add(rm, image_123);
   assets_manager_add(rm, image_advance);
   assets_manager_add(rm, image_background_1);
   assets_manager_add(rm, image_bg_bar);
@@ -120,11 +138,6 @@ ret_t assets_init(void) {
   assets_manager_add(rm, image_icon_06);
   assets_manager_add(rm, image_icon_08);
   assets_manager_add(rm, image_icon_12);
-  assets_manager_add(rm, image_icon_33);
-  assets_manager_add(rm, image_icon_35);
-  assets_manager_add(rm, image_icon_37);
-  assets_manager_add(rm, image_icon_39);
-  assets_manager_add(rm, image_icon_44);
   assets_manager_add(rm, image_icon_50);
   assets_manager_add(rm, image_line);
   assets_manager_add(rm, image_next);
@@ -136,16 +149,6 @@ ret_t assets_init(void) {
   assets_manager_add(rm, image_rank);
   assets_manager_add(rm, image_setting);
   assets_manager_add(rm, image_slider);
-  assets_manager_add(rm, image_timer);
-  assets_manager_add(rm, image_上一曲_失效);
-  assets_manager_add(rm, image_下一曲_失效);
-  assets_manager_add(rm, image_单曲循环);
-  assets_manager_add(rm, image_均衡器上的圆点);
-  assets_manager_add(rm, image_头部的分割线);
-  assets_manager_add(rm, image_播放进度的圆点);
-  assets_manager_add(rm, image_歌词的分割线);
-  assets_manager_add(rm, image_随机播放);
-  assets_manager_add(rm, image_顺序播放);
   assets_manager_add(rm, style_default);
   assets_manager_add(rm, style_dialog);
   assets_manager_add(rm, style_music_player);
