@@ -12,17 +12,21 @@ BEGIN_C_DECLS
  */
 typedef struct _music_info_t {
     //索引
-    uint32_t index;
+    unsigned int index;
     //歌曲名称
     char song_name[100];
-    //歌手名称
-    char singer_name[100];
+    //艺术家名称
+    char Artist_name[100];
+    //专辑名称
+    char Album_name[100];
+    //歌曲文件路径
+    char song_path[100];
     //歌词文件路径
-    char lyric_path[100];
-    //歌曲专辑封面
-    char album_cover[100];
-    //歌曲总时长
-    uint32_t total_time;
+    char lyric_path[200];
+    //歌曲专辑封面路径
+    char cover_path[200];
+    //歌曲总时长(ms)
+    unsigned int total_time;
     //下一曲
     struct _music_info_t* next;  
 }music_info_t;
@@ -70,7 +74,7 @@ typedef struct _current_info_t {
     uint16_t Tempo;
     //
     uint16_t Volume;  
-} current_info_t;
+}current_info_t;
 
 
 

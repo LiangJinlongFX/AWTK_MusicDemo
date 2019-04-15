@@ -1,3 +1,10 @@
+/**
+ * History:
+ * ================================================================
+ * 本文件包含了以下功能
+ * 程序用到的一些杂项功能函数
+ * 音乐链表的相关操作
+ */
 #include "api.h"
 #include <stdio.h>
 #include "awtk.h"
@@ -112,22 +119,22 @@ music_info_t* musiclist_default(void) {
   if (head == NULL) return NULL;
   head->index = 0;
   sprintf(head->song_name, "Turn It Up");
-  sprintf(head->singer_name, "s7erre");
+  sprintf(head->Artist_name, "s7erre");
   head->total_time = 210000;
   p = musiclist_insert(head);
   if (p == NULL) return head;
   sprintf(p->song_name, "Favor");
-  sprintf(p->singer_name, "Skrillex");
+  sprintf(p->Artist_name, "Skrillex");
   p->total_time = 210000;
   p = musiclist_insert(head);
   if (p == NULL) return head;
   sprintf(p->song_name, "Feel Alive");
-  sprintf(p->singer_name, "Elysa");
+  sprintf(p->Artist_name, "Elysa");
   p->total_time = 210000;
   p = musiclist_insert(head);
   if (p == NULL) return head;
   sprintf(p->song_name, "MISS U");
-  sprintf(p->singer_name, "Cesqeaux");
+  sprintf(p->Artist_name, "Cesqeaux");
   p->total_time = 210000;
 
 

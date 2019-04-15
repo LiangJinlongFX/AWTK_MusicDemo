@@ -135,7 +135,7 @@ static void music_switch(bool_t is_next) {
   }
 
   Global_Current_Info->song_name = p->song_name;
-  Global_Current_Info->singer_name = p->singer_name;
+  Global_Current_Info->singer_name = p->Artist_name;
   Global_Current_Info->total_time = p->total_time;
   Global_Current_Info->play_time = 0;
   //FIXME:定位到加载专辑封面图片会造成内存异常
@@ -312,7 +312,7 @@ static ret_t load_playlist(widget_t* dialog)
       widget_set_value(music_item, FALSE);
       snprintf(str, 100, "item_%d", i);
       widget_set_name(music_item,str);
-      snprintf(str, 100, "%s-%s",p->song_name,p->singer_name);
+      snprintf(str, 100, "%s-%s",p->song_name,p->Artist_name);
       chat_to_wchar(str,wstr);
       widget_set_text(music_item,wstr);
       widget_on(music_item, EVT_VALUE_CHANGED, on_playlistchanged, dialog);
