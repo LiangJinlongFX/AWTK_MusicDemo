@@ -11,8 +11,8 @@ BEGIN_C_DECLS
  * annotation []
  * 旋钮控件
  * 支持长宽不一致的控件大小
+ * FIXME:旋钮图片不能自适应控件大小，设置控件大小需预留足够的区域给图标
  * 支持旋钮指针预先偏移
- * FIXME:在xml中设置step导致控件出现异常
  */
 typedef struct _knob_t {
   widget_t widget;

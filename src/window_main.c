@@ -167,10 +167,14 @@ static void music_switch(bool_t is_next) {
   lrc_loaditem(Global_Current_Info);
   /* 切歌时实现自动播放 */
   album_cover_t* album_cover = ALBUM_COVER(widget_lookup(Main_Window, "cover", TRUE));
-  widget = widget_lookup(Main_Window, "music:play", TRUE);
-  widget_use_style(widget,"pause");
-  Global_Current_Info->is_play = TRUE;
-  album_cover_start(album_cover);
+  if(Global_Current_Info->is_play) {
+    widget_create_animator(album_cover, "cartridge_rotation(from=-30, to=-3, repeat_times=1, duration=1000, yoyo_times=2, easing=sin_inout)");
+  } else {
+    widget = widget_lookup(Main_Window, "music:play", TRUE);
+    widget_use_style(widget,"pause");
+    Global_Current_Info->is_play = TRUE;
+    album_cover_start(album_cover);
+  }
 }
 
 

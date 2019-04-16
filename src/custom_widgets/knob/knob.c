@@ -1,7 +1,11 @@
 #include "awtk.h"
 #include "knob.h"
 
+/*
+ * 图标画布旋转
+ */
 static ret_t knob_transform(widget_t* widget, canvas_t* c, float_t rotation_offset) {
+  bitmap_t bitmap;
   float_t anchor_x = 0;
   float_t anchor_y = 0;
   knob_t* knob = KNOB(widget);
@@ -12,16 +16,18 @@ static ret_t knob_transform(widget_t* widget, canvas_t* c, float_t rotation_offs
   anchor_x = 0.5 * widget->w;
   anchor_y = 0.5 * widget->h;
 
+  float_t rotation = TK_D2R(knob->rotation) + rotation_offset;
   vgcanvas_translate(vg, c->ox, c->oy);
   vgcanvas_translate(vg, anchor_x, anchor_y);
-  vgcanvas_rotate(vg, TK_D2R(knob->rotation));
-  vgcanvas_rotate(vg, rotation_offset);
+  vgcanvas_rotate(vg, rotation);
   vgcanvas_translate(vg, -anchor_x, -anchor_y);
-  vgcanvas_translate(vg, -c->ox, -c->oy);
 
   return RET_OK;
 }
 
+/*
+ * 控件绘制函数
+ */
 static ret_t knob_on_paint_self(widget_t* widget, canvas_t* c) {
   bitmap_t bitmap;
   style_t* style = widget->astyle;
@@ -33,8 +39,11 @@ static ret_t knob_on_paint_self(widget_t* widget, canvas_t* c) {
 
   if (knob->image == NULL) return RET_OK;
 
+  //TODO:默认控件长宽相等且图片素材适合控件比例,没有添加比例校验
+  wh_t w = tk_min(widget->w, widget->h);
+
   /* 确保value在有效范围内 */
-  if (knob->value > knob->max) {
+  if (knob->value >= knob->max) {
     knob->value = knob->max;
   } else if (knob->value < 0) {
     knob->value = 0;
@@ -48,8 +57,8 @@ static ret_t knob_on_paint_self(widget_t* widget, canvas_t* c) {
     float_t end_angle = 0;    //用于前景
     float_t end_angle_1 = 0;  //用于背景
 
-    float_t angle = M_PI * 2 * (knob->angle_range / 360) * (knob->value / knob->max);
-    float_t all_angle = M_PI * 2 * (knob->angle_range / 360);
+    float_t angle = TK_D2R(knob->angle_range * (knob->value / knob->max));
+    float_t all_angle = TK_D2R(knob->angle_range);
     end_angle = start_angle + angle;
     end_angle_1 = start_angle + all_angle;
 
@@ -60,10 +69,10 @@ static ret_t knob_on_paint_self(widget_t* widget, canvas_t* c) {
     vgcanvas_set_line_width(vg, knob->line_width);
     vgcanvas_set_line_cap(vg, "round");
     vgcanvas_begin_path(vg);
-    if (end_angle >= start_angle) {
-      //绘制底层
-      vgcanvas_arc(vg, cx, cy, r, start_angle, end_angle_1, FALSE);
-      vgcanvas_stroke(vg);
+    //绘制底层圆弧
+    vgcanvas_arc(vg, cx, cy, r, start_angle, end_angle_1, FALSE);
+    vgcanvas_stroke(vg);
+    if (end_angle > start_angle) {
       //绘制前景
       vgcanvas_set_stroke_color(vg, color);
       vgcanvas_begin_path(vg);
@@ -74,25 +83,26 @@ static ret_t knob_on_paint_self(widget_t* widget, canvas_t* c) {
 
     /* 绘制旋钮图标 */
     vgcanvas_save(vg);
+    knob_transform(widget, c, angle);
     if (widget_load_image(widget, knob->image, &bitmap) == RET_OK) {
-      knob_transform(widget, c, angle);
-      rect_t dst =
-          rect_init(knob->line_width, knob->line_width, (widget->w - (knob->line_width * 2)),
-                    (widget->h - (knob->line_width * 2)));
-      canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_SCALE_AUTO, &dst);
+      rect_t dst;
+        dst.x = widget->w/2 - 0.8*r;
+        dst.y = widget->h/2 - 0.8*r;
+        dst.w = 1.6*r;
+        dst.h = 1.6*r;
+      //vgcanvas_draw_icon(vg, &bitmap, 0, 0, bitmap.w, bitmap.h, dst.x, dst.y, dst.w, dst.h);
+      vgcanvas_draw_image(vg, &bitmap, 0, 0, bitmap.w, bitmap.h, dst.x, dst.y, dst.w, dst.h);
     }
     vgcanvas_restore(vg);
 
-    /* 添加文本标签 */
-    wstr_t str = widget->text;
-    str.size = 16;
-
-    widget_paint_helper(widget, c, NULL, &str);
   }
 
   return RET_OK;
 }
 
+/*
+ * 按钮事件处理函数
+ */
 static ret_t knob_on_event(widget_t* widget, event_t* e) {
   uint16_t type = e->type;
   knob_t* knob = KNOB(widget);
@@ -103,13 +113,11 @@ static ret_t knob_on_event(widget_t* widget, event_t* e) {
       if (widget_is_point_in(widget, evt.x, evt.y, FALSE)) {
         knob->pressed = TRUE;
         knob->move_x = evt.x;
-        printf("EVT_POINTER_DOWN\n");
       }
     } break;
     case EVT_POINTER_UP: {
       pointer_event_t evt = *(pointer_event_t*)e;
       if (knob->pressed == TRUE) {
-        printf("EVT_POINTER_UP\n");
         knob->pressed = FALSE;
         /* 激活按键点击事件 */
         evt.e = event_init(EVT_VALUE_CHANGED, widget);
@@ -124,7 +132,6 @@ static ret_t knob_on_event(widget_t* widget, event_t* e) {
       pointer_event_t* evt = (pointer_event_t*)e;
       point_t p = {evt->x, evt->y};
       if (knob->pressed == TRUE) {
-        printf("EVT_POINTER_MOVE");
         if (p.x < knob->move_x) {
           knob->move_x = p.x;
           knob->value -= knob->step;
@@ -135,8 +142,8 @@ static ret_t knob_on_event(widget_t* widget, event_t* e) {
           knob->direction = TRUE;
         }
         //请求分发值改变中事件
-        event_t evt = event_init(EVT_VALUE_CHANGING, widget);
-        widget_dispatch(widget, (event_t*)&evt);
+        event_t event = event_init(EVT_VALUE_CHANGING, widget);
+        widget_dispatch(widget, (event_t*)&event);
         /* 清除事件状态并请求重绘控件 */
         widget_ungrab(widget->parent, widget);
         widget_set_state(widget, WIDGET_STATE_NORMAL);
@@ -150,6 +157,9 @@ static ret_t knob_on_event(widget_t* widget, event_t* e) {
   return RET_OK;
 }
 
+/*
+ * 设置控件图片
+ */
 ret_t knob_set_image(widget_t* widget, const char* name) {
   knob_t* knob = KNOB(widget);
   return_value_if_fail(widget != NULL && name != NULL, RET_BAD_PARAMS);
@@ -159,13 +169,16 @@ ret_t knob_set_image(widget_t* widget, const char* name) {
   return RET_OK;
 }
 
+/*
+ * 设置控件数值
+ */
 ret_t knob_set_value(widget_t* widget, float_t value) {
   knob_t* knob = KNOB(widget);
   return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
 
   if (knob->value != value) {
     knob->value = value;
-    /* 激活按钮数值改变事件 */
+    /* 激活按钮数值改变完成事件 */
     event_t e = event_init(EVT_VALUE_CHANGED, widget);
     widget_dispatch(widget, &e);
     widget_ungrab(widget->parent, widget);
@@ -175,6 +188,7 @@ ret_t knob_set_value(widget_t* widget, float_t value) {
 
   return RET_OK;
 }
+
 
 ret_t knob_set_max(widget_t* widget, uint32_t max) {
   knob_t* knob = KNOB(widget);
@@ -208,6 +222,15 @@ ret_t knob_set_angle_range(widget_t* widget, float_t angle_range) {
   return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
 
   knob->angle_range = angle_range;
+
+  return widget_invalidate(widget, NULL);
+}
+
+ret_t knob_set_step(widget_t* widget, uint32_t step) {
+  knob_t* knob = KNOB(widget);
+  return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
+
+  knob->step = step;
 
   return widget_invalidate(widget, NULL);
 }
@@ -260,17 +283,6 @@ static ret_t knob_get_prop(widget_t* widget, const char* name, value_t* v) {
   }
 
   return RET_NOT_FOUND;
-}
-
-ret_t knob_set_step(widget_t* widget, uint16_t step) {
-  knob_t* knob = KNOB(widget);
-  return_value_if_fail(widget != NULL && step > 0, RET_BAD_PARAMS);
-
-  knob->step = step;
-
-  return widget_invalidate(widget, NULL);
-
-  return RET_OK;
 }
 
 static ret_t knob_set_prop(widget_t* widget, const char* name, const value_t* v) {
