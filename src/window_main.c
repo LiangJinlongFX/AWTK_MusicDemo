@@ -48,7 +48,6 @@ static load_assets_manager(char* name) {
 
 static void lrc_loaditem(current_info_t* info) {
   char str[20];
-  wchar_t wstr[256];
   uint16_t count=0;
   uint16_t i=0;
   lyric_t* p=NULL;
@@ -77,6 +76,9 @@ static void lrc_loaditem(current_info_t* info) {
     p = p->next;
     count++;
   }
+  for(i=0;i<3;i++) {
+    item = label_create(lyric_list, 100, 200, 80, 30);
+  }
   /* 创建所有歌词标签 */
   p = info->song_lyric;
   for(i=0;i<count;i++) {
@@ -86,7 +88,10 @@ static void lrc_loaditem(current_info_t* info) {
     widget_set_text_utf8(item, p->verse);
     p = p->next; 
   }
-  info->lrc_item = 5;
+  for(i=0;i<5;i++) {
+    item = label_create(lyric_list, 100, 200, 80, 30);
+  }
+  info->lrc_item = 0;
   scroll_view_scroll_to(lyric_list,0,0,10);
 }
 
@@ -96,7 +101,6 @@ static void music_switch(bool_t is_next) {
   widget_t* widget;
   char str[50];
   wchar_t wstr[50];
-  char cover_name[20];
   music_info_t* p=NULL;
 
   /* 根据播放模式改变音乐播放索引 */
@@ -168,7 +172,7 @@ static void music_switch(bool_t is_next) {
   /* 切歌时实现自动播放 */
   album_cover_t* album_cover = ALBUM_COVER(widget_lookup(Main_Window, "cover", TRUE));
   if(Global_Current_Info->is_play) {
-    widget_create_animator(album_cover, "cartridge_rotation(from=-30, to=-3, repeat_times=1, duration=1000, yoyo_times=2, easing=sin_inout)");
+    widget_create_animator(album_cover, "cartridge_rotation(from=-45, to=-3, repeat_times=1, duration=1000, yoyo_times=2, easing=sin_inout)");
   } else {
     widget = widget_lookup(Main_Window, "music:play", TRUE);
     widget_use_style(widget,"pause");
@@ -183,8 +187,8 @@ static void music_switch(bool_t is_next) {
  * 歌词滚动显示显示实现函数
  **/
 static void lyric_display(widget_t* win) {
-  int line;
   widget_t* widget=NULL;
+  uint32_t line=0;
   char str[20];
   int i;
   /* 查找歌词栏容器 */
@@ -207,7 +211,7 @@ static void lyric_display(widget_t* win) {
     Global_Current_Info->lrc_previtem = i;
     if(i>=Global_Current_Info->lrc_item+2 || i<= Global_Current_Info->lrc_item-2) {
       Global_Current_Info->lrc_item = i;
-      line = (Global_Current_Info->lrc_previtem-2)*24;
+      line = (Global_Current_Info->lrc_previtem-2+3)*24;
       scroll_view_scroll_to(lyric_list,0,line,500);
     }
   }
@@ -300,7 +304,7 @@ static ret_t on_playlistchanged(void* ctx, event_t* e) {
  **/
 static ret_t load_playlist(widget_t* dialog)
 {
-  uint32_t i=0;
+  int i=0;
   char str[100];
   wchar_t wstr[100];
   widget_t* music_item;
@@ -555,6 +559,23 @@ static ret_t on_setting(void* ctx, event_t* e) {
     widget_set_enable(advance_item, FALSE);
     widget_set_enable(equalizer_item, FALSE);
   }
+
+  return RET_OK;
+}
+
+static ret_t on_change_locale(void* ctx, event_t* e) { 
+
+  widget_t* win = (widget_t*)ctx;
+  widget_t* widget = widget_lookup(win, "tr_button", TRUE);
+  if(widget_get_value(widget)) {
+    printf("zh_CN\n");
+    locale_info_change(locale_info(), "zh", "CN"); 
+  } else {
+    printf("en_US\n");
+    locale_info_change(locale_info(), "en", "US");
+  }
+
+  return RET_OK; 
 }
 
 /**
@@ -562,7 +583,7 @@ static ret_t on_setting(void* ctx, event_t* e) {
  */
 void application_init() {
   window_manager();
-  window_open("system_bar");
+  widget_t* system_bar = window_open("system_bar");
   widget_t* win_main = window_open("main");
   Main_Window = win_main;
 
@@ -580,9 +601,13 @@ void application_init() {
   /* 启动时进行自动切歌播放 */
   music_switch(TRUE);
 
+  /* 设置中英切换按钮 */
+  widget_t* tr_button = widget_lookup(system_bar, "tr_button", TRUE);
+  widget_set_value(tr_button, 1);
+
   /* 默认隐藏设置图标 */
-  widget_t* advance_item = widget_lookup(win_main, "music:equalizer", TRUE);
-  widget_t* equalizer_item = widget_lookup(win_main, "music:advance", TRUE);
+  widget_t* equalizer_item = widget_lookup(win_main, "music:equalizer", TRUE);
+  widget_t* advance_item = widget_lookup(win_main, "music:advance", TRUE);
   widget_t* setting_item = widget_lookup(win_main, "music:setting", TRUE);
   widget_set_value(setting_item, 1);
   widget_set_visible(advance_item, FALSE, FALSE);
@@ -590,9 +615,8 @@ void application_init() {
   widget_set_enable(advance_item, FALSE);
   widget_set_enable(equalizer_item, FALSE);
 
-  //FIXME:歌词条目透明度改到xml文件中设置
-  //FIXME:mainK界面控件事件注册改用widget_child_on
   /* 注册控件事件 */
+  widget_child_on(system_bar, "tr_button", EVT_VALUE_WILL_CHANGE, on_change_locale, system_bar);
   widget_child_on(win_main, "music:list", EVT_CLICK, on_playlist, win_main);
   widget_child_on(win_main, "music:setting", EVT_VALUE_WILL_CHANGE, on_setting, win_main);
   widget_child_on(win_main, "music:equalizer", EVT_CLICK, on_equalizer, win_main);

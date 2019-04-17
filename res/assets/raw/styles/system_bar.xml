@@ -23,6 +23,18 @@
   </style>
 </button>
 
+<check_button>
+  <!--用于语言切换按钮-->
+  <style name="default" font_size="16">
+    <normal  text_color="white"/>
+    <pressed text_color="#04fd21" x_offset="1" y_offset="1"/>
+    <over    text_color="#04fd21" x_offset="1" y_offset="1"/>
+    <normal_of_checked text_color="white"/>
+    <pressed_of_checked text_color="#04fd21" x_offset="1" y_offset="1"/>
+    <over_of_checked text_color="#04fd21" x_offset="1" y_offset="1"/>
+  </style>
+</check_button>
+
 <image>
   <style name="default">
     <normal/>

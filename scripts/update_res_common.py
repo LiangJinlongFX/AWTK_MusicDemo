@@ -134,15 +134,13 @@ def generate(tools_dir, tool_name, src_dir, src_sub_dir, src_suffix, dst_dir, ds
 			os.system(tool_path + ' ' + joinPath(src_dir, raw) + ' ' + joinPath(dst_dir, inc) + ' ' + option)
 	else :
 		for f in glob.glob(joinPath(src_dir, '*' + src_suffix)):
-			print(f)
 			raw=copy.copy(f);
 			if dst_suffix == '':
 				inc=''
 			else :
-				inc=copy.copy(f);
+				inc=copy.copy(f)
 				inc=inc.replace(src_dir, dst_dir)
 				inc=inc.replace(src_suffix, dst_suffix)
-			print(tool_path + ' ' + joinPath(src_dir, raw) + ' ' + joinPath(dst_dir, inc) + ' ' + option)
 			os.system(tool_path + ' ' + joinPath(src_dir, raw) + ' ' + joinPath(dst_dir, inc) + ' ' + option)
 
 
@@ -184,14 +182,14 @@ def genString_bin(tools_dir, src_dir, dst_dir):
     '''
     生成字符资源二进制文件
     '''
-    generate(tools_dir, 'strgen', src_dir, 'strings', '.xml', src_dir, 'strings', '', '.bin', 0)
+    generate(tools_dir, 'strgen', src_dir, 'strings', '.xml', src_dir, 'strings', '.bin', 'bin', 0)
 
 
 def genRes(tools_dir, src_dir, dst_dir):
     '''
     生成其他资源的资源文件
     '''
-    generate(tools_dir, 'resgen', src_dir, 'data', '.lrc', src_dir, 'data', '', '.data', 0)
+    generate(tools_dir, 'resgen', src_dir, 'data', '.lrc', dst_dir, 'data', '.data', '', 1)
 
 
 def genFont(tools_dir, src_dir, dst_dir):
@@ -201,14 +199,21 @@ def genFont(tools_dir, src_dir, dst_dir):
     generate(tools_dir, 'resgen', src_dir, 'fonts', '.ttf', dst_dir, 'fonts', '.res', '', 1)
 
 
+def genImage_bin(tools_dir, src_dir, dst_dir, dpi):
+    '''
+    生成图像资源文件
+    '''
+    IMAGEGEN_OPTIONS = '\"bgra|bgr565\"'
+    suffix = ['.png', '.jpg']
+    generate(tools_dir, 'resgen', src_dir, 'images/' + dpi, suffix, dst_dir, 'images', '.res', '', 0)
+
 def genImage(tools_dir, src_dir, dst_dir, dpi):
     '''
     生成图像资源文件
     '''
     IMAGEGEN_OPTIONS = '\"bgra|bgr565\"'
     suffix = ['.png', '.jpg']
-    generate(tools_dir, 'imagegen', src_dir, 'images/' + dpi, suffix, dst_dir, 'images', '.data', IMAGEGEN_OPTIONS, 1)
-    #generate(tools_dir, 'resgen', src_dir, 'images/' + dpi, suffix, dst_dir, 'images', '.res', '', 0)
+    generate(tools_dir, 'imagegen', src_dir, 'images/' + dpi, suffix, dst_dir, 'images', '.data', IMAGEGEN_OPTIONS, 0)
 
 
 ########################################## 生成某类资源函数集合 ###############################################################
@@ -219,6 +224,7 @@ def gen_res_all_image():
     生成所有image资源文件
     '''
     genImage(TOOLS_DIR, ASSETS_RAW_DIR, ASSETS_INC_DIR, 'x1')
+    genImage_bin(TOOLS_DIR, ASSETS_RAW_DIR, ASSETS_INC_DIR, 'x1')
 
 def gen_res_all_style():
     '''
@@ -305,7 +311,7 @@ def genIncludes(files, dir_name):
     str1 = ""
     for f in files:
         incf = copy.copy(f);
-        incf=incf.replace(dir_name, "assets/inc");
+        incf=incf.replace(dir_name, "/inc");
         incf=incf.replace('\\', '/');
         str1 += '#include "'+incf+'"\n'
     return str1
@@ -340,6 +346,25 @@ def genAssetsManagerAdd(assets_inc_dir, filter, dir_name, name, suffix):
         result += '  assets_manager_add(rm, ' + name + basename + ');\n'
     return result
 
+def genAssetsManagerAddWithsuffix(assets_inc_dir, filter, dir_name, name, suffix):
+    '''
+    生成"assets_manager_add"C语句,往资源管理器添加数据
+    用于.data后缀的资源文件
+    @params assets_inc_dir 资源inc目录路径
+    @params filter 文件过滤器
+    @params dir_name 当前资源目录名称
+    @params name 资源命名前缀
+    @params suffix 源资源文件后缀
+    '''
+    files=glob.glob(joinPath(assets_inc_dir, filter))
+    result = ''
+    for f in files:
+        basename = GetFileBaseName(copy.copy(f), assets_inc_dir, dir_name, '.data')
+        basename += suffix
+        basename = basename.replace('.', '_')
+        result += '  assets_manager_add(rm, ' + name + basename + ');\n'
+    return result
+
 
 def gen_assets_header(assets_dir, assets_c_path):
     '''
@@ -359,12 +384,6 @@ def gen_assets_header(assets_dir, assets_c_path):
     #定义是否使用文件系统的宏
     result += '#ifndef WITH_FS_RES\n'
 
-    #包含data文件夹下的数据
-    result += '//包含data文件夹下的数据\n'
-    files = glob.glob(joinPath(assets_inc_dir, 'data/*.data')) \
-        + glob.glob(joinPath(assets_inc_dir, 'data/*.bin'))
-    result += genIncludes(files, assets_inc_dir)
-
     #包含图片文件
     result += '//包含图片资源文件\n'
     result += "#ifdef WITH_STB_IMAGE\n"
@@ -375,6 +394,29 @@ def gen_assets_header(assets_dir, assets_c_path):
     files=glob.glob(joinPath(assets_inc_dir, 'images/*.data')) 
     result += genIncludes(files, assets_inc_dir)
     result += '#endif/*WITH_STB_IMAGE*/\n'
+
+    result += "#else\n"
+
+    #包含data文件夹下的数据
+    result += '//包含data文件夹下的二进制数据\n'
+    files = glob.glob(joinPath(assets_inc_dir, 'data/*.data')) \
+        + glob.glob(joinPath(assets_inc_dir, 'data/*.bin'))
+    result += genIncludes(files, assets_inc_dir)
+
+    #包含UI二进制资源文件
+    result += '//包含UI二进制资源文件\n'
+    files=glob.glob(joinPath(assets_inc_dir, 'ui/*.data')) 
+    result += genIncludes(files, assets_inc_dir)
+
+    #包含style二进制资源文件
+    result += '//包含style二进制资源文件\n'
+    files=glob.glob(joinPath(assets_inc_dir, 'styles/*.data')) 
+    result += genIncludes(files, assets_inc_dir)
+
+    #包含string二进制资源文件
+    result += '//包含string二进制资源文件\n'
+    files=glob.glob(joinPath(assets_inc_dir, 'strings/*.data')) 
+    result += genIncludes(files, assets_inc_dir)
 
     #包含字体文件
     result += '//包含字体资源文件\n'
@@ -415,8 +457,6 @@ def gen_assets_header(assets_dir, assets_c_path):
     result += '  //预先加载默认风格\n'
     result += '  assets_manager_load(rm, ASSET_TYPE_STYLE, "default");\n'
     result += '#else /*WITH_FS_RES*/\n'
-    result += '#ifdef WITH_STB_FONT\n'
-    result += '  //如果定义了WITH_STB_FONT宏,将使用原始的ttf字体资源,否则使用解码后的.data数据\n'
     result += '  #ifdef WITH_MINI_FONT\n'
     result += '  assets_manager_add(rm, "default.mini");\n'
     result += '  if (info) {\n'
@@ -425,12 +465,11 @@ def gen_assets_header(assets_dir, assets_c_path):
     result += '  #else \n'
     result += '  assets_manager_add(rm, "default");\n'
     result += '  #endif /*WITH_MINI_FONT*/\n'
-    result += '#endif /*WITH_STB_FONT*/\n'
 
     #添加资源常量数组
-    result += genAssetsManagerAdd(assets_inc_dir, 'data/*.data', 'data', 'data_', '.data')
+    result += genAssetsManagerAddWithsuffix(assets_inc_dir, 'data/*.data', 'data', 'data_', '.lrc')
     result += genAssetsManagerAdd(assets_inc_dir, 'fonts/*.data', 'fonts', 'font_', '.data')
-    result += genAssetsManagerAdd(assets_inc_dir, 'images/*.res', 'images', 'image_', '.res')
+    result += genAssetsManagerAdd(assets_inc_dir, 'images/*.data', 'images', 'image_', '.data')
     result += genAssetsManagerAdd(assets_inc_dir, 'styles/*.data', 'styles', 'style_', '.data')
     result += genAssetsManagerAdd(assets_inc_dir, 'ui/*.data', 'ui', 'ui_',  '.data')
     result += genAssetsManagerAdd(assets_inc_dir, 'strings/*.data', 'strings', 'strings_', '.data')
@@ -440,6 +479,8 @@ def gen_assets_header(assets_dir, assets_c_path):
     result += '  tk_init_assets();\n'
     result += '  return RET_OK;\n'
     result += '}\n'
+
+    print(result)
     writeToFile(assets_c_path, result);
 
 ###########################################################################################################
@@ -539,5 +580,7 @@ def showUsage():
 #showUsage()
 if __name__ == '__main__':
     init("../../awtk", "../res/assets", "./");
-    updateRes("-c");
-    updateRes("-all");
+    #updateRes("-all");
+    #updateRes("-data")
+    #updateRes("-image")
+    gen_assets_header(ASSETS_ROOT_DIR, "../res/assets/assets.h")

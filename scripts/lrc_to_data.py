@@ -185,3 +185,7 @@ if __name__ == '__main__':
 	dst_dir = os.path.abspath(DST_DIR)
 	format_filename("D:\\audiofile\\")
 	#generate(tools_dir, "resgen", src_dir, "data", ".lrc", dst_dir, "data", ".data", '', 1)
+	#
+	#
+
+pyftsubset C:/Windows/Fonts/msyh.ttf --text-file=./res/assets/raw/fonts/text.txt --output-file=./res/assets/raw/fonts/default.mini.ttf

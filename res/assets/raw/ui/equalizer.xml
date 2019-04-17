@@ -1,7 +1,7 @@
 <!--用于显示歌曲列表的对话框 anim_hint="bottom_to_top"  -->
 <dialog x="r" y="52" w="50%" h="353" theme="music_player">
   <!--title-->
-  <dialog_title x="0" y="0" w="100%" h="40" text="Equailzer" style="default">
+  <dialog_title x="0" y="0" w="100%" h="40" tr_text="tr_equailzer" style="default">
     <button name="return" x="r" y="m" w="40" h="100%" style="dialog_close"/>
   </dialog_title>
   <!--client-->
@@ -14,37 +14,37 @@
     </view>
     <!--均衡器控制块-->
     <row x="15%" y="10" w="85%" h="60%" children_layout="default(r=1,c=8,xm=5,s=10)">
-      <column children_layout="default(r=0,c=1)">
-        <slider name="slider::32" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="32" h="20%" style="advance_label"/>
+      <column >
+        <slider name="slider::32" x="c" y="0" w="15" h="80%" style="process_v" max="24" step="1" value="12" vertical="true"/>
+        <label text="32" x="c" y="b:10" w="100%" h="20" style="advance_label"/>
       </column>
-      <column children_layout="default(r=0,c=1)">
-        <slider name="slider::63" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="63" h="20%" style="advance_label"/>
+      <column >
+        <slider name="slider::63" x="c" y="0" w="15" h="80%" style="process_v" max="24" step="1" value="12" vertical="true"/>
+        <label text="63" x="c" y="b:10" w="100%" h="20" style="advance_label"/>
       </column>
-      <column children_layout="default(r=0,c=1)">
-        <slider name="slider::125" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="125" h="20%" style="advance_label"/>
+      <column >
+        <slider name="slider::125" x="c" y="0" w="15" h="80%" style="process_v" max="24" step="1" value="12" vertical="true"/>
+        <label text="125" x="c" y="b:10" w="100%" h="20" style="advance_label"/>
       </column>
-      <column children_layout="default(r=0,c=1)">
-        <slider name="slider::250" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="250" h="20%" style="advance_label"/>
+      <column >
+        <slider name="slider::250" x="c" y="0" w="15" h="80%" style="process_v" max="24" step="1" value="12" vertical="true"/>
+        <label text="250" x="c" y="b:10" w="100%" h="20" style="advance_label"/>
       </column>
-      <column children_layout="default(r=0,c=1)">
-        <slider name="slider::500" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="500" h="20%" style="advance_label"/>
+      <column >
+        <slider name="slider::500" x="c" y="0" w="15" h="80%" style="process_v" max="24" step="1" value="12" vertical="true"/>
+        <label text="125" x="c" y="b:10" w="100%" h="20" style="advance_label"/>
       </column>
-      <column children_layout="default(r=0,c=1)">
-        <slider name="slider::1k" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="1k" h="20%" style="advance_label"/>
+      <column >
+        <slider name="slider::1k" x="c" y="0" w="15" h="80%" style="process_v" max="24" step="1" value="12" vertical="true"/>
+        <label text="1k" x="c" y="b:10" w="100%" h="20" style="advance_label"/>
       </column>
-      <column children_layout="default(r=0,c=1)">
-        <slider name="slider::2k" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="2k" h="20%" style="advance_label"/>
+      <column >
+        <slider name="slider::2k" x="c" y="0" w="15" h="80%" style="process_v" max="24" step="1" value="12" vertical="true"/>
+        <label text="2k" x="c" y="b:10" w="100%" h="20" style="advance_label"/>
       </column>
-      <column children_layout="default(r=0,c=1)">
-        <slider name="slider::4k" h="80%" style="process_v"  max="24" step="1" value="12" vertical="true"/>
-        <label text="4k" h="20%" style="advance_label"/>
+      <column >
+        <slider name="slider::4k" x="c" y="0" w="15" h="80%" style="process_v" max="24" step="1" value="12" vertical="true"/>
+        <label text="4k" x="c" y="b:10" w="100%" h="20" style="advance_label"/>
       </column>
     </row>
     <!--增益曲线显示-->

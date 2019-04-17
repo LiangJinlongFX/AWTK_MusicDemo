@@ -225,7 +225,7 @@ ret_t album_cover_pause(widget_t* widget) {
   return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
 
   album_cover_t* album_cover = ALBUM_COVER(widget);
-  widget_create_animator(album_cover, "cartridge_rotation(to=-30, duration=500, repeat_times=1, yoyo_times=1, easing=sin_out)");
+  widget_create_animator(album_cover, "cartridge_rotation(to=-45, duration=500, repeat_times=1, yoyo_times=1, easing=sin_out)");
   album_cover->is_play = FALSE;
 
   return RET_OK;

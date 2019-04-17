@@ -1,7 +1,7 @@
 <!--用于显示歌曲列表的对话框  anim_hint="bottom_to_top" -->
 <dialog x="r" y="52" w="40%" h="353" theme="music_player">
   <!--title-->
-  <dialog_title x="0" y="0" w="100%" h="40" text="Play List" style="default">
+  <dialog_title x="0" y="0" w="100%" h="40" tr_text="tr_playlist" style="default">
     <button name="dialog_close" x="r" y="m" w="40" h="100%" style="dialog_close"/>
   </dialog_title>
   <!--client-->

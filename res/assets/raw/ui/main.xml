@@ -10,7 +10,7 @@
   <!--进度条布局-->
   <row x="200" y="b" w="500" h="72">
     <label name="play_time" x="l" y="m" w="20%" h="100%" text="00:00"/>
-    <slider name="music_progress" x="100" y="m" w="300" h="50%" style="process" value="40"/>
+    <slider name="music_progress" x="100" y="m" w="300" h="22" style="process" value="40"/>
     <label name="total_time" x="r" y="m" w="20%" h="100%" text="00:00"/>
   </row>
   <!--模式控制按钮布局-->

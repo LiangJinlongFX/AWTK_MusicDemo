@@ -15,8 +15,6 @@ def getAwtkRoot():
 
 OS_NAME=platform.system()
 TK_ROOT = getAwtkRoot()
-#TK_ROOT = "F://AWTK_Develop//awtk"
-print("TK_ROOT: ",TK_ROOT)
 BIN_DIR=joinPath(TK_ROOT, 'bin')
 LIB_DIR=joinPath(TK_ROOT, 'lib')
 TK_SRC = joinPath(TK_ROOT, 'src')
@@ -172,6 +170,8 @@ DefaultEnvironment(CCFLAGS = CCFLAGS,
   OS_SUBSYSTEM_CONSOLE=OS_SUBSYSTEM_CONSOLE,
   OS_SUBSYSTEM_WINDOWS=OS_SUBSYSTEM_WINDOWS
 )
+
+
 
 os.environ['LCD'] = LCD
 os.environ['BIN_DIR'] = BIN_DIR;
