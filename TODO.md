@@ -38,4 +38,7 @@
 + FIXME:slider的背景和前景使用图片的情况下，由于bg_image与fg_image的绘制区域是分开的，某些情况下会出现fg_image不能遮盖bg_image的BUG，临时通过修改image的高度像素值为奇数或   偶数来解决BUG
 + 采用临时设施修复sliderBUG
 + 增加了本地语言切换功能
-+ FIXME:check_button在首次点击时不会改变值，但点击之后恢复正常，临时采用EVT_VALUE_WILL_CHANGE事件和预先设置1值修复
++ FIXME:check_button在首次点击时不会改变值，但点击之后恢复正常，临时采用EVT_VALUE_WILL_CHANGE事件和预先设置1值
+
+### 2019/4/18
++ 修复了部分情况加载歌词闪退的致命bug, 这种情况由于歌词指针接收了一个没有声明有返回值的函数的值造成的。

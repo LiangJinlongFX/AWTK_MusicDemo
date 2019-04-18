@@ -32,13 +32,13 @@
 current_info_t* Global_Current_Info=NULL;
 widget_t* Main_Window=NULL;
 
-static load_assets_manager(char* name) {
+static char* load_assets_manager(char* name) {
   char str[100];
   strcpy(str, name);
   my_str_replace(str, ' ', '_');
   strcat(str,".lrc");
   assets_manager_t* rm = assets_manager();
-  asset_info_t* t = assets_manager_ref(rm, ASSET_TYPE_DATA, str);
+  asset_info_t* t  = assets_manager_ref(rm, ASSET_TYPE_DATA, str);
   if(t != NULL)
     return t->data;
   else
@@ -126,7 +126,7 @@ static void music_switch(bool_t is_next) {
   p = musiclist_find(Global_Current_Info->play_list,i);
   //重新加载歌词文件
   lyric_delete(Global_Current_Info->song_lyric);
-  //Global_Current_Info->song_lyric = lyric_analysis("F:\\AWTK_Develop\\C-C-_Unit\\123.lrc");
+  Global_Current_Info->song_lyric = lyric_analysis("F:\\AWTK_Develop\\C-C-_Unit\\123.lrc");
   char* lrc_data = load_assets_manager(p->song_name);
   if(lrc_data != NULL)
     Global_Current_Info->song_lyric = lyric_load(lrc_data);
