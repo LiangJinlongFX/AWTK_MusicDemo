@@ -36,9 +36,27 @@ void my_str_replace(char* str, char src, char dst) {
 	char* p = str;
 
 	while(*p != '\0') {
-		if(*p == src)
-			*p = dst;
-		p++;
+    if(*p == src) {
+      *p = dst;
+    }
+    p++;
+	}
+}
+
+void to_var_name(char* src_str) {
+	char* p = src_str;
+
+	while(*p != '\0') {
+    if(*p >= '0' && *p <= '9') {
+      p++;
+    } else if (*p >= 'A' && *p <= 'Z') {
+      p++;
+    } else if (*p >= 'a' && *p <= 'z') {
+      p++;
+    } else {
+      *p = '_';
+      p++;
+    }
 	}
 }
 

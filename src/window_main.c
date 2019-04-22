@@ -127,9 +127,13 @@ static void music_switch(bool_t is_next) {
   Zplay_CloseFile();
   p = musiclist_find(Global_Current_Info->play_list,i);
   //TODO:检查歌词文件加载
-  printf("%s\n",p->lyric_path);
-  Global_Current_Info->song_lyric = lyric_analysis(p->lyric_path);
-  lrc_loaditem(Global_Current_Info);
+  //重新加载歌词文件
+  lyric_delete(Global_Current_Info->song_lyric);
+  char* lrc_data = load_assets_manager(p->song_name);
+  if(lrc_data != NULL)
+    Global_Current_Info->song_lyric = lyric_load(lrc_data);
+  else 
+    Global_Current_Info->song_lyric = NULL;
   //TODO:添加加载曲目失败的提示信息
   if(p == NULL) {
     return ;
@@ -146,7 +150,10 @@ static void music_switch(bool_t is_next) {
   Global_Current_Info->total_time = Zplay_GetTimeLength();
   //加载专辑封面图片
   widget = widget_lookup(Main_Window, "cover", TRUE);
-  sprintf(str,"cover_%02d",Global_Current_Info->index);
+  printf("cover:%s\n", Global_Current_Info->album_cover);
+  snprintf(str, 50, "%s", Global_Current_Info->album_cover);
+  to_var_name(str);
+  printf("var_cover:%s\n", str);
   album_cover_set_image(widget,str);
   //显示歌曲名称
   chat_to_wchar(Global_Current_Info->song_name,wstr);
@@ -614,7 +621,7 @@ static ret_t on_change_locale(void* ctx, event_t* e) {
 /**
  * 初始化
  */
-void application_init(char* file_path) {
+void application_init() {
   window_manager();
   widget_t* system_bar = window_open("system_bar");
   widget_t* win_main = window_open("main");
@@ -622,7 +629,8 @@ void application_init(char* file_path) {
 
   /* 初始化播放状态结构体 */
   Global_Current_Info = TKMEM_ZALLOC(current_info_t);
-  Global_Current_Info->play_list = Audiofile_load(file_path);
+  //Global_Current_Info->play_list = Audiofile_load(file_path);
+  Global_Current_Info->play_list = Audiofile_load("./audiofiles/");
   if(Global_Current_Info->play_list == NULL) {
     printf("load audio file ERROR!\n");
     Beep(2000,1000);

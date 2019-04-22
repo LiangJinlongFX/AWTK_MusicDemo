@@ -21,7 +21,7 @@
 
 #include "awtk.h"
 
-#include "../res/assets.h"
+#include "../res/assets.inc"
 
 #ifdef USE_GUI_MAIN
 int gui_app_start(int lcd_w, int lcd_h) {
@@ -32,9 +32,8 @@ int gui_app_start(int lcd_w, int lcd_h) {
 #include <windows.h>
 int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hprevinstance, LPSTR lpcmdline, int ncmdshow) {
   /* 打开CMD窗口方便调试 */
-  AllocConsole();
-  freopen("conout$","w",stdout);  
-  printf("audiofile_path: %s\n",(char*)lpcmdline);
+  // AllocConsole();
+  // freopen("conout$","w",stdout);  
 #else
 int main(void) {
 #endif
@@ -82,7 +81,7 @@ int main(void) {
   custom_widgets_init();
 
   /* 打开主屏幕 */
-  application_init((char*)lpcmdline);
+  application_init();
 
   /* 进入awtk事件循环 */
   tk_run();

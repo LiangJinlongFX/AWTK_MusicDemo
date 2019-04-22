@@ -84,6 +84,7 @@ void chat_to_wchar(char* str1, wchar_t* str2);
 void time_to_wchar(uint32_t s, wchar_t* str);
 
 void my_str_replace(char* str, char src, char dst);
+void to_var_name(char* src_str);
 
 music_info_t* musiclist_insert(music_info_t* pHead);
 music_info_t* musiclist_find(music_info_t* pHead, uint32_t index);
