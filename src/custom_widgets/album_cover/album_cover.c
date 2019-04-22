@@ -11,7 +11,6 @@
  */
 static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
   bitmap_t bitmap;
-
   album_cover_t* album_cover = ALBUM_COVER(widget);
   vgcanvas_t* vg = lcd_get_vgcanvas(c->lcd);
   return_value_if_fail(widget != NULL && c != NULL, RET_BAD_PARAMS);
@@ -26,20 +25,20 @@ static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
 
   /* 绘制唱盘 */
   vgcanvas_save(vg);
+
   album_cover_transform(widget,c);
   if (widget_load_image(widget, album_cover->image, &bitmap) == RET_OK) {
-    rect_t dst = rect_init(widget->w*0.25, widget->h*0.25, widget->w*0.5, widget->h*0.5);
-    canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_SCALE_AUTO, &dst);
+    rect_t dst;
+    dst.x = widget->w*0.25;
+    dst.y = widget->h*0.25;
+    dst.w = widget->w*0.5;
+    dst.h = widget->h*0.5;
+    vgcanvas_draw_image(vg, &bitmap, 0, 0, bitmap.w, bitmap.h, dst.x, dst.y, dst.w, dst.h);
   }
-  //TODO:使用控件自身的image_manager实现图片资源管理,但内存波动较大
-  // if (image_manager_get_bitmap(album_cover->cover_image_manager, album_cover->image, &bitmap) == RET_OK) {
-  //   rect_t dst = rect_init(widget->w*0.25, widget->h*0.25, w*0.5, w*0.5);
-  //   canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_SCALE_AUTO, &dst);
-  // }
 
   if (widget_load_image(widget, album_cover->bg_image, &bitmap) == RET_OK) {
     rect_t dst = rect_init(widget->w*0.1, widget->h*0.1, widget->w*0.8, widget->h*0.8);
-    canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_SCALE_AUTO, &dst);
+    vgcanvas_draw_image(vg, &bitmap, 0, 0, bitmap.w, bitmap.h, dst.x, dst.y, dst.w, dst.h);
   }
   vgcanvas_restore(vg);
 
@@ -47,8 +46,8 @@ static ret_t album_cover_on_paint_self(widget_t* widget, canvas_t* c) {
   vgcanvas_save(vg);
   cartridge_transform(widget,c);
   if (widget_load_image(widget, album_cover->fg_image, &bitmap) == RET_OK) {
-    rect_t dst = rect_init(widget->w/2, 0, w, w);
-    canvas_draw_image_ex(c, &bitmap, IMAGE_DRAW_DEFAULT, &dst);
+    rect_t dst = rect_init(w/2, 0, bitmap.w, bitmap.h);
+    vgcanvas_draw_image(vg, &bitmap, 0, 0, bitmap.w, bitmap.h, dst.x, dst.y, dst.w, dst.h);
   }
   vgcanvas_restore(vg);
 
@@ -74,7 +73,6 @@ ret_t album_cover_transform(widget_t* widget, canvas_t* c)
   vgcanvas_translate(vg, anchor_x, anchor_y);
   vgcanvas_rotate(vg, TK_D2R(album_cover->rotation));
   vgcanvas_translate(vg, -anchor_x, -anchor_y);
-  vgcanvas_translate(vg, -c->ox, -c->oy);
 
   return RET_OK; 
 }
@@ -86,22 +84,20 @@ ret_t album_cover_transform(widget_t* widget, canvas_t* c)
 ret_t cartridge_transform(widget_t* widget, canvas_t* c)
 {
   float_t anchor_x = 0;
-  float_t anchor_y = 0;
   album_cover_t* album_cover = ALBUM_COVER(widget);
   vgcanvas_t* vg = lcd_get_vgcanvas(c->lcd);
 
   return_value_if_fail(widget != NULL && vg != NULL, RET_BAD_PARAMS);
 
   anchor_x = 0.5 * widget->w;
-  anchor_y = 0.5 * widget->h;
 
   vgcanvas_translate(vg, c->ox, c->oy);
   vgcanvas_translate(vg, anchor_x, 0);
-  if(album_cover->is_play == TRUE)
-      vgcanvas_rotate(vg, TK_D2R(1));
-  else
-    vgcanvas_rotate(vg, TK_D2R(-60));
-  vgcanvas_translate(vg, -c->ox, -c->oy);
+  // if(album_cover->is_play == TRUE)
+  //     vgcanvas_rotate(vg, TK_D2R(-3));
+  // else
+  //   vgcanvas_rotate(vg, TK_D2R(-60));
+  vgcanvas_rotate(vg, TK_D2R(album_cover->cartridge_rotation));
   vgcanvas_translate(vg, -anchor_x, 0);
 
   return RET_OK; 
@@ -129,6 +125,9 @@ static ret_t album_cover_get_prop(widget_t* widget, const char* name, value_t* v
   } else if(tk_str_eq(name, ALBUM_COVER_PROP_ROTATION)) {
     value_set_int(v, album_cover->rotation);
     return RET_OK;
+  } else if(tk_str_eq(name, ALBUM_COVER_PROP_CARTRIDGE_ROTATION)) {
+    value_set_int(v, album_cover->cartridge_rotation);
+    return RET_OK;
   }
 
   return RET_NOT_FOUND;
@@ -153,6 +152,9 @@ static ret_t album_cover_set_prop(widget_t* widget, const char* name, value_t* v
   } else if(tk_str_eq(name, ALBUM_COVER_PROP_ISPLAY)) {
     album_cover->is_play = value_bool(v);
     return RET_OK;
+  } else if(tk_str_eq(name, ALBUM_COVER_PROP_CARTRIDGE_ROTATION)) {
+    album_cover->cartridge_rotation = value_float(v);
+    return RET_OK;
   }
 
   return RET_NOT_FOUND;
@@ -165,7 +167,6 @@ static ret_t album_cover_set_prop(widget_t* widget, const char* name, value_t* v
 static ret_t album_cover_on_destroy(widget_t* widget) {
   album_cover_t* album_cover = ALBUM_COVER(widget);
 
-  image_manager_destroy(album_cover->cover_image_manager);
   timer_remove(album_cover->timer_id);
   TKMEM_FREE(album_cover->image);
   TKMEM_FREE(album_cover->bg_image);
@@ -180,14 +181,11 @@ static ret_t album_cover_on_destroy(widget_t* widget) {
 //FIXME:需修复切换图片后内存增大胡问题
 //TODO: 切换图片时清除长时间没用的图片缓存
 ret_t album_cover_set_image(widget_t* widget, const char* name) {
+  bitmap_t bitmap;
   album_cover_t* album_cover = ALBUM_COVER(widget);
   return_value_if_fail(widget != NULL && name != NULL, RET_BAD_PARAMS);
 
-  image_manager_t* default_image_manager = image_manager();
-
-  //image_manager_unload_unused(album_cover->cover_image_manager, 1);
-  printf("current default_image_manager num: %d  capacity: %d\n", (default_image_manager->images).size, (default_image_manager->images).capacity);
-  printf("current cover_image_manager num: %d  capacity: %d\n", (album_cover->cover_image_manager->images).size, (album_cover->cover_image_manager->images).capacity);
+  album_cover->prev_image = album_cover->image;
   album_cover->image = tk_str_copy(album_cover->image, name);
 
   return widget_invalidate(widget, NULL);
@@ -214,6 +212,7 @@ ret_t album_cover_start(widget_t* widget) {
   return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
 
   album_cover_t* album_cover = ALBUM_COVER(widget);
+  widget_create_animator(album_cover, "cartridge_rotation(to=-3, duration=500, repeat_times=1, yoyo_times=1, easing=sin_out)");
   album_cover->is_play = TRUE;
 
   return RET_OK;
@@ -226,6 +225,7 @@ ret_t album_cover_pause(widget_t* widget) {
   return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
 
   album_cover_t* album_cover = ALBUM_COVER(widget);
+  widget_create_animator(album_cover, "cartridge_rotation(to=-45, duration=500, repeat_times=1, yoyo_times=1, easing=sin_out)");
   album_cover->is_play = FALSE;
 
   return RET_OK;
@@ -291,14 +291,11 @@ widget_t* album_cover_create(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h) {
   return_value_if_fail(album_cover != NULL, NULL);
 
   widget_init(widget, parent, &s_album_cover_vtable, x, y, w, h);
-  #ifdef WITH_STB_IMAGE
-    image_loader_t* image_loader = image_loader_stb();
-  #endif /*WITH_STB_IMAGE*/
-  album_cover->cover_image_manager = image_manager_create(image_loader);
 
   album_cover->timer_id = timer_add(timer_album_cover, widget, 40);
   album_cover->is_play = FALSE;
   album_cover->rotation = 0;
+  album_cover->cartridge_rotation = -60;
 
   return widget;
 }

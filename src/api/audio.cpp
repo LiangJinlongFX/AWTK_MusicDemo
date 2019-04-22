@@ -29,7 +29,7 @@ music_info_t* Audiofile_load(char* dir_path) {
   char dir[200];
   char fullpath[100];
   int i=0;
-  intptr_t handle;
+  intptr_t handle=NULL;
   struct _finddata_t fileinfo;
 	music_info_t* p = NULL;
   /* 初始化首节点 */
@@ -147,7 +147,7 @@ int Zplay_GetTimeLength(void) {
 int Zplay_Seek(int seek_time) {
 	TStreamTime pTime;
 	pTime.sec = seek_time/1000;
-	return zplay_Seek(Global_player, tfSecond, &pTime, smFromCurrentForward);
+	return zplay_Seek(Global_player, tfSecond, &pTime, smFromBeginning);
 }
 
 /*
@@ -180,8 +180,12 @@ void Zplay_GetEquailzerPoints(void) {
 }
 
 int Zplay_SetEqualizerParam(int* nBandGain, int nNumOfBands) {
-	int nPreamp;
-	return zplay_SetEqualizerParam(Global_player, 0 , nBandGain, nNumOfBands);
+	int i=0;
+	for(i=0;i<nNumOfBands;i++) {
+		zplay_SetEqualizerBandGain(Global_player, i, nBandGain[i]);
+	}
+	return 0;
+	//return zplay_SetEqualizerParam(Global_player, 0 , nBandGain, nNumOfBands);
 }
 
 int Zplay_GetEqualizerParam(int* nBandGain, int nNumOfBands) {

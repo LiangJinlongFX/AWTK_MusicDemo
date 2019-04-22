@@ -1,9 +1,24 @@
-<string name="ok">
-<language name="en_US">OK</language>
-<language name="zh_CN">确定</language>
+<string name="dev_name">
+  <language name="en_US">Music Player</language>
+  <language name="zh_CN">音乐播放器</language>
 </string>
 
-<string name="cancel">
-<language name="en_US">Cancel</language>
-<language name="zh_CN">取消</language>
+<string name="tr_button">
+  <language name="en_US">EN</language>
+  <language name="zh_CN">中</language>
+</string>
+
+<string name="tr_playlist">
+  <language name="en_US">Play List</language>
+  <language name="zh_CN">歌单列表</language>
+</string>
+
+<string name="tr_equailzer">
+  <language name="en_US">Equailzer</language>
+  <language name="zh_CN">EQ均衡器</language>
+</string>
+
+<string name="tr_advance">
+  <language name="en_US">Advance</language>
+  <language name="zh_CN">增益调节</language>
 </string>

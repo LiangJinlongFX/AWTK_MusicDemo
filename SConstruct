@@ -33,11 +33,11 @@ INPUT_ENGINE='pinyin'
 TARGET_ARCH="x86"
 
 VGCANVAS='NANOVG'
-NANOVG_BACKEND='GL3'
+#NANOVG_BACKEND='GL3'
 #NANOVG_BACKEND='GLES2'
 #NANOVG_BACKEND='GLES3'
 #NANOVG_BACKEND='AGG'
-#NANOVG_BACKEND='AGGE'
+NANOVG_BACKEND='AGGE'
 #NANOVG_BACKEND='BGFX'
 
 FRAME_BUFFER_FORMAT=''
@@ -130,7 +130,7 @@ RES_ROOT = os.path.normpath(TK_ROOT + '/demos').replace("\\", "\\\\")
 COMMON_CCFLAGS = COMMON_CCFLAGS + ' -DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" '
 
 LINKFLAGS=OS_LINKFLAGS;
-LIBPATH=[LIB_DIR] + OS_LIBPATH + ['E:\AWTK_MusicDemo_Zplay\\src\\api']
+LIBPATH=[LIB_DIR] + OS_LIBPATH + ['F:\\AWTK_Develop\\AWTK_MusicDemo_Zplay\\src\\api\\']
 CCFLAGS=OS_FLAGS + COMMON_CCFLAGS 
 LIBS=['awtk', 'gpinyin', 'awtk', 'linebreak'] + NANOVG_BACKEND_LIBS + ['nanovg', 'SDL2', 'glad'] + OS_LIBS + ['libzplay']
 

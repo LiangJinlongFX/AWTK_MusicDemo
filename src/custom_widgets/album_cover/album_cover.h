@@ -33,12 +33,19 @@ typedef struct _album_cover_t {
      * 专辑封面图片，在最底层显示，可切换更改
      */
     char* image;
+    char* prev_image;
     /**
      * @property {float_t} rotation
      * @annotation ["set_prop","get_prop"]
      * 控件旋转角度，单位为角度
      */
     float_t rotation;
+    /**
+     * @property {float_t} rotation
+     * @annotation ["set_prop","get_prop"]
+     * 唱头旋转角度，单位为角度
+     */
+    float_t cartridge_rotation;
     /**
      * @property {bool_t} is_play
      * @annotation ["set_prop","get_prop"]
@@ -51,14 +58,8 @@ typedef struct _album_cover_t {
      * 控件定时器id，用于定时旋转控件
      */
     int32_t timer_id;
-    /**
-     * @property {}
-     * @annotation ["set_prop","get_prop"]
-     * 控件内部的image对象管理器
-     * FIXME:本管理器暂时遇到内存异常问题，控件的iamge暂由全局的image_manager管理
-     */
-    image_manager_t* cover_image_manager;
 }album_cover_t;
+
 
 /**
  * @method album_cover_create
@@ -140,6 +141,7 @@ ret_t cartridge_transform(widget_t* widget, canvas_t* c);
 #define ALBUM_COVER_PROP_FG_IMAGE "fg_image"
 #define ALBUM_COVER_PROP_ROTATION "rotation"
 #define ALBUM_COVER_PROP_ISPLAY "isplay"
+#define ALBUM_COVER_PROP_CARTRIDGE_ROTATION "cartridge_rotation"
 #define ALBUM_COVER(widget) ((album_cover_t*)(widget))
 
 

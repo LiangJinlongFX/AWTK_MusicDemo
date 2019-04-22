@@ -4,7 +4,7 @@
 
 本Demo应用是利用ZLG的开源GUI引擎库和libzplay开发，基于Win32平台的本地音乐播放器应用，其有如下特点：
 
-+ 实现专辑封面旋转的唱盘效果
++ 实现专辑封面复古的唱盘特效
 + 支持顺序播放/随机播放/单曲循环三种播放模式
 + 支持EQ均衡器设置
 + 支持Pitch,Rate,Temp调节
@@ -12,6 +12,16 @@
 + 支持加载与歌曲对应的lrc文件，并跟随播放时间实现交替高亮显示歌词的效果
 
 ## 使用说明
+
+### 使用前准备
+
++ 确保你的电脑已经安装了Python，Scons，Git和VistualStudio C++
+
+  Python版本为2.7
+
+  VistualStudio C++  Version>=2017
+
++ 下载源码
 
 ### 界面介绍
 
@@ -23,6 +33,8 @@
 
 - 文本暂不支持中文显示
 - 由于对zplay的不熟悉，暂不支持拖动进度条改变播放位置
+- 由于目前不支持文本滚动显示，当要显示的文本超过最大限度时会截断掉或者超出显示范围
+- 
 
 ##FAQ
 
@@ -32,5 +44,7 @@
 
 + 打开exe程序显示**找不到libzplay.dll**?
 
-  zplay依赖libzplay.dll的函数，复制libzplay.dll到exe程序同一目录下
+  zplay依赖libzplay.dll，复制libzplay.dll到exe程序同一目录下
+
++ 
 

@@ -162,6 +162,11 @@
     <pressed icon="eq_slider"/>
     <over icon="eq_slider"/>
   </style>
+  <style name="round" bg_image="bg_bar" fg_image="fg_bar">
+    <normal />
+    <pressed />
+    <over />    
+  </style>
 </slider>
 
 <slide_view>

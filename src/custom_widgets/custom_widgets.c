@@ -24,7 +24,6 @@
 #include "chart/axis.h"
 #include "chart/line_series.h"
 #include "chart/bar_series.h"
-#include "pie_slice/pie_slice.h"
 #include "album_cover/album_cover.h"
 #include "knob/knob.h"
 
@@ -33,7 +32,6 @@ ret_t custom_widgets_init() {
   widget_factory_register(widget_factory(), WIDGET_TYPE_AXIS, axis_create);
   widget_factory_register(widget_factory(), WIDGET_TYPE_LINE_SERIES, line_series_create);
   widget_factory_register(widget_factory(), WIDGET_TYPE_BAR_SERIES, bar_series_create);
-  widget_factory_register(widget_factory(), WIDGET_TYPE_PIE_SLICE, pie_slice_create);
   widget_factory_register(widget_factory(), WIDGET_TYPE_ALBUM_COVER, album_cover_create);
   widget_factory_register(widget_factory(), WIDGET_TYPE_KNOB, knob_create);
 
