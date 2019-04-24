@@ -1,45 +1,33 @@
 # 基于AWTK的音乐播放器Demo
 
-![dependencies libzplay](https://img.shields.io/badge/dependencies-libzplay-green.svg)![win32](https://img.shields.io/badge/platform-win32-green.svg)
+![dependencies libzplay](https://img.shields.io/badge/dependencies-libzplay-green.svg) ![win32](https://img.shields.io/badge/platform-win32-green.svg) ![build](https://img.shields.io/badge/build-passing-brightgreen.svg) ![AWTK](https://img.shields.io/badge/GUI-AWTK-orange.svg)
 
-本Demo应用是利用ZLG的开源GUI引擎库和libzplay开发，基于Win32平台的本地音乐播放器应用，其有如下特点：
+本音乐播放器是基于ZLG的开源GUI引擎[AWTK](https://github.com/zlgopen/awtk)和libzplay音频库开发而成，其有如下特点：
 
-+ 实现专辑封面复古的唱盘特效
-+ 支持顺序播放/随机播放/单曲循环三种播放模式
-+ 支持EQ均衡器设置
-+ 支持Pitch,Rate,Temp调节
-+ 支持播放音量调节
-+ 支持加载与歌曲对应的lrc文件，并跟随播放时间实现交替高亮显示歌词的效果
+- 实现专辑封面经典唱机播放特效
+- 支持顺序播放/随机播放/单曲循环三种播放模式
+- 支持EQ均衡器设置
+- 支持Pitch,Rate,Temp调节
+- 支持播放音量调节
+- 支持加载与歌曲对应的lrc文件，并跟随播放时间实现交替高亮显示歌词的效果
 
-## 使用说明
+![1556091316883](F:\AWTK_Develop\AWTK_MusicDemo_Zplay\doc\assets\1556091316883.png)
 
-### 快速体验
+### 快速使用
 
+1. 从(https://github.com/LiangJinlongFX/AWTK_MusicDemo/releases/tag/Beta1.0)下载Demo程序包
+2. 将要播放的MP3音频文件放置于与程序同一目录下的*./audiofiles*文件夹中
+3. 双击执行程序，请尽情欣赏你美妙的音乐吧
 
+### 使用手册
 
+​	请参考[UserManual.md](./doc/UserManual.md)
 
+### 开发
 
-### 界面介绍
+​	关于开发环境的搭建以及代码实现，请参考[DeveloperGuide.md](./doc/DeveloperGuide.md)
 
-### 播放控制
+### FAQ
 
-###音效调节
-
-##已知缺陷
-
-- 文本暂不支持中文显示
-- 由于目前不支持文本滚动显示，当要显示的文本超过最大限度时会截断掉或者超出显示范围
-- 资源需从指定的目录下加载。因此，如需添加新的歌词文件或者专辑封面文件，应将AWTK源码包和工程源码克隆下来。
-
-##FAQ
-
-+ 在windows10系统上运行无法正常运行？
-
-  设置exe程序兼容性为windows7
-
-+ 打开exe程序显示**找不到libzplay.dll**?
-
-  zplay依赖libzplay.dll，复制libzplay.dll到exe程序同一目录下
-
-+ 
+​	在使用中遇到问题？请参考[FAQ.md](./doc/FAQ.md)
 

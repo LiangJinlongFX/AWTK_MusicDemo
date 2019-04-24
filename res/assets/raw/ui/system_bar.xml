@@ -1,8 +1,8 @@
 <system_bar h="52">
-  <label name="dev_name" x="10" y="m" w="30%" h="100%" tr_text="dev_name" margin="20"/>
+  <label name="device" x="10" y="m" w="30%" h="100%" tr_text="dev_name" text="Music Player" margin="20"/>
   <row x="r" y="m" w="30%" h="100%" children_layout="default(r=1,c=0)">
     <digit_clock w="70%" w="60%" h="100%" format="Y-MM-DD hh:mm"/>
     <image w="10%" image="header_div" draw_type="icon"/>
-    <check_button name="EN" w="20%" w="40%" h="100%" tr_text="tr_button" text="EN"/>
+    <check_button name="locale_button" w="20%" w="40%" h="100%" tr_text="tr_button" text="EN"/>
   </row>
 </system_bar>

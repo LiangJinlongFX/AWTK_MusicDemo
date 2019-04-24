@@ -32,8 +32,8 @@ int gui_app_start(int lcd_w, int lcd_h) {
 #include <windows.h>
 int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hprevinstance, LPSTR lpcmdline, int ncmdshow) {
   /* 打开CMD窗口方便调试 */
-  // AllocConsole();
-  // freopen("conout$","w",stdout);  
+  AllocConsole();
+  freopen("conout$","w",stdout);  
 #else
 int main(void) {
 #endif

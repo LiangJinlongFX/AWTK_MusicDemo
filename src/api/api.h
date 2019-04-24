@@ -82,8 +82,9 @@ typedef struct _current_info_t {
 void chat_to_wchar(char* str1, wchar_t* str2);
 /* 将毫秒数转换成m:n格式 */
 void time_to_wchar(uint32_t s, wchar_t* str);
-
+/* 替换字符 */
 void my_str_replace(char* str, char src, char dst);
+/* 格式化文本 */
 void to_var_name(char* src_str);
 
 music_info_t* musiclist_insert(music_info_t* pHead);

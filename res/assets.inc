@@ -90,11 +90,12 @@
 #ifdef WITH_STB_FONT
 #ifdef WITH_MINI_FONT
 #else/*WITH_MINI_FONT*/
-#include "assets/inc/fonts/default.res"
 #endif/*WITH_MINI_FONT*/
 #else/*WITH_STB_FONT*/
 #endif/*WITH_STB_FONT*/
 #endif/*WITH_FS_RES*/
+
+#include "assets/inc/fonts/default.res"
 
 ret_t assets_init(void) {
   assets_manager_t* rm = assets_manager();

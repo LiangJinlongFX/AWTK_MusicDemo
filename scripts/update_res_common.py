@@ -580,7 +580,7 @@ def showUsage():
 #showUsage()
 if __name__ == '__main__':
     init("../../awtk", "../res/assets", "./");
-    #updateRes("-all");
-    updateRes("-data")
+    #updateRes("-c");
+    updateRes("-all")
     #updateRes("-image")
     #gen_assets_header(ASSETS_ROOT_DIR, "../res/assets/assets.h")

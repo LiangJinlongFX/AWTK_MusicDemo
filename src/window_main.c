@@ -33,6 +33,10 @@
 current_info_t* Global_Current_Info=NULL;
 widget_t* Main_Window=NULL;
 
+/**
+ * 从资源管理器中加载歌词数据
+ * @params 歌词名称 与歌曲名称相同
+ **/
 static char* load_assets_manager(char* name) {
   char str[100];
   strcpy(str, name);
@@ -46,7 +50,9 @@ static char* load_assets_manager(char* name) {
     return NULL;
 }
 
-
+/**
+ * 加载歌词文本至歌词栏
+ **/
 static void lrc_loaditem(current_info_t* info) {
   char str[20];
   uint16_t count=0;
@@ -77,6 +83,7 @@ static void lrc_loaditem(current_info_t* info) {
     p = p->next;
     count++;
   }
+  /* 创建空白区域 */
   for(i=0;i<3;i++) {
     item = label_create(lyric_list, 100, 200, 80, 30);
   }
@@ -89,6 +96,7 @@ static void lrc_loaditem(current_info_t* info) {
     widget_set_text_utf8(item, p->verse);
     p = p->next; 
   }
+  /* 创建空白区域 */
   for(i=0;i<5;i++) {
     item = label_create(lyric_list, 100, 200, 80, 30);
   }
@@ -96,7 +104,9 @@ static void lrc_loaditem(current_info_t* info) {
   scroll_view_scroll_to(lyric_list,0,0,10);
 }
 
-
+/**
+ * 切歌操作
+ **/
 static void music_switch(bool_t is_next) {
   int i;
   widget_t* widget;
@@ -256,13 +266,19 @@ static ret_t timer_preload(const timer_info_t* timer) {
 }
 
 
-
+/**
+ * 进度条回调
+ **/
 static ret_t on_musicprocess(void* ctx, event_t* e) {  
+  wchar_t wstr[15];
   widget_t* bar = widget_lookup(WIDGET(ctx), "music_progress", TRUE);
   printf("on_musicprocess\n");
   Global_Current_Info->play_time = widget_get_value(bar);
   Global_Current_Info->play_time *= 1000;
   Global_Current_Info->is_scroll = TRUE;
+  widget_t* label = widget_lookup(Main_Window, "play_time", TRUE);
+  time_to_wchar(Global_Current_Info->play_time,wstr);
+  widget_set_text(label,wstr);
   /* 用户移动滑块时间 */
   Zplay_Seek(Global_Current_Info->play_time);
   if(Global_Current_Info->is_play == FALSE) {
@@ -465,6 +481,7 @@ static ret_t on_musicnext(void* ctx, event_t* e) {
   return RET_OK;
 }
 
+/* 播放按钮回调函数 */
 static ret_t on_play(void* ctx, event_t* e) {
   widget_t* button = widget_lookup(WIDGET(ctx), "music:play", TRUE);
   album_cover_t* album_cover = ALBUM_COVER(widget_lookup(WIDGET(ctx), "cover", TRUE));
@@ -534,6 +551,7 @@ static ret_t equalizer_changed(void* ctx, event_t* e) {
   return RET_OK;
 }
 
+/* EQ均衡器按钮回调函数 */
 static ret_t on_equalizer(void* ctx, event_t* e) {
   widget_t* dialog_eq = dialog_open("equalizer");
   widget_t* slider_item;
@@ -581,6 +599,7 @@ static ret_t on_equalizer(void* ctx, event_t* e) {
   return dialog_modal(dialog_eq);
 }
 
+/* 设置按钮的可见性 */
 static ret_t on_setting(void* ctx, event_t* e) {
   widget_t* win = (widget_t*)ctx;
   widget_t* advance_item = widget_lookup(win, "music:equalizer", TRUE);
@@ -603,10 +622,11 @@ static ret_t on_setting(void* ctx, event_t* e) {
   return RET_OK;
 }
 
+/* 语言切换按钮回调函数 */
 static ret_t on_change_locale(void* ctx, event_t* e) { 
 
   widget_t* win = (widget_t*)ctx;
-  widget_t* widget = widget_lookup(win, "tr_button", TRUE);
+  widget_t* widget = widget_lookup(win, "locale_button", TRUE);
   if(widget_get_value(widget)) {
     printf("zh_CN\n");
     locale_info_change(locale_info(), "zh", "CN"); 
@@ -652,7 +672,7 @@ void application_init() {
   music_switch(TRUE);
 
   /* 设置中英切换按钮 */
-  widget_t* tr_button = widget_lookup(system_bar, "tr_button", TRUE);
+  widget_t* tr_button = widget_lookup(system_bar, "locale_button", TRUE);
   widget_set_value(tr_button, 1);
 
   /* 默认隐藏设置图标 */
@@ -666,7 +686,7 @@ void application_init() {
   widget_set_enable(equalizer_item, FALSE);
 
   /* 注册控件事件 */
-  widget_child_on(system_bar, "tr_button", EVT_VALUE_WILL_CHANGE, on_change_locale, system_bar);
+  widget_child_on(system_bar, "locale_button", EVT_VALUE_WILL_CHANGE, on_change_locale, system_bar);
   widget_child_on(win_main, "music:list", EVT_CLICK, on_playlist, win_main);
   widget_child_on(win_main, "music:setting", EVT_VALUE_WILL_CHANGE, on_setting, win_main);
   widget_child_on(win_main, "music:equalizer", EVT_CLICK, on_equalizer, win_main);
