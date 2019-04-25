@@ -2,7 +2,10 @@
 
 ​	本手册适用于[预发布版本Beta1.0](https://github.com/LiangJinlongFX/AWTK_MusicDemo/releases/tag/Beta1.0)程序的使用说明。
 
-![1556091316883](F:\AWTK_Develop\AWTK_MusicDemo_Zplay\doc\assets\1556091316883.png)
+​	界面控件介绍
+
+![主窗口界面介绍](assets/main.png)
+![对话框界面介绍](assets/dialog.png)
 
 ### 运行环境
 

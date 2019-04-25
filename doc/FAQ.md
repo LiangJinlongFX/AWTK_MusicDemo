@@ -1,6 +1,6 @@
 # FAQ
 
-​	由于本人的技术不过关，难免会出现各种BUG让使用者很困惑，所以在下面列出一些常见的问题，如下面没有你遇到的问题的解决办法。请在GitHub仓库(https://github.com/LiangJinlongFX/AWTK_MusicDemo)的**issues**发表你的疑问以及建议。
+​	由于本人的技术不过关，难免会出现各种BUG让使用者很困惑，所以在下面列出一些常见的问题，如下面没有你遇到的问题的解决办法。请在[GitHub仓库](https://github.com/LiangJinlongFX/AWTK_MusicDemo)的**issues**发表你的疑问以及建议。
 
 + 启动程序时弹出对话框 “找不到libzplay.dll” ？
 
@@ -21,3 +21,4 @@
 + 为什么我的歌曲信息/歌词会乱码？
 
   本播放器暂时只支持UTF-8的编码格式，请播放英文歌。
+
