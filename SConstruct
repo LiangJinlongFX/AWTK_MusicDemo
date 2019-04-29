@@ -15,7 +15,6 @@ def getAwtkRoot():
 
 OS_NAME=platform.system()
 TK_ROOT = getAwtkRoot()
-#TK_ROOT = "F://AWTK_Develop//awtk"
 print("TK_ROOT: ",TK_ROOT)
 BIN_DIR=joinPath(TK_ROOT, 'bin')
 LIB_DIR=joinPath(TK_ROOT, 'lib')
@@ -23,6 +22,8 @@ TK_SRC = joinPath(TK_ROOT, 'src')
 TK_3RD_ROOT = joinPath(TK_ROOT, '3rd')
 TK_TOOLS_ROOT = joinPath(TK_ROOT, 'tools')
 GTEST_ROOT = joinPath(TK_ROOT, '3rd/gtest/googletest')
+
+PROJECT_ROOT = os.getcwd()
 
 if OS_NAME == 'Windows':
   TK_ROOT=TK_ROOT.replace('\\', '\\\\');
@@ -51,8 +52,8 @@ else:
 NANOVG_BACKEND_LIBS=[];
 NANOVG_BACKEND_PROJS=[];
 COMMON_CCFLAGS = ' -DTK_ROOT=\\\"'+TK_ROOT+'\\\" '
-#COMMON_CCFLAGS = COMMON_CCFLAGS + "-DHAS_STD_MALLOC -DWITH_SDL -DWITH_FS_RES -DHAS_STDIO -DWITH_DESKTOP_STYLE"
-COMMON_CCFLAGS = COMMON_CCFLAGS + "-DHAS_STD_MALLOC -DWITH_SDL -DHAS_STDIO -DWITH_DESKTOP_STYLE"
+COMMON_CCFLAGS = COMMON_CCFLAGS + "-DHAS_STD_MALLOC -DWITH_SDL -DWITH_FS_RES -DHAS_STDIO -DWITH_DESKTOP_STYLE"
+#COMMON_CCFLAGS = COMMON_CCFLAGS + "-DHAS_STD_MALLOC -DWITH_SDL -DHAS_STDIO -DWITH_DESKTOP_STYLE"
 COMMON_CCFLAGS = COMMON_CCFLAGS + "-DSTBTT_STATIC -DSTB_IMAGE_STATIC -DWITH_STB_IMAGE -DWITH_STB_FONT -DWITH_MINI_FONT "
 COMMON_CCFLAGS = COMMON_CCFLAGS + "-Wall -DWITH_VGCANVAS -DWITH_UNICODE_BREAK "
 
@@ -131,7 +132,7 @@ RES_ROOT = os.path.normpath(TK_ROOT + '/demos').replace("\\", "\\\\")
 COMMON_CCFLAGS = COMMON_CCFLAGS + ' -DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" '
 
 LINKFLAGS=OS_LINKFLAGS;
-LIBPATH=[LIB_DIR] + OS_LIBPATH + ['F:\\AWTK_Develop\\AWTK_MusicDemo_Zplay\\src\\api\\']
+LIBPATH=[LIB_DIR] + OS_LIBPATH + [joinPath(PROJECT_ROOT, 'src/api')] 
 CCFLAGS=OS_FLAGS + COMMON_CCFLAGS 
 LIBS=['awtk', 'gpinyin', 'awtk', 'linebreak'] + NANOVG_BACKEND_LIBS + ['nanovg', 'SDL2', 'glad'] + OS_LIBS + ['libzplay']
 
@@ -156,7 +157,7 @@ CPPPATH=[TK_ROOT,
   joinPath(TK_3RD_ROOT, 'agge/include'), 
   joinPath(TK_3RD_ROOT, 'gpinyin/include'), 
   joinPath(TK_3RD_ROOT, 'libunibreak'), 
-  "./src/api",
+  joinPath(PROJECT_ROOT, 'src/api'),
   TK_TOOLS_ROOT] + OS_CPPPATH
 
 LCD_FLAG = ARGUMENTS.get('LCD', 0)
@@ -187,6 +188,7 @@ os.environ['FRAME_BUFFER_FORMAT'] = FRAME_BUFFER_FORMAT;
 
 SConscriptFiles=[
   'src/SConscript'
+  #'tests/SConscript'
   ]
 
 

@@ -1,0 +1,15 @@
+import os
+import sys
+import glob
+
+env=DefaultEnvironment().Clone()
+
+BIN_DIR = '../bin'
+
+source_files = glob.glob('*.cc')
+
+env.Program(os.path.join(BIN_DIR, 'runTest'), source_files);
+#env.Program(os.path.join(BIN_DIR, 'mem_test'), ["mem_test.cpp"])
+#env.Program(os.path.join(BIN_DIR, 'recycle_test'), ["recycle_test.cpp"])
+
+

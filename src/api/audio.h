@@ -4,7 +4,7 @@
 #include <awtk.h>
 #include "api.h"
 
-#define AUDIO_DIR "D:/audiofile/" 
+#define AUDIO_DIR "D:/audiofile/"
 
 BEGIN_C_DECLS
 
@@ -46,4 +46,4 @@ unsigned int Zplay_GetPlayerVolume(void);
 
 END_C_DECLS
 
-#endif // !_AUDIO_H
+#endif  // !_AUDIO_H

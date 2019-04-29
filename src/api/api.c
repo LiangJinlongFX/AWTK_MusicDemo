@@ -33,21 +33,21 @@ void time_to_wchar(uint32_t s, wchar_t* str) {
 }
 
 void my_str_replace(char* str, char src, char dst) {
-	char* p = str;
+  char* p = str;
 
-	while(*p != '\0') {
-    if(*p == src) {
+  while (*p != '\0') {
+    if (*p == src) {
       *p = dst;
     }
     p++;
-	}
+  }
 }
 
 void to_var_name(char* src_str) {
-	char* p = src_str;
+  char* p = src_str;
 
-	while(*p != '\0') {
-    if(*p >= '0' && *p <= '9') {
+  while (*p != '\0') {
+    if (*p >= '0' && *p <= '9') {
       p++;
     } else if (*p >= 'A' && *p <= 'Z') {
       p++;
@@ -57,7 +57,7 @@ void to_var_name(char* src_str) {
       *p = '_';
       p++;
     }
-	}
+  }
 }
 
 /**
@@ -154,7 +154,6 @@ music_info_t* musiclist_default(void) {
   sprintf(p->song_name, "MISS U");
   sprintf(p->Artist_name, "Cesqeaux");
   p->total_time = 210000;
-
 
   return head;
 }

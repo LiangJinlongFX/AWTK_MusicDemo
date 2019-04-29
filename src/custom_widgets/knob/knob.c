@@ -39,7 +39,7 @@ static ret_t knob_on_paint_self(widget_t* widget, canvas_t* c) {
 
   if (knob->image == NULL) return RET_OK;
 
-  //TODO:默认控件长宽相等且图片素材适合控件比例,没有添加比例校验
+  // TODO:默认控件长宽相等且图片素材适合控件比例,没有添加比例校验
   wh_t w = tk_min(widget->w, widget->h);
 
   /* 确保value在有效范围内 */
@@ -86,15 +86,14 @@ static ret_t knob_on_paint_self(widget_t* widget, canvas_t* c) {
     knob_transform(widget, c, angle);
     if (widget_load_image(widget, knob->image, &bitmap) == RET_OK) {
       rect_t dst;
-        dst.x = widget->w/2 - 0.8*r;
-        dst.y = widget->h/2 - 0.8*r;
-        dst.w = 1.6*r;
-        dst.h = 1.6*r;
-      //vgcanvas_draw_icon(vg, &bitmap, 0, 0, bitmap.w, bitmap.h, dst.x, dst.y, dst.w, dst.h);
+      dst.x = widget->w / 2 - 0.8 * r;
+      dst.y = widget->h / 2 - 0.8 * r;
+      dst.w = 1.6 * r;
+      dst.h = 1.6 * r;
+      // vgcanvas_draw_icon(vg, &bitmap, 0, 0, bitmap.w, bitmap.h, dst.x, dst.y, dst.w, dst.h);
       vgcanvas_draw_image(vg, &bitmap, 0, 0, bitmap.w, bitmap.h, dst.x, dst.y, dst.w, dst.h);
     }
     vgcanvas_restore(vg);
-
   }
 
   return RET_OK;
@@ -188,7 +187,6 @@ ret_t knob_set_value(widget_t* widget, float_t value) {
 
   return RET_OK;
 }
-
 
 ret_t knob_set_max(widget_t* widget, uint32_t max) {
   knob_t* knob = KNOB(widget);

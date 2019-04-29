@@ -14,52 +14,51 @@ BEGIN_C_DECLS
  * 依据唱盘风格进行代码实现
  */
 typedef struct _album_cover_t {
-    widget_t widget;
-    /**
-     * @property {char*} fg_image
-     * @annotation ["set_prop","get_prop"]
-     * 前景图片，在最顶层显示，如唱头等
-     */
-    char* fg_image;
-    /**
-     * @property {char*} bg_image
-     * @annotation ["set_prop","get_prop"]
-     * 背景图片，在第二层显示，如唱盘等，用于装饰专辑封面
-     */
-    char* bg_image;
-    /**
-     * @property {char*} image
-     * @annotation ["set_prop","get_prop"]
-     * 专辑封面图片，在最底层显示，可切换更改
-     */
-    char* image;
-    char* prev_image;
-    /**
-     * @property {float_t} rotation
-     * @annotation ["set_prop","get_prop"]
-     * 控件旋转角度，单位为角度
-     */
-    float_t rotation;
-    /**
-     * @property {float_t} rotation
-     * @annotation ["set_prop","get_prop"]
-     * 唱头旋转角度，单位为角度
-     */
-    float_t cartridge_rotation;
-    /**
-     * @property {bool_t} is_play
-     * @annotation ["set_prop","get_prop"]
-     * 播放状态位，标记当前控件是否为活动状态
-     */
-    bool_t is_play;
-    /**
-     * @property {int32_t} timer_id
-     * @annotation []
-     * 控件定时器id，用于定时旋转控件
-     */
-    int32_t timer_id;
-}album_cover_t;
-
+  widget_t widget;
+  /**
+   * @property {char*} fg_image
+   * @annotation ["set_prop","get_prop"]
+   * 前景图片，在最顶层显示，如唱头等
+   */
+  char* fg_image;
+  /**
+   * @property {char*} bg_image
+   * @annotation ["set_prop","get_prop"]
+   * 背景图片，在第二层显示，如唱盘等，用于装饰专辑封面
+   */
+  char* bg_image;
+  /**
+   * @property {char*} image
+   * @annotation ["set_prop","get_prop"]
+   * 专辑封面图片，在最底层显示，可切换更改
+   */
+  char* image;
+  char* prev_image;
+  /**
+   * @property {float_t} rotation
+   * @annotation ["set_prop","get_prop"]
+   * 控件旋转角度，单位为角度
+   */
+  float_t rotation;
+  /**
+   * @property {float_t} rotation
+   * @annotation ["set_prop","get_prop"]
+   * 唱头旋转角度，单位为角度
+   */
+  float_t cartridge_rotation;
+  /**
+   * @property {bool_t} is_play
+   * @annotation ["set_prop","get_prop"]
+   * 播放状态位，标记当前控件是否为活动状态
+   */
+  bool_t is_play;
+  /**
+   * @property {int32_t} timer_id
+   * @annotation []
+   * 控件定时器id，用于定时旋转控件
+   */
+  int32_t timer_id;
+} album_cover_t;
 
 /**
  * @method album_cover_create
@@ -106,7 +105,7 @@ ret_t album_cover_set_bg_image(widget_t* widget, const char* name);
  * @annotation []
  * 设置控件前景图片
  * @param {}
- * 
+ *
  * @return {ret_t}
  */
 ret_t album_cover_set_fg_image(widget_t* widget, const char* name);
@@ -144,7 +143,6 @@ ret_t cartridge_transform(widget_t* widget, canvas_t* c);
 #define ALBUM_COVER_PROP_CARTRIDGE_ROTATION "cartridge_rotation"
 #define ALBUM_COVER(widget) ((album_cover_t*)(widget))
 
-
 END_C_DECLS
 
-#endif // !ALBUM_COVER_H
+#endif  // !ALBUM_COVER_H

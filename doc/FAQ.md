@@ -1,4 +1,4 @@
-# FAQ
+# Frequently-Asked Questions
 
 ​	由于本人的技术不过关，难免会出现各种BUG让使用者很困惑，所以在下面列出一些常见的问题，如下面没有你遇到的问题的解决办法。请在[GitHub仓库](https://github.com/LiangJinlongFX/AWTK_MusicDemo)的**issues**发表你的疑问以及建议。
 
